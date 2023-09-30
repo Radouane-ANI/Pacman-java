@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Random;
 import geometry.RealCoordinates;
 
 public enum Ghost implements Critter {
@@ -30,8 +31,20 @@ public enum Ghost implements Critter {
     }
 
     @Override
-    public double getSpeed() {
-        return 0;
+    public double getSpeed() { // vitesse des fantomes
+        return 1;
+    }
+
+    public static void updateGhostPositions() { // fais bouger les fantomes dans une direction aleatoires
+        Random rd = new Random();
+        for (Ghost ghost : Ghost.values()) {
+            switch(rd.nextInt(4)){
+                case 0 -> ghost.direction = Direction.NORTH;
+                case 1 -> ghost.direction = Direction.EAST;
+                case 2 -> ghost.direction = Direction.SOUTH;
+                case 3 -> ghost.direction = Direction.WEST;
+            }
+        }
     }
 
 }
