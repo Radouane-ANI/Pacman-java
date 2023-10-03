@@ -1,6 +1,7 @@
 package gui;
 
 import model.Direction;
+import model.Ghost;
 import model.PacMan;
 
 import javafx.scene.input.KeyEvent;
@@ -17,7 +18,7 @@ public class PacmanController {
                 }
         );
     }
-    public void keyReleasedHandler(KeyEvent event) {
-        // Nothing to do?
+    public void keyReleasedHandler(KeyEvent event) { // à chaque fois que l'on relache un bouton les fantomes bougent
+        Ghost.updateGhostPositions();  
     }
 }
