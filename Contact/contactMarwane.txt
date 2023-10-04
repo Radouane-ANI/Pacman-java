@@ -1,9 +1,7 @@
 Benrezzoug Marwane mrwn.brz@gmail.com
 Bouchekif Jawâd jawad.bouchekif001.com
 BOUCHEKIF Anas anas.bouchekif@gmail.com
-<<<<<<< HEAD
 Buisine Enzo enzo.w782@icloud.com
-=======
 Chioukh Sami chioukhsami7@gmail.com
 AOUINI Radouane radouaneloo.aouini@gmail.com
 >>>>>>> 8d1a5114826d4cf0aca853b344251dafa4f948d2
