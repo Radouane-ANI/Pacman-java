@@ -19,7 +19,10 @@ public enum Ghost implements Critter {
     static final MazeConfig config = MazeConfig.makeExample1();
     private RealCoordinates pos;
     private Direction direction = Direction.NONE;
-    private static boolean[][] passe = new boolean[config.getHeight()][config.getWidth()];
+    // tableau passerBlinky de la taille de la carte qui dit si blinky est deja
+    // passer par la
+    // (utile pour le bactracking) :
+    private static boolean[][] passerBlinky = new boolean[config.getHeight()][config.getWidth()];
     private static List<List<Character>> TousCheminVersPacman = new ArrayList<>();
 
     @Override
@@ -60,70 +63,10 @@ public enum Ghost implements Critter {
     }
 
     public void iaBlinky() {
-        passe = new boolean[config.getHeight()][config.getWidth()];
+        passerBlinky = new boolean[config.getHeight()][config.getWidth()];
         if (possible((int) BLINKY.pos.x(), (int) BLINKY.pos.y()).size() > 0 || BLINKY.direction == Direction.NONE) {
-            char path = prochainePositionBlinky();
-            switch (path) {
-                case 'w':
-                    if (BLINKY.direction != Direction.WEST) {
-                        if (BLINKY.direction == Direction.EAST) {
-                            BLINKY.pos = BLINKY.pos.floorX();
-                        }
-                        if (BLINKY.direction == Direction.NORTH) {
-                            BLINKY.pos = BLINKY.pos.floorY();
-                        }
-                        if (BLINKY.direction == Direction.SOUTH) {
-                            BLINKY.pos = BLINKY.pos.floorY();
-                        }
-                    }
-                    BLINKY.direction = Direction.WEST;
-                    break;
-                case 'e':
-                    if (BLINKY.direction != Direction.EAST) {
-                        if (BLINKY.direction == Direction.WEST) {
-                            BLINKY.pos = BLINKY.pos.floorX();
-                        }
-                        if (BLINKY.direction == Direction.NORTH) {
-                            BLINKY.pos = BLINKY.pos.floorY();
-                        }
-                        if (BLINKY.direction == Direction.SOUTH) {
-                            BLINKY.pos = BLINKY.pos.floorY();
-                        }
-                    }
-                    BLINKY.direction = Direction.EAST;
-                    break;
-                case 'n':
-                    if (BLINKY.direction != Direction.NORTH) {
-                        if (BLINKY.direction == Direction.WEST) {
-                            BLINKY.pos = BLINKY.pos.floorX();
-                        }
-                        if (BLINKY.direction == Direction.EAST) {
-                            BLINKY.pos = BLINKY.pos.floorY();
-                        }
-                        if (BLINKY.direction == Direction.SOUTH) {
-                            BLINKY.pos = BLINKY.pos.floorY();
-                        }
-                    }
-                    BLINKY.direction = Direction.NORTH;
-                    break;
-                case 's':
-                    if (BLINKY.direction != Direction.SOUTH) {
-                        if (BLINKY.direction == Direction.WEST) {
-                            BLINKY.pos = BLINKY.pos.floorX();
-                        }
-                        if (BLINKY.direction == Direction.EAST) {
-                            BLINKY.pos = BLINKY.pos.floorX();
-                        }
-                        if (BLINKY.direction == Direction.NORTH) {
-                            BLINKY.pos = BLINKY.pos.floorY();
-                        }
-                    }
-                    BLINKY.direction = Direction.SOUTH;
-                    break;
-                default:
-                    BLINKY.direction = BLINKY.direction;
-                    break;
-            }
+            Direction path = prochainePositionBlinky();
+            changeDirection(path, BLINKY);
         }
     }
 
@@ -144,61 +87,70 @@ public enum Ghost implements Critter {
         }
     }
 
+    // algorithm de backtracking qui trouve tous les chemin ves pacman et les mets
+    // dans la liste satique TousCheminVersPacman
     public void cheminVersPacman(int x, int y, List<Character> chemin) {
-        passe[x][y] = true;
+        passerBlinky[x][y] = true; // marque la position comme visite
+
         if (PacMan.INSTANCE.getPos().round().equals(new IntCoordinates(x, y))) {
-            TousCheminVersPacman.add(new ArrayList<>(chemin));
-            passe[x][y] = false;
+            TousCheminVersPacman.add(new ArrayList<>(chemin)); // si on a atteint pacman sauvegarde le chemin
+            passerBlinky[x][y] = false;
             return;
         }
-        for (Character character : possible(x, y)) {
-            passe[x][y] = true;
-            if (character == 'n' && passe[x][y - 1] == false) {
+
+        for (Character character : possible(x, y)) { // essayer toutes les positions possible depuis cette position
+            if (character == 'n' && passerBlinky[x][y - 1] == false) {
                 chemin.add('n');
                 cheminVersPacman(x, y - 1, chemin);
             }
-            if (character == 'e' && passe[x + 1][y] == false) {
+            if (character == 'e' && passerBlinky[x + 1][y] == false) {
                 chemin.add('e');
                 cheminVersPacman(x + 1, y, chemin);
             }
-            if (character == 's' && passe[x][y + 1] == false) {
+            if (character == 's' && passerBlinky[x][y + 1] == false) {
                 chemin.add('s');
                 cheminVersPacman(x, y + 1, chemin);
             }
-            if (character == 'w' && passe[x - 1][y] == false) {
+            if (character == 'w' && passerBlinky[x - 1][y] == false) {
                 chemin.add('w');
                 cheminVersPacman(x - 1, y, chemin);
             }
-            passe[x][y] = false;
-            if (chemin.size() > 0) {
+            if (chemin.size() > 0) { // quand on a explore la position la retire
                 chemin.remove(chemin.size() - 1);
             }
         }
+        passerBlinky[x][y] = false; // marque la position comme non visite
 
     }
 
+    // verifie toute les intersection a une coordonnee x et y
     public List<Character> possible(int x, int y) {
         List<Character> possible = new ArrayList<Character>();
-        IntCoordinates pos = new IntCoordinates(x, y);
-        if (y > 0 && !config.getCell(pos).northWall() && passe[x][y - 1] == false) {
+        IntCoordinates p = new IntCoordinates(x, y);
+        // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est deja passer
+        if (y > 0 && !config.getCell(p).northWall() && passerBlinky[x][y - 1] == false) {
             possible.add('n');
         }
-        if (y < passe[0].length - 1 && !config.getCell(pos).southWall() && passe[x][y + 1] == false) {
+        if (y < passerBlinky.length - 1 && !config.getCell(p).southWall() && passerBlinky[x][y + 1] == false) {
             possible.add('s');
         }
-        if (x < passe.length - 1 && !config.getCell(pos).eastWall() && passe[x + 1][y] == false) {
+        if (x < passerBlinky[0].length - 1 && !config.getCell(p).eastWall() && passerBlinky[x + 1][y] == false) {
             possible.add('e');
         }
-        if (x > 0 && !config.getCell(pos).westWall() && passe[x - 1][y] == false) {
+        if (x > 0 && !config.getCell(p).westWall() && passerBlinky[x - 1][y] == false) {
             possible.add('w');
         }
-        return possible;
+        return possible; // renvoie la liste de toute les directions des intersection
     }
 
-    public char prochainePositionBlinky() {
-        TousCheminVersPacman.clear();
-        cheminVersPacman((int) BLINKY.pos.x(), (int) BLINKY.pos.y(), new ArrayList<Character>());
-        if (TousCheminVersPacman.size() > 0) {
+    // applique l'algorithme de bactracking et renvoie la premiere Direction du plus
+    // court chemin vers pacman
+    public Direction prochainePositionBlinky() {
+        TousCheminVersPacman.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
+        cheminVersPacman((int) BLINKY.pos.x(), (int) BLINKY.pos.y(), new ArrayList<Character>()); // calcule tous les
+                                                                                                  // chemin
+
+        if (TousCheminVersPacman.size() > 0) { // prend le chemin le plus court pour renvoyer la premiere position
             List<Character> min = TousCheminVersPacman.get(0);
             for (List<Character> chemin : TousCheminVersPacman) {
                 if (chemin.size() < min.size()) {
@@ -206,10 +158,31 @@ public enum Ghost implements Critter {
                 }
             }
             if (min.size() > 0) {
-                return min.get(0);
+                return switch (min.get(0)) {
+                    case 'n' -> Direction.NORTH;
+                    case 's' -> Direction.SOUTH;
+                    case 'e' -> Direction.EAST;
+                    case 'w' -> Direction.WEST;
+                    default -> Direction.NONE;
+                };
             }
         }
-        return 'a';
+        return Direction.NONE; // renvoie None si pacman est innacessible ou si on est sur lui
+    }
+
+    // change la direction de n'importe quel phantome donner en argument en
+    // s'alignant avec les tunnels
+    public void changeDirection(Direction dir, Ghost ghost) {
+        if (ghost.direction != dir) {
+            if (ghost.direction == Direction.WEST || ghost.direction == Direction.EAST) {
+                ghost.pos = ghost.pos.floorX(); // arrondie la coordonnee en x pur etre face au trou
+            }
+            if (ghost.direction == Direction.NORTH || ghost.direction == Direction.SOUTH) {
+                ghost.pos = ghost.pos.floorY(); // arrondie la coordonnee en y pur etre face au trou
+            }
+            ghost.direction = dir; // applique la nouvelle direction au phantome donne en argument
+        }
+
     }
 
 }

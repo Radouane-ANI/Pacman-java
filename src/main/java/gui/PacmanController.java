@@ -19,6 +19,6 @@ public class PacmanController {
         );
     }
     public void keyReleasedHandler(KeyEvent event) { // à chaque fois que l'on relache un bouton les fantomes bougent
-        Ghost.updateGhostPositions();  
+        //Ghost.updateGhostPositions();  
     }
 }
