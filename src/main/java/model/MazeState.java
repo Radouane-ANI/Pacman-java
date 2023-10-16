@@ -13,6 +13,7 @@ public final class MazeState {
     private final MazeConfig config;
     private final int height;
     private final int width;
+    private boolean boulbirespawn;
 
     private final boolean[][] gridState;
 
@@ -33,8 +34,7 @@ public final class MazeState {
                 BLINKY, config.getBlinkyPos().toRealCoordinates(1.0),
                 INKY, config.getInkyPos().toRealCoordinates(1.0),
                 CLYDE, config.getClydePos().toRealCoordinates(1.0),
-                PINKY, config.getPinkyPos().toRealCoordinates(1.0)
-        );
+                PINKY, config.getPinkyPos().toRealCoordinates(1.0));
         resetCritters();
     }
 
@@ -52,8 +52,9 @@ public final class MazeState {
 
     public void update(long deltaTns) {
         Ghost.BLINKY.iaBlinky();
-        // FIXME: too many things in this method. Maybe some responsibilities can be delegated to other methods or classes?
-        for  (var critter: critters) {
+        // FIXME: too many things in this method. Maybe some responsibilities can be
+        // delegated to other methods or classes?
+        for (var critter : critters) {
             var curPos = critter.getPos();
             var nextPos = critter.nextPos(deltaTns);
             var curNeighbours = curPos.intNeighbours();
@@ -61,32 +62,36 @@ public final class MazeState {
             if (!curNeighbours.containsAll(nextNeighbours)) { // the critter would overlap new cells. Do we allow it?
                 switch (critter.getDirection()) {
                     case NORTH -> {
-                        for (var n: curNeighbours) if (config.getCell(n).northWall()) {
-                            nextPos = curPos.floorY();
-                            critter.setDirection(Direction.NONE);
-                            break;
-                        }
+                        for (var n : curNeighbours)
+                            if (config.getCell(n).northWall()) {
+                                nextPos = curPos.floorY();
+                                critter.setDirection(Direction.NONE);
+                                break;
+                            }
                     }
                     case EAST -> {
-                        for (var n: curNeighbours) if (config.getCell(n).eastWall()) {
-                            nextPos = curPos.ceilX();
-                            critter.setDirection(Direction.NONE);
-                            break;
-                        }
+                        for (var n : curNeighbours)
+                            if (config.getCell(n).eastWall()) {
+                                nextPos = curPos.ceilX();
+                                critter.setDirection(Direction.NONE);
+                                break;
+                            }
                     }
                     case SOUTH -> {
-                        for (var n: curNeighbours) if (config.getCell(n).southWall()) {
-                            nextPos = curPos.ceilY();
-                            critter.setDirection(Direction.NONE);
-                            break;
-                        }
+                        for (var n : curNeighbours)
+                            if (config.getCell(n).southWall()) {
+                                nextPos = curPos.ceilY();
+                                critter.setDirection(Direction.NONE);
+                                break;
+                            }
                     }
                     case WEST -> {
-                        for (var n: curNeighbours) if (config.getCell(n).westWall()) {
-                            nextPos = curPos.floorX();
-                            critter.setDirection(Direction.NONE);
-                            break;
-                        }
+                        for (var n : curNeighbours)
+                            if (config.getCell(n).westWall()) {
+                                nextPos = curPos.floorX();
+                                critter.setDirection(Direction.NONE);
+                                break;
+                            }
                     }
                 }
 
@@ -123,9 +128,17 @@ public final class MazeState {
         System.out.println("Score: " + score);
     }
 
+    public boolean GetBoulbi() {
+        return boulbirespawn;
+    }
+
     private void playerLost() {
-        // FIXME: this should be displayed in the JavaFX view, not in the console. A game over screen would be nice too.
+        // FIXME: this should be displayed in the JavaFX view, not in the console. A
+        // game over screen would be nice too.
+
+        boulbirespawn = true;
         lives--;
+        boulbirespawn = false;
         if (lives == 0) {
             System.out.println("Game over!");
             System.exit(0);
@@ -140,7 +153,8 @@ public final class MazeState {
     }
 
     private void resetCritters() {
-        for (var critter: critters) resetCritter(critter);
+        for (var critter : critters)
+            resetCritter(critter);
     }
 
     public MazeConfig getConfig() {
