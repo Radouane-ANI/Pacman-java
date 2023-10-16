@@ -1,5 +1,6 @@
 package config;
 // Définir un enregistrement (record) nommé Cell avec les attributs spécifiés
+
 public record Cell(boolean northWall, boolean eastWall, boolean southWall, boolean westWall, Cell.Content initialContent) {
 
     // Enumeration des differents types de contenu possible presente au sein d'une case(cellule) : Rien , Point, Energizer.
@@ -24,10 +25,15 @@ public record Cell(boolean northWall, boolean eastWall, boolean southWall, boole
     public static Cell eU(Content c) { return new Cell(true, false, true, true, c); }
     public static Cell sU(Content c) { return new Cell(true, true, false, true, c); }
     public static Cell wU(Content c) { return new Cell(true, true, true, false, c); }
-    // U-shaped cells // Méthodes de fabrique pour des cellules en forme de U avec le contenu spécifié
+    // U-shaped cells // Méthodes de fabrique pour des cellules en forme de U avec le contenu spécifié 
     public static Cell nTee(Content c) { return new Cell(true, false, false, false, c); }
     public static Cell eTee(Content c) { return new Cell(false, true, false, false, c); }
     public static Cell sTee(Content c) { return new Cell(false, false, true, false, c); }
     public static Cell wTee(Content c) { return new Cell(false, false, false, true, c); }
 
+    public Cell updateNextItemType(Content c){
+        return new Cell(northWall, eastWall, southWall, westWall, c);
+    }
 }
+
+
