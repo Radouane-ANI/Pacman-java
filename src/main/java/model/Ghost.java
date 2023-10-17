@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 import config.MazeConfig;
+import config.Cell;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
+import gui.PacmanController;
 import javafx.scene.effect.Blend;
 
 public enum Ghost implements Critter {
@@ -24,6 +26,9 @@ public enum Ghost implements Critter {
     // (utile pour le bactracking) :
     private static boolean[][] passerBlinky = new boolean[config.getHeight()][config.getWidth()];
     private static List<List<Character>> TousCheminVersPacman = new ArrayList<>();
+
+    public static boolean[][] visiter = new boolean[config.getHeight()][config.getWidth()];
+    public static List<Character> cheminCourt = new ArrayList<Character>();
 
     @Override
     public RealCoordinates getPos() {
@@ -70,20 +75,11 @@ public enum Ghost implements Critter {
         }
     }
 
-    public static void updatePinkyPositions() { // déplacements de pinky
-        IntCoordinates posPacMan = config.getPacManPos();
-        IntCoordinates posPinky = config.getPinkyPos();
-        char zonePacMan = (posPacMan.x() > config.getHeight() ? (posPacMan.y() > config.getWidth() ? 'a' : 'b')
-                : (posPacMan.y() > config.getWidth() ? 'c' : 'd'));
-        char zonePinky = (posPinky.x() > config.getHeight() ? (posPinky.y() > config.getWidth() ? 'a' : 'b')
-                : (posPinky.y() > config.getWidth() ? 'c' : 'd'));
-        if (zonePacMan == zonePinky) {
-            // 1.0 Recuperer segment de pacman (le couloir dans lequel il est)
-            // 1.1 Recuperer la direction
-            // 1.2 Definir la prochaine intersection qu'il rencontrera (coord)
-            // 1.3 Prendre le chemin le plus cours pour y aller
-        } else {
-            // 2.0 Se diriger vers cette zone
+    public void iaPinky() { // déplacements de pinky
+        IntCoordinates predictionPacMan = predictionNextMove(PacMan.INSTANCE);
+        if (possible((int) PINKY.pos.x(), (int) PINKY.pos.y()).size() > 0 || PINKY.direction == Direction.NONE) {
+            Direction path = prochainePositionPinky();
+            changeDirection(path, PINKY);
         }
     }
 
@@ -121,6 +117,46 @@ public enum Ghost implements Critter {
         }
         passerBlinky[x][y] = false; // marque la position comme non visite
 
+    }
+
+    //Backtracking V2
+    //Trouve le plus court chemin entre curretnPos et cible, definitla variable cheminCourt (a changer)
+    public void cheminVersPacman(IntCoordinates currentPos, IntCoordinates cible, ArrayList<Character> chemin) {
+        int x = currentPos.x();
+        int y = currentPos.y();
+        visiter[x][y] = true;
+
+        if (currentPos.equals(cible)){
+            cheminCourt = new ArrayList<>(chemin);
+            visiter[x][y] = false;
+            return;
+        }
+
+        if (chemin.size() < cheminCourt.size()){
+            for (Character character : possible(x, y)) { // essayer toutes les positions possible depuis cette position
+            if (character == 'n' && passerBlinky[x][y - 1] == false) {
+                chemin.add('n');
+                cheminVersPacman(new IntCoordinates(x, y-1), cible, chemin);
+            }
+            if (character == 'e' && passerBlinky[x + 1][y] == false) {
+                chemin.add('e');
+                cheminVersPacman(new IntCoordinates(x + 1, y), cible, chemin);
+            }
+            if (character == 's' && passerBlinky[x][y + 1] == false) {
+                chemin.add('s');
+                cheminVersPacman(new IntCoordinates(x, y + 1), cible, chemin);
+            }
+            if (character == 'w' && passerBlinky[x - 1][y] == false) {
+                chemin.add('w');
+                cheminVersPacman(new IntCoordinates(x - 1, y), cible, chemin);
+            }
+            if (chemin.size() > 0) { // quand on a explore la position la retire
+                chemin.remove(chemin.size() - 1);
+                }
+            }
+
+        }
+        visiter[x][y] = false;
     }
 
     // verifie toute les intersection a une coordonnee x et y
@@ -183,6 +219,61 @@ public enum Ghost implements Critter {
             ghost.direction = dir; // applique la nouvelle direction au phantome donne en argument
         }
 
+    }
+
+    public static IntCoordinates predictionNextMove(PacMan p){
+        Direction direction = (p.getDirection());
+        IntCoordinates currentGuess = p.getPos().round();
+        boolean found = false;
+        Cell c;
+        while(!found){
+            c = config.getCell(currentGuess);
+            if (c.isIntersection()){
+                found = true;
+            }else{
+                if (direction == Direction.EAST){
+                    if(c.eastWall() == false){
+                        currentGuess.plus(IntCoordinates.EAST_UNIT);
+                    }else{
+                        found = true;
+                    }
+                }else if (direction == Direction.WEST){
+                    if(c.westWall() == false){
+                        currentGuess.plus(IntCoordinates.WEST_UNIT);
+                    }else{
+                        found = true;
+                    }
+                }else if (direction == Direction.NORTH){
+                    if(c.northWall() == false){
+                        currentGuess.plus(IntCoordinates.NORTH_UNIT);
+                    }else{
+                        found = true;
+                    }
+                }else if (direction == Direction.SOUTH){
+                    if(c.southWall() == false){
+                        currentGuess.plus(IntCoordinates.SOUTH_UNIT);
+                    }else{
+                        found = true;
+                    }
+                }
+            }
+        }
+        return currentGuess;
+    }
+
+    public Direction prochainePositionPinky() {
+        cheminCourt.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
+        cheminVersPacman(PINKY.getPos().round(), predictionNextMove(PacMan.INSTANCE), new ArrayList<Character>()); //trouve le chemin le plus court
+        if (cheminCourt.size() > 0) {
+            return switch (cheminCourt.get(0)) {
+                case 'n' -> Direction.NORTH;
+                case 's' -> Direction.SOUTH;
+                case 'e' -> Direction.EAST;
+                case 'w' -> Direction.WEST;
+                default -> Direction.NONE;
+            };
+        }
+        return Direction.NONE; // renvoie None si pacman est innacessible ou si on est sur lui
     }
 
 }
