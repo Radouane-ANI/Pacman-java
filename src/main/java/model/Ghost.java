@@ -132,7 +132,7 @@ public enum Ghost implements Critter {
             return;
         }
 
-        if (chemin.size() < cheminCourt.size()){
+        if (chemin.size() < cheminCourt.size() || cheminCourt.size() == 0){
             for (Character character : possible(x, y)) { // essayer toutes les positions possible depuis cette position
             if (character == 'n' && passerBlinky[x][y - 1] == false) {
                 chemin.add('n');
@@ -231,7 +231,9 @@ public enum Ghost implements Critter {
             if (c.isIntersection()){
                 found = true;
             }else{
-                if (direction == Direction.EAST){
+                if (direction == Direction.NONE){
+                    found = true;
+                }else if (direction == Direction.EAST){
                     if(c.eastWall() == false){
                         currentGuess.plus(IntCoordinates.EAST_UNIT);
                     }else{
