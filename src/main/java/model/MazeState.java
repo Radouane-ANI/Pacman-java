@@ -52,6 +52,7 @@ public final class MazeState {
 
     public void update(long deltaTns) {
         Ghost.BLINKY.iaBlinky();
+        Ghost.PINKY.iaPinky();
         // FIXME: too many things in this method. Maybe some responsibilities can be
         // delegated to other methods or classes?
         for (var critter : critters) {
