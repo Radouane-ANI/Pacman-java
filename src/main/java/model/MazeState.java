@@ -1,11 +1,14 @@
 package model;
 
 import config.MazeConfig;
+import config.Cell.Content;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static model.Ghost.*;
 
@@ -51,7 +54,7 @@ public final class MazeState {
     }
 
     public void update(long deltaTns) {
-        Ghost.BLINKY.iaBlinky();
+        // Ghost.BLINKY.iaBlinky();
         // FIXME: too many things in this method. Maybe some responsibilities can be
         // delegated to other methods or classes?
         for (var critter : critters) {
@@ -104,6 +107,22 @@ public final class MazeState {
         if (!gridState[pacPos.y()][pacPos.x()]) {
             addScore(1);
             gridState[pacPos.y()][pacPos.x()] = true;
+        }
+        if (config.getCell(pacPos).initialContent() == Content.ENERGIZER) {
+            config.setCell(pacPos, config.getCell(pacPos).updateNextItemType(Content.NOTHING));
+
+            // Activez energized sur Pac-Man
+            PacMan.INSTANCE.setEnergized(true);
+
+            // Planifiez une tâche pour désactiver energized après 10 secondes
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    PacMan.INSTANCE.setEnergized(false);
+                    timer.cancel();
+                }
+            }, 5000); // 5 000 millisecondes = 5 secondes
         }
         for (var critter : critters) {
             if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
