@@ -8,10 +8,11 @@ import static config.Cell.Content.NOTHING;
 import static config.Cell.Content.ENERGIZER; // Ajout de la constante ENERGIZER
 import java.io.File ; // Ajout de la classe File
 import java.io.FileNotFoundException ; // Ajout de la classe FileNotFoundException pour gérer l'exception si le fichier n'extiste pas
-import java.util.Scanner ; // Ajout de la classe Scanner pour lire le fichier
-import java.util.HashMap ; // Ajout de la classe HashMap pour stocker les caractères du fichier
+import java.io.FileReader;
+import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Scanner;
+import java.io.BufferedReader; // Ajout de la classe BufferedReader pour lire le fichier
 import config.Cell.Content;
 
 public class MazeConfig {
@@ -86,12 +87,12 @@ public class MazeConfig {
     // simple example with a square shape
     // TODO: mazes should be loaded from a text file
     public static MazeConfig makeExample1() {
-        File maze = new File("src/main/resources/maze.txt") ; // Création d'un objet File qui contient le fichier maze.txt
+        
         iniDictionary();
-        try{
-            Scanner scanner = new Scanner(maze) ; // Création d'un objet Scanner pour lire le fichier
-            int height = scanner.nextInt() ; // Lecture de la hauteur du labyrinthe
-            int width = scanner.nextInt() ; // Lecture de la largeur du labyrinthe
+        try(BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/maze.txt"))){
+            
+            int height = reader ; // Lecture de la hauteur du labyrinthe
+            int width = reader.nextInt() ; // Lecture de la largeur du labyrinthe
             Cell[][] grid = new Cell[height][width] ; // Création d'un tableau de cellules de taille height x width
             int i = 0;  // Compteur pour parcourir les lignes du fichier
             scanner.nextLine();
