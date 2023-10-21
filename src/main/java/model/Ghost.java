@@ -51,7 +51,8 @@ public enum Ghost implements Critter {
         return 1;
     }
 
-    // Cette méthode change le skin d'un fantome en fonction de l'état d'energized de Pac-Man
+    // Cette méthode change le skin d'un fantome en fonction de l'état d'energized
+    // de Pac-Man
     public int changeSkin() {
         if (PacMan.INSTANCE.isEnergized() && skinVulnerable != 1) {
             skinVulnerable = 1; // Changement de skin requis
@@ -59,7 +60,8 @@ public enum Ghost implements Critter {
         } else if (!PacMan.INSTANCE.isEnergized() && skinVulnerable != 0) {
             skinVulnerable = 0; // Changement de skin requis
             return 0;
-        }return 2; // ne rien faire
+        }
+        return 2; // ne rien faire
     }
 
     public static void updateGhostPositions() { // fais bouger les fantomes dans une direction aleatoires
@@ -139,7 +141,8 @@ public enum Ghost implements Critter {
     public List<Character> possible(int x, int y) {
         List<Character> possible = new ArrayList<Character>();
         IntCoordinates p = new IntCoordinates(x, y);
-        // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est deja passer
+        // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est
+        // deja passer
         if (y > 0 && !config.getCell(p).northWall() && passerBlinky[x][y - 1] == false) {
             possible.add('n');
         }
@@ -195,6 +198,35 @@ public enum Ghost implements Critter {
             ghost.direction = dir; // applique la nouvelle direction au phantome donne en argument
         }
 
+    }
+
+    // Fonction pour choisir une direction aléatoire qui n'approche pas de Pac-Man
+    public static void fuite() {
+        for (Ghost ghost : Ghost.values()) {
+            List<Character> nonApproachingDirections = ghost.possible((int) ghost.pos.x(), (int) ghost.pos.y());
+
+            // Supprimez les directions qui se rapprochent de Pac-Man
+            if (ghost.pos.x() < PacMan.INSTANCE.getPos().x()) {
+                nonApproachingDirections.remove(Character.valueOf('w'));
+            } else if (ghost.pos.x() > PacMan.INSTANCE.getPos().x()) {
+                nonApproachingDirections.remove(Character.valueOf('e'));
+            }
+            if (ghost.pos.y() < PacMan.INSTANCE.getPos().y()) {
+                nonApproachingDirections.remove(Character.valueOf('n'));
+            } else if (ghost.pos.y() > PacMan.INSTANCE.getPos().y()) {
+                nonApproachingDirections.remove(Character.valueOf('s'));
+            }
+            // choisi une direction aléatoire parmi celles qui n'approchent pas Pac-Man
+            if (nonApproachingDirections.size() > 0) {
+                Random rd = new Random();
+                switch (nonApproachingDirections.get(rd.nextInt(nonApproachingDirections.size()))) {
+                    case 'n' -> ghost.changeDirection(Direction.NORTH, ghost);
+                    case 'e' -> ghost.changeDirection(Direction.EAST, ghost);
+                    case 's' -> ghost.changeDirection(Direction.SOUTH, ghost);
+                    case 'w' -> ghost.changeDirection(Direction.WEST, ghost);
+                }
+            }
+        }
     }
 
 }
