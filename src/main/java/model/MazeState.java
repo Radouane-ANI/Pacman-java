@@ -54,7 +54,7 @@ public final class MazeState {
     }
 
     public void update(long deltaTns) {
-        // Ghost.BLINKY.iaBlinky();
+        Ghost.BLINKY.iaBlinky();
         // FIXME: too many things in this method. Maybe some responsibilities can be
         // delegated to other methods or classes?
         for (var critter : critters) {
@@ -108,7 +108,9 @@ public final class MazeState {
             addScore(1);
             gridState[pacPos.y()][pacPos.x()] = true;
         }
+        // Vérifie si la cellule où se trouve Pac-Man contient un Energizer
         if (config.getCell(pacPos).initialContent() == Content.ENERGIZER) {
+            // Change le contenu de la cellule en NOTHING.
             config.setCell(pacPos, config.getCell(pacPos).updateNextItemType(Content.NOTHING));
 
             // Activez energized sur Pac-Man

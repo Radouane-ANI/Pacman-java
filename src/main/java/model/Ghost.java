@@ -24,6 +24,7 @@ public enum Ghost implements Critter {
     // (utile pour le bactracking) :
     private static boolean[][] passerBlinky = new boolean[config.getHeight()][config.getWidth()];
     private static List<List<Character>> TousCheminVersPacman = new ArrayList<>();
+    private int skinVulnerable;
 
     @Override
     public RealCoordinates getPos() {
@@ -48,6 +49,17 @@ public enum Ghost implements Critter {
     @Override
     public double getSpeed() { // vitesse des fantomes
         return 1;
+    }
+
+    // Cette méthode change le skin d'un fantome en fonction de l'état d'energized de Pac-Man
+    public int changeSkin() {
+        if (PacMan.INSTANCE.isEnergized() && skinVulnerable != 1) {
+            skinVulnerable = 1; // Changement de skin requis
+            return 1;
+        } else if (!PacMan.INSTANCE.isEnergized() && skinVulnerable != 0) {
+            skinVulnerable = 0; // Changement de skin requis
+            return 0;
+        }return 2; // ne rien faire
     }
 
     public static void updateGhostPositions() { // fais bouger les fantomes dans une direction aleatoires

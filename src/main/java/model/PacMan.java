@@ -52,4 +52,9 @@ public final class PacMan implements Critter {
     public void setEnergized(boolean energized) {
         this.energized = energized;
     }
+
+    public int changeSkin() {
+        return 2;
+    }
+
 }
