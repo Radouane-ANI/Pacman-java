@@ -178,13 +178,15 @@ public enum Ghost implements Critter {
     }
 
     // change la direction de n'importe quel phantome donner en argument en
-    // s'alignant avec les tunnels
+    // s'alignant avec les tunnels si le fantome est dans un angle
     public void changeDirection(Direction dir, Ghost ghost) {
         if (ghost.direction != dir) {
-            if (ghost.direction == Direction.WEST || ghost.direction == Direction.EAST) {
+            if ((ghost.direction == Direction.WEST || ghost.direction == Direction.EAST)
+                    && (dir != Direction.WEST && dir != Direction.EAST)) {
                 ghost.pos = ghost.pos.floorX(); // arrondie la coordonnee en x pur etre face au trou
             }
-            if (ghost.direction == Direction.NORTH || ghost.direction == Direction.SOUTH) {
+            if ((ghost.direction == Direction.NORTH || ghost.direction == Direction.SOUTH)
+                    && (dir != Direction.NORTH && dir != Direction.SOUTH)) {
                 ghost.pos = ghost.pos.floorY(); // arrondie la coordonnee en y pur etre face au trou
             }
             ghost.direction = dir; // applique la nouvelle direction au phantome donne en argument
