@@ -162,9 +162,7 @@ public enum Ghost implements Critter {
     // court chemin vers pacman
     public Direction prochainePositionBlinky() {
         TousCheminVersPacman.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
-        cheminVersPacman((int) BLINKY.pos.x(), (int) BLINKY.pos.y(), new ArrayList<Character>()); // calcule tous les
-                                                                                                  // chemin
-
+        cheminVersPacman((int) BLINKY.pos.x(), (int) BLINKY.pos.y(), new ArrayList<Character>()); // calcule tous les  chemin
         if (TousCheminVersPacman.size() > 0) { // prend le chemin le plus court pour renvoyer la premiere position
             List<Character> min = TousCheminVersPacman.get(0);
             for (List<Character> chemin : TousCheminVersPacman) {
@@ -173,13 +171,7 @@ public enum Ghost implements Critter {
                 }
             }
             if (min.size() > 0) {
-                return switch (min.get(0)) {
-                    case 'n' -> Direction.NORTH;
-                    case 's' -> Direction.SOUTH;
-                    case 'e' -> Direction.EAST;
-                    case 'w' -> Direction.WEST;
-                    default -> Direction.NONE;
-                };
+                return Direction.fromChar(min.get(0));
             }
         }
         return Direction.NONE; // renvoie None si pacman est innacessible ou si on est sur lui
@@ -200,33 +192,28 @@ public enum Ghost implements Critter {
 
     }
 
-    // Fonction pour choisir une direction aléatoire qui n'approche pas de Pac-Man
     public static void fuite() {
         for (Ghost ghost : Ghost.values()) {
-            List<Character> nonApproachingDirections = ghost.possible((int) ghost.pos.x(), (int) ghost.pos.y());
-
-            // Supprimez les directions qui se rapprochent de Pac-Man
-            if (ghost.pos.x() < PacMan.INSTANCE.getPos().x()) {
-                nonApproachingDirections.remove(Character.valueOf('w'));
-            } else if (ghost.pos.x() > PacMan.INSTANCE.getPos().x()) {
-                nonApproachingDirections.remove(Character.valueOf('e'));
-            }
-            if (ghost.pos.y() < PacMan.INSTANCE.getPos().y()) {
-                nonApproachingDirections.remove(Character.valueOf('n'));
-            } else if (ghost.pos.y() > PacMan.INSTANCE.getPos().y()) {
-                nonApproachingDirections.remove(Character.valueOf('s'));
-            }
-            // choisi une direction aléatoire parmi celles qui n'approchent pas Pac-Man
-            if (nonApproachingDirections.size() > 0) {
-                Random rd = new Random();
-                switch (nonApproachingDirections.get(rd.nextInt(nonApproachingDirections.size()))) {
-                    case 'n' -> ghost.changeDirection(Direction.NORTH, ghost);
-                    case 'e' -> ghost.changeDirection(Direction.EAST, ghost);
-                    case 's' -> ghost.changeDirection(Direction.SOUTH, ghost);
-                    case 'w' -> ghost.changeDirection(Direction.WEST, ghost);
+            // Liste des directions possibles
+            List<Character> possibleDirections = ghost.possible((int) ghost.pos.x(), (int) ghost.pos.y());
+    
+            // Choix de la direction avec la distance la plus longue
+            Character directionToTake = possibleDirections.get(0);
+            double maxDistance = 0;
+            for (Character direction : possibleDirections) {
+                // formule de la distance
+                double distance = Math.sqrt(Math.pow(
+                        (int) ghost.pos.x() + (direction == 'e' ? 1 : direction == 'w' ? -1 : 0) - PacMan.INSTANCE.getPos().x(), 2)
+                        + Math.pow((int) ghost.pos.y() + (direction == 'n' ? -1 : direction == 's' ? 1 : 0) - PacMan.INSTANCE.getPos().y(), 2));
+                if (distance > maxDistance) {
+                    directionToTake = direction;
+                    maxDistance = distance;
                 }
             }
+            // Changement de direction du fantome
+            ghost.changeDirection(Direction.fromChar(directionToTake), ghost);
         }
     }
+    
 
 }
