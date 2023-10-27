@@ -207,7 +207,7 @@ public enum Ghost implements Critter {
                 }
             }else if (direction == Direction.WEST){
                 while (!c.isIntersection() && !c.westWall() && currentGuess.x() <= 0){
-                    //System.out.println("pb ici w : "+currentGuess.x()+", "+currentGuess.y());
+                    System.out.println("pb ici w : "+currentGuess.x()+", "+currentGuess.y());
                     currentGuess.plus(IntCoordinates.WEST_UNIT);
                     c = config.getCell(currentGuess);
                 }
