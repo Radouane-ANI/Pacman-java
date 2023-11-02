@@ -9,11 +9,23 @@ import java.util.Map;
 
 import static model.Ghost.*;
 
+// importation pour le son ----------------------------------------------------------------
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
+
+//----------------------------------------------------------------
+
 public final class MazeState {
     private final MazeConfig config;
     private final int height;
     private final int width;
     private boolean boulbirespawn;
+  
 
     private final boolean[][] gridState;
 
@@ -101,9 +113,17 @@ public final class MazeState {
         }
         // FIXME Pac-Man rules should somehow be in Pacman class
         var pacPos = PacMan.INSTANCE.getPos().round();
-        if (!gridState[pacPos.y()][pacPos.x()]) {
-            addScore(1);
-            gridState[pacPos.y()][pacPos.x()] = true;
+        if (!gridState[pacPos.y()][pacPos.x()]) { // verifie si le pacman est deja passer par la pour collecte les pieces
+            addScore(1);                // on ajoute de 1 le score lorsque le pacman collecte les pieces 
+            gridState[pacPos.y()][pacPos.x()] = true; // et du coup on passe a true 
+            
+            
+            // String audioFilePath = "./waka.wav"; // puis on excute le son de lorsqu'il collecte les pieces 
+            // playAudio(audioFilePath);            // mais fonctionne pas je ne sais pas pourquoi 
+            
+          
+          
+           
         }
         for (var critter : critters) {
             if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
@@ -117,6 +137,34 @@ public final class MazeState {
             }
         }
     }
+    
+    //fonction qui permet de lire un fichier audio ----------------------------------------------------------------
+    public static void playAudio(String audioFilePath) {
+        File audioFile = new File(audioFilePath);
+
+        try {
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+            Clip audioClip = AudioSystem.getClip();
+            audioClip.open(audioStream);
+            audioClip.start();
+
+            // Attendre la fin de la lecture
+            while (!audioClip.isRunning()) {
+                Thread.sleep(10);
+            }
+
+            while (audioClip.isRunning()) {
+                Thread.sleep(10);
+            }
+
+            audioClip.close();
+            audioStream.close();
+        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //---------------------------------------------------------------------------------------------------
 
     private void addScore(int increment) {
         score += increment;
