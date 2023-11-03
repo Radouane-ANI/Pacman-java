@@ -31,25 +31,26 @@ public class MazeConfig {
 
     private final Cell[][] grid;
     private final IntCoordinates pacManPos, blinkyPos, pinkyPos, inkyPos, clydePos;
-    private static Map<Character, Cell> itemDictionary = new HashMap<>();
-    private static void iniDictionary(){
+    private static Map<Character, String> itemDictionary = new HashMap<>();
+    private static Map<Character, Boolean> wallDictionary = new HashMap<>();
+    private static void itemDictionary(){
         if(itemDictionary.size() != 0) return;
-        itemDictionary.put('A', open(ENERGIZER));
-        itemDictionary.put('B', closed(ENERGIZER));
-        itemDictionary.put('C', hPipe(ENERGIZER));
-        itemDictionary.put('D', vPipe(ENERGIZER));
-        itemDictionary.put('E', swVee(ENERGIZER));
-        itemDictionary.put('F', nwVee(ENERGIZER));
-        itemDictionary.put('G', neVee(ENERGIZER));
-        itemDictionary.put('H', seVee(ENERGIZER));
-        itemDictionary.put('I', nTee(ENERGIZER));
-        itemDictionary.put('J', eTee(ENERGIZER));
-        itemDictionary.put('K', sTee(ENERGIZER));
-        itemDictionary.put('L', wTee(ENERGIZER));
-        itemDictionary.put('M', nU(ENERGIZER));
-        itemDictionary.put('N', eU(ENERGIZER));
-        itemDictionary.put('O', sU(ENERGIZER));
-        itemDictionary.put('P', wU(ENERGIZER));
+        itemDictionary.put('E', "ENERGIZER");
+        itemDictionary.put('D', "DOT");
+        itemDictionary.put(' ', "NOTHING");
+        itemDictionary.put('J', "PACMAN");
+        itemDictionary.put('B', "BLINKY");
+        itemDictionary.put('C', "CLYDE");
+        itemDictionary.put('I', "INKY");
+        itemDictionary.put('P', "PINKY");
+    }
+    private static void wallDictionary(){
+        if(wallDictionary.size() != 0) return;
+        wallDictionary.put('|', true);
+        wallDictionary.put('-', true);
+        wallDictionary.put(' ', false);
+        wallDictionary.put('+', false);
+        
     }
     public IntCoordinates getPacManPos() {
         return pacManPos;
@@ -82,41 +83,47 @@ public class MazeConfig {
     public Cell getCell(IntCoordinates pos) {
         return grid[Math.floorMod(pos.y(), getHeight())][Math.floorMod(pos.x(), getWidth())];
     }
+    public static void detector(String l1, String l2, String l3){
+        String CONTENT = "NOTHING";
+        for(int i = 1 ;  i < l2.length() ; i++){
+             itemDictionary.get(l2.charAt(i));
+
+
+            }
+        }
 
 
     // simple example with a square shape
     // TODO: mazes should be loaded from a text file
     public static MazeConfig makeExample1() {
         
-        iniDictionary();
-        try(BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/maze.txt"))){
+        String filePath = "src/main/resources/maze.txt";
+        BufferedReader reader = null;
+        itemDictionary();
+        wallDictionary();
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+            String[] xy = line.split(" ");
             
-            int height = reader ; // Lecture de la hauteur du labyrinthe
-            int width = reader.nextInt() ; // Lecture de la largeur du labyrinthe
-            Cell[][] grid = new Cell[height][width] ; // Création d'un tableau de cellules de taille height x width
-            int i = 0;  // Compteur pour parcourir les lignes du fichier
-            scanner.nextLine();
-            while(scanner.hasNextLine()){
-                String line = scanner.nextLine();
-                int ji = -1;
-                for (int j = 0; j < line.length(); j++) {
-                    ji++; // index de la colonne
-                    char currentChar = line.charAt(j); // caractère courant
-                    char nextChar = (j + 1 < line.length()) ? line.charAt(j + 1) : ' '; // caractère suivant
-            
-                    if (itemDictionary.containsKey(currentChar)) { // Si le caractère courant est présent dans le dictionnaire
-                        Cell currentItem = itemDictionary.get(currentChar); // On récupère la cellule correspondante
-                        Content nextItem = (nextChar == 'e') ? ENERGIZER : (nextChar == 'd') ? DOT : NOTHING; // On récupère le contenu de la cellule coreespondante au caractère suivant
-                        grid[i][ji] = currentItem.updateNextItemType(nextItem); // On met à jour le contenu de la cellule
-            
-                        if (nextChar == 'e' || nextChar == 'd') {
-                            j += 1;
-                        }
-                    }
-                    
-                }
-                i++;
+            String[][] grid = new String[Integer.parseInt(xy[0])][Integer.parseInt(xy[1])];
+           
+            String l1 = reader.readLine(); System.out.println(l1);
+            String l2 = reader.readLine(); System.out.println(l2);
+            String l3 = reader.readLine(); System.out.println(l3);
+            while(l3 != null){
+                l1 = l3; System.out.println(l1);
+                l2 = reader.readLine();  System.out.println(l2);
+                l3 = reader.readLine(); if(l3 != null) System.out.println(l3);
             }
+                
+            
+            
+            
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the file.");
+            e.printStackTrace();
+        }
                 return new MazeConfig(grid,
                 new IntCoordinates(3, 0),
                 new IntCoordinates(0, 3),
@@ -124,11 +131,8 @@ public class MazeConfig {
                 new IntCoordinates(5, 5),
                 new IntCoordinates(5, 1)
                 );
-            }
-        catch (FileNotFoundException e) { // Si le fichier n'existe pas
-        return null;
-
-        }
-        
     }
+        
+        
 }
+
