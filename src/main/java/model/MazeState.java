@@ -119,16 +119,6 @@ public final class MazeState {
 
             // Activez energized sur Pac-Man
             PacMan.INSTANCE.setEnergized(true);
-
-            // Planifiez une tâche pour désactiver energized après 10 secondes
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    PacMan.INSTANCE.setEnergized(false);
-                    timer.cancel();
-                }
-            }, 5000); // 5 000 millisecondes = 5 secondes
         }
         for (var critter : critters) {
             if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
