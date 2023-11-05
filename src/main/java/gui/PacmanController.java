@@ -15,10 +15,10 @@ public class PacmanController {
                     case UP -> Direction.NORTH;
                     case DOWN -> Direction.SOUTH;
                     default -> PacMan.INSTANCE.getDirection(); // do nothing
-                }
-        );
+                });
     }
+
     public void keyReleasedHandler(KeyEvent event) { // à chaque fois que l'on relache un bouton les fantomes bougent
-        //Ghost.updateGhostPositions();  
+        // Ghost.updateGhostPositions();
     }
 }
