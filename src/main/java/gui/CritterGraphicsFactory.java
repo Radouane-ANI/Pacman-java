@@ -1,8 +1,10 @@
 package gui;
 
+import javafx.animation.FadeTransition;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 import model.Critter;
 import model.Direction;
 import model.Ghost;
@@ -39,6 +41,17 @@ public final class CritterGraphicsFactory {
                         case INKY -> "ghost_inky.png";
                         case PINKY -> "ghost_pinky.png";
                     };
+                    // Créez une instance de FadeTransition
+                    FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), image);
+
+                    // Définissez la valeur de départ de l'opacité
+                    fadeTransition.setFromValue(0.2);
+
+                    // Définissez la valeur d'arrivée de l'opacité
+                    fadeTransition.setToValue(1.0);
+
+                    // Jouez l'animation
+                    fadeTransition.play();
                     image.setImage(new Image(url, scale * size, scale * size, true, true));
                 } else if (!(critter instanceof PacMan) && skin == 1) {
                     image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
