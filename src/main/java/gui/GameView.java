@@ -1,15 +1,28 @@
 package gui;
 
 import geometry.IntCoordinates;
+import geometry.RealCoordinates;
 import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Pane;
 import model.MazeState;
+import model.PacMan;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+// import javafx.scene.media.Media;
+// import javafx.scene.media.MediaPlayer;
+// import java.io.File;
+// import java.util.List;
+
+
+
 public class GameView {
     // class parameters
+     private PacMan pacMan;
     private final MazeState maze;
     private final Pane gameRoot; // main node of the game
 
@@ -63,4 +76,6 @@ public class GameView {
             }
         }.start();
     }
+
+    
 }

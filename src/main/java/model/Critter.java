@@ -20,6 +20,7 @@ public sealed interface Critter permits Ghost, PacMan {
             case EAST -> RealCoordinates.EAST_UNIT;
             case SOUTH -> RealCoordinates.SOUTH_UNIT;
             case WEST -> RealCoordinates.WEST_UNIT;
+            default -> throw new IllegalArgumentException("Unexpected value: " + getDirection());
         }).times(getSpeed()*deltaTNanoSeconds * 1E-9));
     }
 
