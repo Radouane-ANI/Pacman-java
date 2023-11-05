@@ -9,9 +9,7 @@ import static config.Cell.Content.ENERGIZER; // Ajout de la constante ENERGIZER
 import java.io.File ; // Ajout de la classe File
 import java.io.FileNotFoundException ; // Ajout de la classe FileNotFoundException pour gérer l'exception si le fichier n'extiste pas
 import java.util.Scanner ; // Ajout de la classe Scanner pour lire le fichier
-import java.util.ArrayList;
 import java.util.HashMap ; // Ajout de la classe HashMap pour stocker les caractères du fichier
-import java.util.List;
 import java.util.Map;
 
 import config.Cell.Content;
@@ -132,17 +130,4 @@ public class MazeConfig {
         }
         
     }
-
-//     public List<IntCoordinates> getDotCoordinates() { // on recupere les coordonées ou sont placée les dots
-//     List<IntCoordinates> dotCoordinates = new ArrayList<>();
-//     for (int i = 0; i < getHeight(); i++) {
-//         for (int j = 0; j < getWidth(); j++) {
-//             Cell cell = grid[i][j];
-//             if (cell.getContent() == Content.DOT) {
-//                 dotCoordinates.add(new IntCoordinates(j, i));
-//             }
-//         }
-//     }
-//     return dotCoordinates;
-// }
 }
