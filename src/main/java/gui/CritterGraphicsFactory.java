@@ -1,5 +1,4 @@
 package gui;
-
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -12,6 +11,9 @@ import model.PacMan;
 public final class CritterGraphicsFactory {
     private final double scale;
     private final MazeState state;
+    private boolean mouthOpen = true;
+    private long lastImageChangeTime = 0;
+    private static final long IMAGE_CHANGE_INTERVAL = 180; // Temps en millisecondes entre les changements d'image
 
     public CritterGraphicsFactory(double scale, MazeState state) {
         this.scale = scale;
@@ -27,12 +29,23 @@ public final class CritterGraphicsFactory {
             case PINKY -> "ghost_pinky.png";
         };
         var image = new ImageView(new Image(url, scale * size, scale * size, true, true));
+        
         return new GraphicsUpdater() {
             @Override
             public void update() {
                 image.setTranslateX((critter.getPos().x() + (1 - size) / 2) * scale);
                 image.setTranslateY((critter.getPos().y() + (1 - size) / 2) * scale);
                 if (critter instanceof PacMan) {
+                    if (critter.getDirection() == Direction.NONE) {
+                        // Afficher l'image de la bouche ouverte
+                        image.setImage(new Image("pacman.png", scale * size, scale * size, true, true));
+                    } else if (System.currentTimeMillis() - lastImageChangeTime > IMAGE_CHANGE_INTERVAL) {
+                        mouthOpen = !mouthOpen; // Inverse l'état de la bouche
+                        var imageUrl = mouthOpen ? "pacman.png" : "pacmanfermer.png";
+                        image.setImage(new Image(imageUrl, scale * size, scale * size, true, true));
+                        lastImageChangeTime = System.currentTimeMillis();
+                    }
+
                     if (state.GetBoulbi()) {
                         image.setRotate(0);
                         image.setScaleX(1);
