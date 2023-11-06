@@ -1,4 +1,5 @@
 package gui;
+
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -29,7 +30,7 @@ public final class CritterGraphicsFactory {
             case PINKY -> "ghost_pinky.png";
         };
         var image = new ImageView(new Image(url, scale * size, scale * size, true, true));
-        
+
         return new GraphicsUpdater() {
             @Override
             public void update() {
@@ -41,7 +42,7 @@ public final class CritterGraphicsFactory {
                         image.setImage(new Image("pacman.png", scale * size, scale * size, true, true));
                     } else if (System.currentTimeMillis() - lastImageChangeTime > IMAGE_CHANGE_INTERVAL) {
                         mouthOpen = !mouthOpen; // Inverse l'état de la bouche
-                        var imageUrl = mouthOpen ? "pacman.png" : "pacmanfermer.png";
+                        var imageUrl = mouthOpen ? "pacman.png" : "pacmanfermer2.png";
                         image.setImage(new Image(imageUrl, scale * size, scale * size, true, true));
                         lastImageChangeTime = System.currentTimeMillis();
                     }
