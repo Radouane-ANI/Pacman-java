@@ -8,6 +8,8 @@ import javafx.scene.layout.Pane;
 import java.util.List;
 import java.util.Map;
 
+import javafx.stage.Stage;
+
 import static model.Ghost.*;
 
 public final class MazeState {
@@ -28,7 +30,7 @@ public final class MazeState {
     Pane gameRoot;
     private final GameOverScreen gos;
 
-    public MazeState(MazeConfig config, Pane gameRoot) {
+    public MazeState(MazeConfig config, Pane gameRoot,Stage primaryStage) {
         this.config = config;
         this.gameRoot = gameRoot;
 
@@ -48,12 +50,11 @@ public final class MazeState {
 
             System.out.println("Reset game");
             restartGame();
-            //gos.close();
         };
         ButtonAction exitAction = () -> {
             System.exit(0);
         };
-        gos = new GameOverScreen(playAgainAction, exitAction);
+        gos = new GameOverScreen(playAgainAction, exitAction, primaryStage);
     }
 
     public List<Critter> getCritters() {
