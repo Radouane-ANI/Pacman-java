@@ -27,6 +27,31 @@ public enum Ghost implements Critter {
 
     public static boolean[][] visiter = new boolean[config.getHeight()][config.getWidth()];
     public static List<Character> cheminCourt = new ArrayList<Character>();
+    static int compteurFrameInky = 0;
+    static int compteurFrameClyde = 0;
+    static int nbFrame = 120;
+    static boolean suitPacInky = false;
+    static boolean suitPacClyde = false;
+
+    static IntCoordinates cibleRandomClyde = null;
+
+    //définit toutes les cases visitables par pacman depuis son point de départ dans un tableau de tableau de boolean
+    static boolean[][] caseVisitable = new boolean[config.getHeight()][config.getWidth()];
+
+    static void recCaseVisitable(IntCoordinates currentCase){
+        if (!caseVisitable[currentCase.y()][currentCase.x()]){
+            caseVisitable[currentCase.y()][currentCase.x()] = true;
+            if (!config.getCell(currentCase).eastWall() && currentCase.x() < config.getWidth()-1){
+                recCaseVisitable(currentCase.plus(IntCoordinates.EAST_UNIT));
+            }else if (!config.getCell(currentCase).westWall() && currentCase.x() >= 0){
+                recCaseVisitable(currentCase.plus(IntCoordinates.WEST_UNIT));
+            }else if (!config.getCell(currentCase).northWall() && currentCase.y() >= 0){
+                recCaseVisitable(currentCase.plus(IntCoordinates.NORTH_UNIT));
+            }else if (!config.getCell(currentCase).southWall() && currentCase.y() < config.getHeight()-1){
+                recCaseVisitable(currentCase.plus(IntCoordinates.SOUTH_UNIT));
+            }
+        }
+    }
 
     @Override
     public RealCoordinates getPos() {
@@ -80,9 +105,37 @@ public enum Ghost implements Critter {
         }
     }
 
+    public void iaInky() { // déplacements de inky
+        compteurFrameInky++;
+        compteurFrameInky = (compteurFrameInky == nbFrame ? 0 : compteurFrameInky);
+        suitPacInky = (
+            compteurFrameInky == 0 && (suitPacInky ? new Random().nextInt(2) == 0 : true) ?
+            !suitPacInky : suitPacInky
+        );
+        if ((possible((int) INKY.pos.x(), (int) INKY.pos.y()).size() > 0 || INKY.direction == Direction.NONE)) {
+            Direction path = prochainePositionInky();
+            changeDirection(path, INKY);
+        }
+    }
+
+    public void iaClyde(){
+        compteurFrameClyde++;
+        compteurFrameClyde = (compteurFrameClyde == nbFrame ? 0 : compteurFrameClyde);
+        if (compteurFrameClyde == 0){
+            suitPacClyde = (new Random().nextInt(2) == 0 ? !suitPacClyde : suitPacClyde);
+            if (!suitPacClyde){
+                cibleRandomClyde = trouverPointAleatoire(CLYDE.getPos().round().x(),CLYDE.getPos().round().y());
+            }
+        }
+        if ((possible((int) CLYDE.pos.x(), (int) CLYDE.pos.y()).size() > 0 || CLYDE.direction == Direction.NONE)) {
+            Direction path = prochainePositionClyde();
+            changeDirection(path, CLYDE);
+        }
+    }
+
 
     //Backtracking V2
-    //Trouve le plus court chemin entre curretnPos et cible, definitla variable cheminCourt (a changer)
+    //Trouve le plus court chemin entre currentPos et cible, definitla variable cheminCourt (a changer)
     public void cheminVersPacman(IntCoordinates currentPos, IntCoordinates cible, ArrayList<Character> chemin) {
         int x = currentPos.x();
         int y = currentPos.y();
@@ -147,15 +200,13 @@ public enum Ghost implements Critter {
         cheminCourt.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
         cheminVersPacman(BLINKY.getPos().round(), PacMan.INSTANCE.getPos().round(), new ArrayList<Character>()); //trouve le chemin le plus court
         if (cheminCourt.size() > 0) {
-            if (cheminCourt.size() > 0){
-                return switch (cheminCourt.get(0)) {
-                    case 'n' -> Direction.NORTH;
-                    case 's' -> Direction.SOUTH;
-                    case 'e' -> Direction.EAST;
-                    case 'w' -> Direction.WEST;
-                    default -> Direction.NONE;
-                };
-            }
+            return switch (cheminCourt.get(0)) {
+                case 'n' -> Direction.NORTH;
+                case 's' -> Direction.SOUTH;
+                case 'e' -> Direction.EAST;
+                case 'w' -> Direction.WEST;
+                default -> Direction.NONE;
+            };
         }
         return Direction.NONE; //Renvoie none si pacman est inaccessible ou sur lui
     }
@@ -175,14 +226,58 @@ public enum Ghost implements Critter {
         return Direction.NONE; // renvoie None si pacman est innacessible ou si on est sur lui
     }
 
+    //Déplacment aléatoire de INKY (se dirige vers le point le plus éloigné de pacman)
+    public Direction prochainePositionInky() {
+        recCaseVisitable(PacMan.INSTANCE.getPos().round());
+        int x = PacMan.INSTANCE.getPos().round().x();
+        int y = PacMan.INSTANCE.getPos().round().y();
+        IntCoordinates cible = (suitPacInky ? PacMan.INSTANCE.getPos().round() : trouverCasePlusEloignee(x, y));
+        cheminCourt.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
+        cheminVersPacman(INKY.getPos().round(), cible, new ArrayList<Character>()); //trouve le chemin le plus court
+        if (cheminCourt.size() > 0) {
+            return switch (cheminCourt.get(0)) {
+                case 'n' -> Direction.NORTH;
+                case 's' -> Direction.SOUTH;
+                case 'e' -> Direction.EAST;
+                case 'w' -> Direction.WEST;
+                default -> Direction.NONE;
+            };
+        }
+        return Direction.NONE; //Renvoie none si pacman est inaccessible ou sur lui
+    }
+
+    //Déplacment aléatoire de CLYDE
+    public Direction prochainePositionClyde() {
+        recCaseVisitable(PacMan.INSTANCE.getPos().round());
+        IntCoordinates cible = (suitPacClyde ? PacMan.INSTANCE.getPos().round() : cibleRandomClyde);
+        cheminCourt.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
+        cheminVersPacman(CLYDE.getPos().round(), cible, new ArrayList<Character>()); //trouve le chemin le plus court
+        if (cheminCourt.size() > 0) {
+            return switch (cheminCourt.get(0)) {
+                case 'n' -> Direction.NORTH;
+                case 's' -> Direction.SOUTH;
+                case 'e' -> Direction.EAST;
+                case 'w' -> Direction.WEST;
+                default -> Direction.NONE;
+            };
+        }
+        return Direction.NONE; //Renvoie none si pacman est inaccessible ou sur lui
+    }
+
     // change la direction de n'importe quel phantome donner en argument en
     // s'alignant avec les tunnels
     public void changeDirection(Direction dir, Ghost ghost) {
         if (ghost.direction != dir) {
-            if (ghost.direction == Direction.WEST || ghost.direction == Direction.EAST) {
+            if (
+                (ghost.direction == Direction.WEST || ghost.direction == Direction.EAST) &&
+                (dir != Direction.WEST && dir != Direction.EAST)
+                ) {
                 ghost.pos = ghost.pos.floorX(); // arrondie la coordonnee en x pur etre face au trou
             }
-            if (ghost.direction == Direction.NORTH || ghost.direction == Direction.SOUTH) {
+            if (
+                (ghost.direction == Direction.NORTH || ghost.direction == Direction.SOUTH) &&
+                (dir != Direction.NORTH && dir != Direction.SOUTH)
+                ) {
                 ghost.pos = ghost.pos.floorY(); // arrondie la coordonnee en y pur etre face au trou
             }
             ghost.direction = dir; // applique la nouvelle direction au phantome donne en argument
@@ -190,15 +285,13 @@ public enum Ghost implements Critter {
 
     }
 
-    public static IntCoordinates predictionNextMove(PacMan p){
+    public static IntCoordinates predictionNextMove(PacMan p){//prédit la prochaine position de pacman 
         Direction direction = (p.getDirection());
         IntCoordinates currentGuess = p.getPos().round();
-        boolean found = false;
         Cell c = config.getCell(currentGuess);
         if (c.isIntersection() || direction == Direction.NONE ){
             return currentGuess;
         }else{
-            System.out.println(1);
             if (direction == Direction.EAST){
                 while (!c.isIntersection() && !c.eastWall() && currentGuess.x() >= config.getWidth()-1){
                     System.out.println("pb ici e : "+currentGuess.x()+", "+currentGuess.y());
@@ -224,6 +317,56 @@ public enum Ghost implements Critter {
             }
             return currentGuess;
         }
+    }
+
+    public static IntCoordinates oppositePacMan(PacMan p){ //donne le point le plus eloigné de pacman
+        int x = (p.getPos().round().x() > config.getWidth() - p.getPos().round().x() ? 0 : config.getWidth());
+        int y = (p.getPos().round().y() > config.getHeight() - p.getPos().round().y() ? 0 : config.getHeight());
+        return new IntCoordinates(x, y);
+    }
+
+    public static IntCoordinates trouverCasePlusEloignee(int x, int y) {
+        int n = caseVisitable.length;
+        int m = caseVisitable[0].length;
+        int distanceMax = -1;
+        IntCoordinates caseLaPlusEloignee = null;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (caseVisitable[i][j]) { // On ne considère que les cases avec la valeur true
+                    int distance = (x - j) * (x - j) + (y - i) * (y - i); // Distance euclidienne
+                    if (distance > distanceMax) {
+                        distanceMax = distance;
+                        caseLaPlusEloignee = new IntCoordinates(i, j);
+                    }
+                }
+            }
+        }
+
+        return caseLaPlusEloignee;
+    }
+
+    public static IntCoordinates trouverPointAleatoire(int x, int y) {
+        ArrayList<IntCoordinates> coordonneesTrueAvecDistanceMin = new ArrayList<>();
+        int distanceMin = config.getHeight() + config.getWidth() / 2 - 1;
+        int n = caseVisitable.length;
+        int m = caseVisitable[0].length;
+        // Parcours le tableau et ajoute les coordonnées (x, y) des cases 'true' avec une distance minimale
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (caseVisitable[i][j]) {
+                    int distance = (x - j) * (x - j) + (y - i) * (y - i);
+                    if (distance >= distanceMin) {
+                        coordonneesTrueAvecDistanceMin.add(new IntCoordinates(i,j));
+                    }
+                }
+            }
+        }
+        // Génère un index aléatoire
+        Random random = new Random();
+        int indexAleatoire = random.nextInt(coordonneesTrueAvecDistanceMin.size());
+        // Récupère les coordonnées (x, y) de la case correspondante
+        return coordonneesTrueAvecDistanceMin.get(indexAleatoire);
     }
 
 }
