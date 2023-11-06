@@ -8,7 +8,9 @@ public record Cell(boolean northWall, boolean eastWall, boolean southWall, boole
         NOTHING, DOT, ENERGIZER
     }
     
-    
+    public Cell updateNextItemType(Content c){
+        return new Cell(northWall, eastWall, southWall, westWall, c);
+    }
 
    
 }
