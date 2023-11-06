@@ -162,7 +162,8 @@ public enum Ghost implements Critter {
     // court chemin vers pacman
     public Direction prochainePositionBlinky() {
         TousCheminVersPacman.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
-        cheminVersPacman((int) BLINKY.pos.x(), (int) BLINKY.pos.y(), new ArrayList<Character>()); // calcule tous les  chemin
+        cheminVersPacman((int) BLINKY.pos.x(), (int) BLINKY.pos.y(), new ArrayList<Character>()); // calcule tous les
+                                                                                                  // chemin
         if (TousCheminVersPacman.size() > 0) { // prend le chemin le plus court pour renvoyer la premiere position
             List<Character> min = TousCheminVersPacman.get(0);
             for (List<Character> chemin : TousCheminVersPacman) {
@@ -183,30 +184,40 @@ public enum Ghost implements Critter {
         if (ghost.direction != dir) {
             if ((ghost.direction == Direction.WEST || ghost.direction == Direction.EAST)
                     && (dir != Direction.WEST && dir != Direction.EAST)) {
-                ghost.pos = ghost.pos.floorX(); // arrondie la coordonnee en x pur etre face au trou
+                if (ghost.pos.x() - (int) ghost.pos.x() < 0.05) {  // attend le dernier moment pour teleporter le fantomer des les angles
+                    ghost.pos = ghost.pos.floorX(); // arrondie la coordonnee en x pour etre face au trou
+                } else {
+                    dir = ghost.direction;
+                }
             }
             if ((ghost.direction == Direction.NORTH || ghost.direction == Direction.SOUTH)
                     && (dir != Direction.NORTH && dir != Direction.SOUTH)) {
-                ghost.pos = ghost.pos.floorY(); // arrondie la coordonnee en y pur etre face au trou
+                if (ghost.pos.y() - (int) ghost.pos.y() < 0.05) { // attend le dernier moment pour teleporter le fantomer des les angles
+                    ghost.pos = ghost.pos.floorY(); // arrondie la coordonnee en y pour etre face au trou
+                } else {
+                    dir = ghost.direction;
+                }
             }
             ghost.direction = dir; // applique la nouvelle direction au phantome donne en argument
         }
-
     }
 
     public static void fuite() {
         for (Ghost ghost : Ghost.values()) {
             // Liste des directions possibles
             List<Character> possibleDirections = ghost.possible((int) ghost.pos.x(), (int) ghost.pos.y());
-    
+
             // Choix de la direction avec la distance la plus longue
             Character directionToTake = possibleDirections.get(0);
             double maxDistance = 0;
             for (Character direction : possibleDirections) {
                 // formule de la distance
                 double distance = Math.sqrt(Math.pow(
-                        (int) ghost.pos.x() + (direction == 'e' ? 1 : direction == 'w' ? -1 : 0) - PacMan.INSTANCE.getPos().x(), 2)
-                        + Math.pow((int) ghost.pos.y() + (direction == 'n' ? -1 : direction == 's' ? 1 : 0) - PacMan.INSTANCE.getPos().y(), 2));
+                        (int) ghost.pos.x() + (direction == 'e' ? 1 : direction == 'w' ? -1 : 0)
+                                - PacMan.INSTANCE.getPos().x(),
+                        2)
+                        + Math.pow((int) ghost.pos.y() + (direction == 'n' ? -1 : direction == 's' ? 1 : 0)
+                                - PacMan.INSTANCE.getPos().y(), 2));
                 if (distance > maxDistance) {
                     directionToTake = direction;
                     maxDistance = distance;
@@ -216,6 +227,5 @@ public enum Ghost implements Critter {
             ghost.changeDirection(Direction.fromChar(directionToTake), ghost);
         }
     }
-    
 
 }
