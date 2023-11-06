@@ -28,9 +28,19 @@ public class MazeConfig {
         }
         this.pacManPos = pacManPos;
         this.blinkyPos = blinkyPos;
-        this.inkyPos = inkyPos;
         this.pinkyPos = pinkyPos;
+        this.inkyPos = inkyPos;
         this.clydePos = clydePos;
+    }
+    public MazeConfig(String filepath){
+        MazeConfig maze = makeLabyrinthe(filepath);
+        this.grid = maze.grid;
+        this.pacManPos = maze.pacManPos;
+        this.blinkyPos = maze.blinkyPos;
+        this.pinkyPos = maze.pinkyPos;
+        this.inkyPos = maze.inkyPos;
+        
+        this.clydePos = maze.clydePos;
     }
 
     private final Cell[][] grid;
@@ -87,7 +97,7 @@ public class MazeConfig {
     public Cell getCell(IntCoordinates pos) {
         return grid[Math.floorMod(pos.y(), getHeight())][Math.floorMod(pos.x(), getWidth())];
     }
-    public static void detector(int width,int y ,String l1, String l2, String l3, Cell[][] grid , IntCoordinates[] pos){
+    private static void detector(int width,int y ,String l1, String l2, String l3, Cell[][] grid , IntCoordinates[] pos){
         Cell.Content CONTENT = NOTHING;
         boolean north ; boolean east ; boolean south ; boolean west ;
         Cell[] gridx = new Cell[width];
@@ -103,7 +113,7 @@ public class MazeConfig {
                         pos[1] = new IntCoordinates(j,y);
                         CONTENT = NOTHING;
                         break;
-                    case 'C':
+                    case 'P':
                         pos[2] = new IntCoordinates(j,y);
                         CONTENT = NOTHING;
                         break;
@@ -111,7 +121,7 @@ public class MazeConfig {
                         pos[3] = new IntCoordinates(j,y);
                         CONTENT = NOTHING;
                         break;
-                    case 'P':
+                    case 'C':
                         pos[4] = new IntCoordinates(j,y);
                         CONTENT = NOTHING;
                         break;
@@ -181,6 +191,47 @@ public class MazeConfig {
             return null;
         }
     }
+    public MazeConfig makeLabyrinthe(String filePath) {
+        
+       
+        BufferedReader reader = null;
+        itemDictionary();
+        wallDictionary();
+        IntCoordinates[] pos = new IntCoordinates[5];
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+            String[] xy = line.split(" ");
+            
+            Cell[][] grid = new Cell[Integer.parseInt(xy[0])][Integer.parseInt(xy[1])];
+           
+            String l1 = reader.readLine(); 
+            String l2 = reader.readLine(); 
+            String l3 = reader.readLine(); 
+            detector(Integer.parseInt(xy[0]),0, l1, l2, l3, grid,pos);
+            
+            for(int i = 1 ; i < Integer.parseInt(xy[0])    ; i++){
+                l1 = l3; 
+                l2 = reader.readLine();  
+                l3 = reader.readLine(); 
+                detector(Integer.parseInt(xy[0]), i, l1, l2, l3, grid,pos);
+                
+            }
+                return new MazeConfig(grid,
+                pos[0],
+                pos[1],
+                pos[2],
+                pos[3],
+                pos[4]);
+                
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the file.");
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    
         
         
 }
