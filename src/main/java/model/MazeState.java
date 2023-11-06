@@ -1,11 +1,14 @@
 package model;
 
 import config.MazeConfig;
+import config.Cell.Content;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static model.Ghost.*;
 
@@ -51,7 +54,11 @@ public final class MazeState {
     }
 
     public void update(long deltaTns) {
-        Ghost.BLINKY.iaBlinky();
+        if (!PacMan.INSTANCE.isEnergized()) {
+            Ghost.BLINKY.iaBlinky();
+        } else {
+            Ghost.fuite();
+        }
         // FIXME: too many things in this method. Maybe some responsibilities can be
         // delegated to other methods or classes?
         for (var critter : critters) {
@@ -104,6 +111,14 @@ public final class MazeState {
         if (!gridState[pacPos.y()][pacPos.x()]) {
             addScore(1);
             gridState[pacPos.y()][pacPos.x()] = true;
+        }
+        // Vérifie si la cellule où se trouve Pac-Man contient un Energizer
+        if (config.getCell(pacPos).initialContent() == Content.ENERGIZER) {
+            // Change le contenu de la cellule en NOTHING.
+            config.setCell(pacPos, config.getCell(pacPos).updateNextItemType(Content.NOTHING));
+
+            // Activez energized sur Pac-Man
+            PacMan.INSTANCE.setEnergized(true);
         }
         for (var critter : critters) {
             if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {

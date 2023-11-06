@@ -1,14 +1,19 @@
 package model;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import geometry.RealCoordinates;
 
 /**
- * Implements Pac-Man character using singleton pattern. FIXME: check whether singleton is really a good idea.
+ * Implements Pac-Man character using singleton pattern. FIXME: check whether
+ * singleton is really a good idea.
  */
 public final class PacMan implements Critter {
     private Direction direction = Direction.NONE;
     private RealCoordinates pos;
     private boolean energized;
+    private boolean reEnergized;
 
     private PacMan() {
     }
@@ -50,6 +55,28 @@ public final class PacMan implements Critter {
     }
 
     public void setEnergized(boolean energized) {
+        if (energized) {
+            if (this.energized) { // verifie si pacman a deja prisun energiseur
+                this.reEnergized = true;
+            }
+            // Planifiez une tâche pour désactiver energized après 5 secondes
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (!reEnergized) { // si pacman a deja prisun energiseur ne desactive pas l'energiseur
+                        PacMan.INSTANCE.setEnergized(false);
+                        timer.cancel();
+                    }
+                    reEnergized = false;
+                }
+            }, 5000); // 5 000 millisecondes = 5 secondes
+        }
         this.energized = energized;
     }
+
+    public int changeSkin() {
+        return 2;
+    }
+
 }
