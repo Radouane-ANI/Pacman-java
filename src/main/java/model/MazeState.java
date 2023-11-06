@@ -1,5 +1,6 @@
 package model;
 
+import config.Cell;
 import config.MazeConfig;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
@@ -24,6 +25,8 @@ public final class MazeState {
     private boolean boulbirespawn;
 
     private final boolean[][] gridState;
+    private final boolean[][] energizerState;
+    
 
     private final List<Critter> critters;
     private int score;
@@ -37,12 +40,23 @@ public final class MazeState {
         width = config.getWidth();
         critters = List.of(PacMan.INSTANCE, Ghost.CLYDE, BLINKY, INKY, PINKY);
         gridState = new boolean[height][width];
+        energizerState = new boolean[height][width]; // Ajout de cette ligne pour initialiser energizerState
         initialPos = Map.of(
                 PacMan.INSTANCE, config.getPacManPos().toRealCoordinates(1.0),
                 BLINKY, config.getBlinkyPos().toRealCoordinates(1.0),
                 INKY, config.getInkyPos().toRealCoordinates(1.0),
                 CLYDE, config.getClydePos().toRealCoordinates(1.0),
                 PINKY, config.getPinkyPos().toRealCoordinates(1.0));
+               // Boucle pour marquer les cellules contenant des energiseurs
+for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+        Cell cell = config.getCell(new IntCoordinates(x, y));
+        if (cell.getContent() == Cell.Content.ENERGIZER && PacMan.INSTANCE.isEnergized()) {
+            energizerState[y][x] = true;
+        }
+    }
+}
+
         resetCritters();
     }
 
@@ -125,6 +139,23 @@ public final class MazeState {
             gridState[pacPos.y()][pacPos.x()] = true;
 
         }
+
+        var pacPosi = PacMan.INSTANCE.getPos().round();
+        if (config.getCell(pacPosi).getContent() == Cell.Content.ENERGIZER && !energizerState[pacPosi.y()][pacPosi.x()]) {
+            addScore(1); // Augmentez le score lorsque Pac-Man mange un energiseur (exemple: +1 point)
+            try { // Lorsque le pacman mange un dot il emet un son.
+                File soundFile = new File("src/main/resources/power_dot.wav");
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioIn);
+                clip.start();
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                e.printStackTrace();
+            }
+            energizerState[pacPosi.y()][pacPosi.x()] = true; // Marquer l'energiseur comme consommé
+        }
+
+
         for (var critter : critters) {
             if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
                 if (PacMan.INSTANCE.isEnergized()) {
