@@ -1,7 +1,14 @@
 6 6
-IdCdCdCdCdId
-DdHIIED
-DdLAAJD
-DdLAAJDd    
-DdGKKFDd               
-GdCdCdCdCdFd 
++- - - - - -+
+|E       B  |  
+   - - - -  
+| |       | |
+ 
+|I|       |C|
+         
+| |       | |
+   
+| |       | |
+   - - - - 
+|P   J      |
++- - - - - -+
