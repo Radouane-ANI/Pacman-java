@@ -17,8 +17,10 @@ public class GameOverScreen {
     private final Button playAgainButton = new Button("Rejouer");
     private final Button exitButton = new Button("Exit");
     private final Button homeButton = new Button("Home");
+    boolean win;
 
-    public GameOverScreen(ButtonAction playAgainAction, ButtonAction exitAction, Stage primaryStage) {
+    public GameOverScreen(ButtonAction playAgainAction, ButtonAction exitAction, Stage primaryStage, boolean win) {
+        this.win = win;
         playAgainButton.setOnAction(e -> playAgainAction.performAction());
         exitButton.setOnAction(e -> exitAction.performAction());
         homeButton.setOnAction(e -> {
@@ -26,8 +28,15 @@ public class GameOverScreen {
             primaryStage.setScene(mainMenu.getScene());
             primaryStage.show();
         });
-        var image = new ImageView(new Image(/* ../ressources/*/"game_over.png", 500, 500, true, true));
-
+        String img;
+        if(win){
+            img="win.png";
+        }
+        else{
+            img="game_over.png";
+        }
+        
+        var image = new ImageView(new Image(/* ../ressources/*/img, 500, 500, true, true));
         // Positionnez les boutons et l'image à l'emplacement souhaité
         playAgainButton.setLayoutX(200);
         playAgainButton.setLayoutY(500);
