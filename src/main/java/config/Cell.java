@@ -5,6 +5,10 @@ public record Cell(boolean northWall, boolean eastWall, boolean southWall, boole
 
     // Enumeration des differents types de contenu possible presente au sein d'une case(cellule) : Rien , Point, Energizer.
     public enum Content { NOTHING, DOT, ENERGIZER}
+
+    public Content getContent() {
+        return initialContent;
+    }
     //---------------------------------------------------
     // FIXME: all these factories are convenient, but it is not very "economic" to have so many methods!
     //---------------------------------------------------

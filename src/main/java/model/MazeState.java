@@ -1,33 +1,32 @@
 package model;
 
+import config.Cell;
 import config.MazeConfig;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static model.Ghost.*;
-
-// importation pour le son ----------------------------------------------------------------
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
-import java.io.IOException;
 
-//----------------------------------------------------------------
+import static model.Ghost.*;
 
 public final class MazeState {
     private final MazeConfig config;
     private final int height;
     private final int width;
     private boolean boulbirespawn;
-  
 
     private final boolean[][] gridState;
+    private final boolean[][] energizerState;
+    
 
     private final List<Critter> critters;
     private int score;
@@ -41,12 +40,23 @@ public final class MazeState {
         width = config.getWidth();
         critters = List.of(PacMan.INSTANCE, Ghost.CLYDE, BLINKY, INKY, PINKY);
         gridState = new boolean[height][width];
+        energizerState = new boolean[height][width]; // Ajout de cette ligne pour initialiser energizerState
         initialPos = Map.of(
                 PacMan.INSTANCE, config.getPacManPos().toRealCoordinates(1.0),
                 BLINKY, config.getBlinkyPos().toRealCoordinates(1.0),
                 INKY, config.getInkyPos().toRealCoordinates(1.0),
                 CLYDE, config.getClydePos().toRealCoordinates(1.0),
                 PINKY, config.getPinkyPos().toRealCoordinates(1.0));
+               // Boucle pour marquer les cellules contenant des energiseurs
+for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+        Cell cell = config.getCell(new IntCoordinates(x, y));
+        if (cell.getContent() == Cell.Content.ENERGIZER && PacMan.INSTANCE.isEnergized()) {
+            energizerState[y][x] = true;
+        }
+    }
+}
+
         resetCritters();
     }
 
@@ -113,18 +123,39 @@ public final class MazeState {
         }
         // FIXME Pac-Man rules should somehow be in Pacman class
         var pacPos = PacMan.INSTANCE.getPos().round();
-        if (!gridState[pacPos.y()][pacPos.x()]) { // verifie si le pacman est deja passer par la pour collecte les pieces
-            addScore(1);                // on ajoute de 1 le score lorsque le pacman collecte les pieces 
-            gridState[pacPos.y()][pacPos.x()] = true; // et du coup on passe a true 
-            
-            
-            // String audioFilePath = "./waka.wav"; // puis on excute le son de lorsqu'il collecte les pieces 
-            // playAudio(audioFilePath);            // mais fonctionne pas je ne sais pas pourquoi 
-            
-          
-          
-           
+        if (!gridState[pacPos.y()][pacPos.x()]) { // verifie si le pacman est deja passer par la pour collecte les
+                                                  // pieces
+            addScore(1);
+            try { // Lorsque le pacman mange un dot il emet un son.
+                File soundFile = new File("src/main/resources/waka.wav");
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioIn);
+                clip.start();
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                e.printStackTrace();
+            }
+
+            gridState[pacPos.y()][pacPos.x()] = true;
+
         }
+
+        var pacPosi = PacMan.INSTANCE.getPos().round();
+        if (config.getCell(pacPosi).getContent() == Cell.Content.ENERGIZER && !energizerState[pacPosi.y()][pacPosi.x()]) {
+            addScore(1); // Augmentez le score lorsque Pac-Man mange un energiseur (exemple: +1 point)
+            try { // Lorsque le pacman mange un dot il emet un son.
+                File soundFile = new File("src/main/resources/power_dot.wav");
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioIn);
+                clip.start();
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                e.printStackTrace();
+            }
+            energizerState[pacPosi.y()][pacPosi.x()] = true; // Marquer l'energiseur comme consommé
+        }
+
+
         for (var critter : critters) {
             if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
                 if (PacMan.INSTANCE.isEnergized()) {
@@ -137,34 +168,6 @@ public final class MazeState {
             }
         }
     }
-    
-    //fonction qui permet de lire un fichier audio ----------------------------------------------------------------
-    public static void playAudio(String audioFilePath) {
-        File audioFile = new File(audioFilePath);
-
-        try {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-            Clip audioClip = AudioSystem.getClip();
-            audioClip.open(audioStream);
-            audioClip.start();
-
-            // Attendre la fin de la lecture
-            while (!audioClip.isRunning()) {
-                Thread.sleep(10);
-            }
-
-            while (audioClip.isRunning()) {
-                Thread.sleep(10);
-            }
-
-            audioClip.close();
-            audioStream.close();
-        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //---------------------------------------------------------------------------------------------------
 
     private void addScore(int increment) {
         score += increment;
