@@ -23,7 +23,7 @@ public enum Ghost implements Critter {
     // passer par la
     // (utile pour le bactracking) :
     private static boolean[][] passerBlinky = new boolean[config.getHeight()][config.getWidth()];
-    private static List<List<Character>> TousCheminVersPacman = new ArrayList<>();
+    private static List<Character> TousCheminVersPacman = new ArrayList<>();
 
     @Override
     public RealCoordinates getPos() {
@@ -93,30 +93,32 @@ public enum Ghost implements Critter {
         passerBlinky[x][y] = true; // marque la position comme visite
 
         if (PacMan.INSTANCE.getPos().round().equals(new IntCoordinates(x, y))) {
-            TousCheminVersPacman.add(new ArrayList<>(chemin)); // si on a atteint pacman sauvegarde le chemin
+            TousCheminVersPacman = new ArrayList<>(chemin); // si on a atteint pacman sauvegarde le chemin
             passerBlinky[x][y] = false;
             return;
         }
 
-        for (Character character : possible(x, y)) { // essayer toutes les positions possible depuis cette position
-            if (character == 'n' && passerBlinky[x][y - 1] == false) {
-                chemin.add('n');
-                cheminVersPacman(x, y - 1, chemin);
-            }
-            if (character == 'e' && passerBlinky[x + 1][y] == false) {
-                chemin.add('e');
-                cheminVersPacman(x + 1, y, chemin);
-            }
-            if (character == 's' && passerBlinky[x][y + 1] == false) {
-                chemin.add('s');
-                cheminVersPacman(x, y + 1, chemin);
-            }
-            if (character == 'w' && passerBlinky[x - 1][y] == false) {
-                chemin.add('w');
-                cheminVersPacman(x - 1, y, chemin);
-            }
-            if (chemin.size() > 0) { // quand on a explore la position la retire
-                chemin.remove(chemin.size() - 1);
+        if (chemin.size() < TousCheminVersPacman.size() || TousCheminVersPacman.size() == 0) {
+            for (Character character : possible(x, y)) { // essayer toutes les positions possible depuis cette position
+                if (character == 'n' && passerBlinky[x][y - 1] == false) {
+                    chemin.add('n');
+                    cheminVersPacman(x, y - 1, chemin);
+                }
+                if (character == 'e' && passerBlinky[x + 1][y] == false) {
+                    chemin.add('e');
+                    cheminVersPacman(x + 1, y, chemin);
+                }
+                if (character == 's' && passerBlinky[x][y + 1] == false) {
+                    chemin.add('s');
+                    cheminVersPacman(x, y + 1, chemin);
+                }
+                if (character == 'w' && passerBlinky[x - 1][y] == false) {
+                    chemin.add('w');
+                    cheminVersPacman(x - 1, y, chemin);
+                }
+                if (chemin.size() > 0) { // quand on a explore la position la retire
+                    chemin.remove(chemin.size() - 1);
+                }
             }
         }
         passerBlinky[x][y] = false; // marque la position comme non visite
@@ -127,14 +129,15 @@ public enum Ghost implements Critter {
     public List<Character> possible(int x, int y) {
         List<Character> possible = new ArrayList<Character>();
         IntCoordinates p = new IntCoordinates(x, y);
-        // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est deja passer
+        // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est
+        // deja passer
         if (y > 0 && !config.getCell(p).northWall() && passerBlinky[x][y - 1] == false) {
             possible.add('n');
         }
-        if (y < passerBlinky.length - 1 && !config.getCell(p).southWall() && passerBlinky[x][y + 1] == false) {
+        if (y < passerBlinky[0].length - 1 && !config.getCell(p).southWall() && passerBlinky[x][y + 1] == false) {
             possible.add('s');
         }
-        if (x < passerBlinky[0].length - 1 && !config.getCell(p).eastWall() && passerBlinky[x + 1][y] == false) {
+        if (x < passerBlinky.length - 1 && !config.getCell(p).eastWall() && passerBlinky[x + 1][y] == false) {
             possible.add('e');
         }
         if (x > 0 && !config.getCell(p).westWall() && passerBlinky[x - 1][y] == false) {
@@ -149,24 +152,16 @@ public enum Ghost implements Critter {
         TousCheminVersPacman.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
         cheminVersPacman((int) BLINKY.pos.x(), (int) BLINKY.pos.y(), new ArrayList<Character>()); // calcule tous les
                                                                                                   // chemin
-
-        if (TousCheminVersPacman.size() > 0) { // prend le chemin le plus court pour renvoyer la premiere position
-            List<Character> min = TousCheminVersPacman.get(0);
-            for (List<Character> chemin : TousCheminVersPacman) {
-                if (chemin.size() < min.size()) {
-                    min = chemin;
-                }
-            }
-            if (min.size() > 0) {
-                return switch (min.get(0)) {
-                    case 'n' -> Direction.NORTH;
-                    case 's' -> Direction.SOUTH;
-                    case 'e' -> Direction.EAST;
-                    case 'w' -> Direction.WEST;
-                    default -> Direction.NONE;
-                };
-            }
+        if (TousCheminVersPacman.size() > 0) {
+            return switch (TousCheminVersPacman.get(0)) {
+                case 'n' -> Direction.NORTH;
+                case 's' -> Direction.SOUTH;
+                case 'e' -> Direction.EAST;
+                case 'w' -> Direction.WEST;
+                default -> Direction.NONE;
+            };
         }
+
         return Direction.NONE; // renvoie None si pacman est innacessible ou si on est sur lui
     }
 
