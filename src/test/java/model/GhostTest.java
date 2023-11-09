@@ -2,6 +2,7 @@ package model;
 
 import org.junit.jupiter.api.Test;
 
+import config.MazeConfig;
 import geometry.RealCoordinates;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +36,10 @@ public class GhostTest {
     }
 
     @Test
-    public void testPossible() { // ATTENTION : compatible seulement avec le premier labyrinthe
+    public void testPossible() { 
+        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt");
+        Ghost.config = Labyrinthetest; // initialise un labyrinthe pour les test
+
         // Test lorsque la position du fantôme est entourée de passages sans murs
         int x = 2;
         int y = 2;
@@ -69,7 +73,10 @@ public class GhostTest {
     }
 
     @Test
-    public void testIaBlinky() { // ATTENTION : compatible seulement avec le premier labyrinthe
+    public void testIaBlinky() { 
+        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt");
+        Ghost.config = Labyrinthetest; // initialise un labyrinthe pour les test
+
         Ghost ghost = Ghost.BLINKY; // Initialise un fantôme pour les tests
         PacMan pacMan = PacMan.INSTANCE; // Initialise Pacman pour les tests
         pacMan.setPos(new RealCoordinates(3, 0));

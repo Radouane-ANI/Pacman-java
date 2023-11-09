@@ -16,7 +16,7 @@ public enum Ghost implements Critter {
     // in Wikipedia's page
     BLINKY, INKY, PINKY, CLYDE;
 
-    static final MazeConfig config = MazeConfig.makeExample1();
+    static MazeConfig config = MazeConfig.makeExample1();
     private RealCoordinates pos;
     private Direction direction = Direction.NONE;
     // tableau passerBlinky de la taille de la carte qui dit si blinky est deja
