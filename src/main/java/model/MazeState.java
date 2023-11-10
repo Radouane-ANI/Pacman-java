@@ -130,7 +130,7 @@ public final class MazeState {
                     if (PacMan.INSTANCE.isEnergized()) {
                         addScore(10);
                         resetCritter(critter);
-                    } /*else {
+                    }/*else {
                         playerLost();
                         return;
                     }*/
@@ -179,9 +179,9 @@ public final class MazeState {
             ButtonAction exitAction = () -> {
                 System.exit(0);
             };
-            GameOverScreen gos = new GameOverScreen(playAgainAction, exitAction, primaryStage, false);
+            FinalScreen fs = new FinalScreen(playAgainAction, exitAction, primaryStage, false);
 
-            gameRoot.getChildren().add(gos.getGameOverLayout());
+            gameRoot.getChildren().add(fs.getFinalScreenLayout());
         }else{
             System.out.println("Lives: " + lives);
             resetCritters();
@@ -209,9 +209,9 @@ public final class MazeState {
             ButtonAction exitAction = () -> {
                 System.exit(0);
             };
-            GameOverScreen gos = new GameOverScreen(playAgainAction, exitAction, primaryStage, true);
+            FinalScreen fs = new FinalScreen(playAgainAction, exitAction, primaryStage, true);
 
-            gameRoot.getChildren().add(gos.getGameOverLayout());
+            gameRoot.getChildren().add(fs.getFinalScreenLayout());
         }
     }
 
