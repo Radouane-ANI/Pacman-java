@@ -82,6 +82,7 @@ public class MazeConfig {
         return grid[Math.floorMod(pos.y(), getHeight())][Math.floorMod(pos.x(), getWidth())];
     }
 
+    public Cell[][] getGrid(){return grid;}
 
     // simple example with a square shape
     // TODO: mazes should be loaded from a text file

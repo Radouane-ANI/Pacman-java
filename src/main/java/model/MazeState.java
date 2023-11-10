@@ -1,5 +1,6 @@
 package model;
 
+import config.Cell;
 import config.MazeConfig;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
@@ -20,6 +21,7 @@ public final class MazeState {
     private boolean boulbirespawn;
 
     private final boolean[][] gridState;
+    private final Cell[][] grid;
 
     private final List<Critter> critters;
     private int score;
@@ -27,10 +29,12 @@ public final class MazeState {
     private final Map<Critter, RealCoordinates> initialPos;
     private int lives = 3;
 
+
+    Stage primaryStage;
     Pane gameRoot;
-    private final GameOverScreen gos;
 
     public MazeState(MazeConfig config, Pane gameRoot,Stage primaryStage) {
+        this.primaryStage = primaryStage;
         this.config = config;
         this.gameRoot = gameRoot;
 
@@ -38,6 +42,7 @@ public final class MazeState {
         width = config.getWidth();
         critters = List.of(PacMan.INSTANCE, Ghost.CLYDE, BLINKY, INKY, PINKY);
         gridState = new boolean[height][width];
+        grid = config.getGrid();
         initialPos = Map.of(
                 PacMan.INSTANCE, config.getPacManPos().toRealCoordinates(1.0),
                 BLINKY, config.getBlinkyPos().toRealCoordinates(1.0),
@@ -45,16 +50,7 @@ public final class MazeState {
                 CLYDE, config.getClydePos().toRealCoordinates(1.0),
                 PINKY, config.getPinkyPos().toRealCoordinates(1.0));
         resetCritters();
-
-        ButtonAction playAgainAction = () -> {
-
-            System.out.println("Reset game");
-            restartGame();
-        };
-        ButtonAction exitAction = () -> {
-            System.exit(0);
-        };
-        gos = new GameOverScreen(playAgainAction, exitAction, primaryStage);
+        gridState_init(gridState, grid);
     }
 
     public List<Critter> getCritters() {
@@ -122,17 +118,34 @@ public final class MazeState {
             if (!gridState[pacPos.y()][pacPos.x()]) {
                 addScore(1);
                 gridState[pacPos.y()][pacPos.x()] = true;
+                for(boolean[] k:gridState){ 
+                    for(boolean i : k){
+                        System.out.print(i);
+                    }
+                    System.out.println("");
+                }
             }
             for (var critter : critters) {
                 if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
                     if (PacMan.INSTANCE.isEnergized()) {
                         addScore(10);
                         resetCritter(critter);
-                    } else {
+                    } /*else {
                         playerLost();
                         return;
-                    }
+                    }*/
                 }
+            }
+            playerWin(); // si tous les points sont recuperé le win screen sera affiché
+        }
+    }
+
+    private void gridState_init(boolean[][] gridState, Cell[][] grid){
+        int height = grid[0].length;
+        int length = grid.length;
+        for(int k=0 ; k<length ; k++){
+            for(int i=0 ; i<height ; i++){
+                gridState[k][i] = !(grid[k][i].isDot());
             }
         }
     }
@@ -152,18 +165,53 @@ public final class MazeState {
     }
 
     private void playerLost() {
-        // FIXME: this should be displayed in the JavaFX view, not in the console. A
-        // game over screen would be nice too.
+        
 
         boulbirespawn = true;
         lives--;
         boulbirespawn = false;
         if (lives == 0) {
             isGameRunning=false;
+            ButtonAction playAgainAction = () -> {
+                System.out.println("Reset game");
+                restartGame();
+            };
+            ButtonAction exitAction = () -> {
+                System.exit(0);
+            };
+            GameOverScreen gos = new GameOverScreen(playAgainAction, exitAction, primaryStage, false);
+
             gameRoot.getChildren().add(gos.getGameOverLayout());
         }else{
             System.out.println("Lives: " + lives);
             resetCritters();
+        }
+    }
+
+    private static boolean areAllTrue(boolean[][] tab) {
+        for (boolean[] t : tab) {
+            for (boolean value : t) {
+                if (!value) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void playerWin(){
+        if(areAllTrue(gridState)){
+            isGameRunning=false;
+            ButtonAction playAgainAction = () -> {
+                System.out.println("Reset game");
+                restartGame();
+            };
+            ButtonAction exitAction = () -> {
+                System.exit(0);
+            };
+            GameOverScreen gos = new GameOverScreen(playAgainAction, exitAction, primaryStage, true);
+
+            gameRoot.getChildren().add(gos.getGameOverLayout());
         }
     }
 
@@ -177,7 +225,7 @@ public final class MazeState {
             resetCritter(critter);
     }
 
-    public void resetGame() {
+    private void resetGame() {
         resetCritters();
         for(boolean[] k:gridState) for(int i=0;i<k.length-1;i++){
             k[i]=false;
@@ -187,7 +235,7 @@ public final class MazeState {
 
     }
 
-    public void restartGame() {
+    private void restartGame() {
         resetGame();// Réinitialisez toutes les valeurs du jeu à l'état initial
         isGameRunning = true; // Redémarrez le jeu
         gameRoot.getChildren().remove(gameRoot.getChildren().size() - 1);

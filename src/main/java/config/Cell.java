@@ -30,7 +30,9 @@ public record Cell(boolean northWall, boolean eastWall, boolean southWall, boole
     public static Cell eTee(Content c) { return new Cell(false, true, false, false, c); }
     public static Cell sTee(Content c) { return new Cell(false, false, true, false, c); }
     public static Cell wTee(Content c) { return new Cell(false, false, false, true, c); }
-
+    public boolean isDot(){
+        return (initialContent == Content.DOT);
+    }
     public Cell updateNextItemType(Content c){
         return new Cell(northWall, eastWall, southWall, westWall, c);
     }
