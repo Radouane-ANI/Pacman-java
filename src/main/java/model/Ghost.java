@@ -63,7 +63,6 @@ public enum Ghost implements Critter {
     }
 
     public void iaBlinky() {
-        passerBlinky = new boolean[config.getHeight()][config.getWidth()];
         if (possible((int) BLINKY.pos.x(), (int) BLINKY.pos.y()).size() > 0 || BLINKY.direction == Direction.NONE) {
             Direction path = prochainePositionBlinky();
             changeDirection(path, BLINKY);
@@ -149,20 +148,33 @@ public enum Ghost implements Critter {
     // applique l'algorithme de bactracking et renvoie la premiere Direction du plus
     // court chemin vers pacman
     public Direction prochainePositionBlinky() {
-        TousCheminVersPacman.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
-        cheminVersPacman((int) BLINKY.pos.x(), (int) BLINKY.pos.y(), new ArrayList<Character>()); // calcule tous les
-                                                                                                  // chemin
-        if (TousCheminVersPacman.size() > 0) {
-            return switch (TousCheminVersPacman.get(0)) {
-                case 'n' -> Direction.NORTH;
-                case 's' -> Direction.SOUTH;
-                case 'e' -> Direction.EAST;
-                case 'w' -> Direction.WEST;
-                default -> Direction.NONE;
-            };
-        }
+        Character path = 'a';
 
-        return Direction.NONE; // renvoie None si pacman est innacessible ou si on est sur lui
+        List<Character> chemin = AStar.findPath(config, BLINKY.pos.cast(), PacMan.INSTANCE.getPos().cast());
+        if (chemin.size() > 0) {
+            path = chemin.get(0);
+        } else {
+            double maxDist = Double.MAX_VALUE;
+            for (Character direction : possible((int) BLINKY.pos.x(), (int) BLINKY.pos.y())) {
+                double distance = Math.sqrt(Math.pow(
+                        (int) BLINKY.pos.x() + (direction == 'e' ? 1 : direction == 'w' ? -1 : 0)
+                                - PacMan.INSTANCE.getPos().x(),
+                        2)
+                        + Math.pow((int) BLINKY.pos.y() + (direction == 'n' ? -1 : direction == 's' ? 1 : 0)
+                                - PacMan.INSTANCE.getPos().y(), 2));
+                if (distance < maxDist) {
+                    path = direction;
+                    maxDist = distance;
+                }
+            }
+        }
+        return switch (path) {
+            case 'n' -> Direction.NORTH;
+            case 's' -> Direction.SOUTH;
+            case 'e' -> Direction.EAST;
+            case 'w' -> Direction.WEST;
+            default -> Direction.NONE;
+        };
     }
 
     // change la direction de n'importe quel phantome donner en argument en

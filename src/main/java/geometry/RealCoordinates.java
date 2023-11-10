@@ -39,6 +39,10 @@ public record RealCoordinates(double x, double y) {
         return new IntCoordinates((int) Math.round(x), (int) Math.round(y));
     }
 
+    public IntCoordinates cast() {
+        return new IntCoordinates((int) (x), (int) (y));
+    }
+
     public RealCoordinates floorX() {
         return new RealCoordinates((int) Math.floor(x), y);
     }
@@ -67,5 +71,9 @@ public record RealCoordinates(double x, double y) {
         while (Math.round(rx) >= height)
             ry -= height;
         return new RealCoordinates(rx, ry);
+    }
+
+    public double distance(RealCoordinates other) {
+        return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
     }
 }
