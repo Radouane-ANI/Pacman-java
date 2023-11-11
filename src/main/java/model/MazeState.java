@@ -176,10 +176,8 @@ public final class MazeState {
                 System.out.println("Reset game");
                 restartGame();
             };
-            ButtonAction exitAction = () -> {
-                System.exit(0);
-            };
-            FinalScreen fs = new FinalScreen(playAgainAction, exitAction, primaryStage, false);
+
+            FinalScreen fs = new FinalScreen(playAgainAction, primaryStage, false);
 
             gameRoot.getChildren().add(fs.getFinalScreenLayout());
         }else{
@@ -206,10 +204,8 @@ public final class MazeState {
                 System.out.println("Reset game");
                 restartGame();
             };
-            ButtonAction exitAction = () -> {
-                System.exit(0);
-            };
-            FinalScreen fs = new FinalScreen(playAgainAction, exitAction, primaryStage, true);
+
+            FinalScreen fs = new FinalScreen(playAgainAction, primaryStage, true);
 
             gameRoot.getChildren().add(fs.getFinalScreenLayout());
         }
@@ -230,6 +226,7 @@ public final class MazeState {
         for(boolean[] k:gridState) for(int i=0;i<k.length-1;i++){
             k[i]=false;
         }
+        gridState_init(gridState, grid);
         lives=3;
         score=0;
 
