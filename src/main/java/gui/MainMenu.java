@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class MainMenu {
-
+    // Menu d'accueil
     private Scene scene;
     private Stage stage;
 
@@ -50,13 +50,19 @@ public class MainMenu {
         scene = new Scene(root, 500, 500);
     }
 
+    /**
+     * Création de l'instance de la classe Game qui lance le jeu
+     * Définition de la scène de jeu comme scène principale de la fenêtre
+     */
     private void startGame() {
-        // Création de l'instance de la classe Game qui lance le jeu
         Game game = new Game(stage);
-        // Définition de la scène de jeu comme scène principale de la fenêtre
         stage.setScene(game.getScene());
     }
 
+    /**
+     * permet de changer a couleur d'un bouton lorsqu'on clique dessus
+     * @param button
+     */
     private void applyHoverAnimation(Button button) {
         button.setOnMousePressed(e -> button.setStyle("-fx-background-color: violet; -fx-text-fill: black; -fx-font-size: 16px;"));
         button.setOnMouseReleased(e -> button.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;"));

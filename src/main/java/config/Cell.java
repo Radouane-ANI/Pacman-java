@@ -33,6 +33,9 @@ public record Cell(boolean northWall, boolean eastWall, boolean southWall, boole
     public boolean isDot(){
         return (initialContent == Content.DOT);
     }
+    public boolean isEnergizer(){
+        return (initialContent == Content.ENERGIZER);
+    }
     public Cell updateNextItemType(Content c){
         return new Cell(northWall, eastWall, southWall, westWall, c);
     }

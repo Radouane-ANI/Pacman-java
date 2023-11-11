@@ -7,7 +7,7 @@ import config.MazeConfig;
 import model.MazeState;
 
 public class Game {
-
+    //Lançage du jeu
     private Scene gameScene;
 
     public Game(Stage primaryStage) {

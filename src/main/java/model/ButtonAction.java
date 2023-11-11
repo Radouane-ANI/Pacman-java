@@ -1,6 +1,7 @@
-package model; // Assurez-vous d'ajuster le package en fonction de votre structure de projet
+package model;
 
 @FunctionalInterface
 public interface ButtonAction {
+    //Permet l'association d'une action a un objet
     void performAction();
 }

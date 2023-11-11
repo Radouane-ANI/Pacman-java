@@ -113,33 +113,36 @@ public final class MazeState {
 
                 critter.setPos(nextPos.warp(width, height));
             }
-            // FIXME Pac-Man rules should somehow be in Pacman class
+
+            if(PacMan.INSTANCE.PacManDot(gridState))addScore(1);
+
             var pacPos = PacMan.INSTANCE.getPos().round();
-            if (!gridState[pacPos.y()][pacPos.x()]) {
-                addScore(1);
-                gridState[pacPos.y()][pacPos.x()] = true;
-                for(boolean[] k:gridState){ 
-                    for(boolean i : k){
-                        System.out.print(i);
-                    }
-                    System.out.println("");
-                }
-            }
             for (var critter : critters) {
                 if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
                     if (PacMan.INSTANCE.isEnergized()) {
                         addScore(10);
                         resetCritter(critter);
-                    }/*else {
+                    }else {
                         playerLost();
                         return;
-                    }*/
+                    }
                 }
             }
             playerWin(); // si tous les points sont recuperé le win screen sera affiché
         }
     }
 
+
+    /**
+     * Methode permettant le bon fonction de la methode playerWin()(methode qui dectecte si le pacman a recuperer tous les points).
+     * GridState est une representation booléene de grid.
+     * En suivant ce principe on comprendre bien que les cellules sans dot seront noté true et les Cellules avec dot seront noté false, il faut
+     * donc initialisé toutes les cases sans dot(en verifiant a l'aide de grid) a la valeur true (dans gridState), les cases avec dot seront
+     * à la valeur false.
+     * Cela permet de bien verifier si toutes les points ont été mangé en verifiant si toutes la valeur de gridState sont true.
+     * @param gridState 
+     * @param grid
+     */
     private void gridState_init(boolean[][] gridState, Cell[][] grid){
         int height = grid[0].length;
         int length = grid.length;
@@ -164,10 +167,11 @@ public final class MazeState {
         return boulbirespawn;
     }
 
-    private void playerLost() {
-        
 
-        boulbirespawn = true;
+    /**
+     * Si le Pacman s'est fait mangé par un ghost et que l'utilisateur n'avait plus de vie on affiche l'ecran GAME OVER.
+     */
+    private void playerLost() {boulbirespawn = true;
         lives--;
         boulbirespawn = false;
         if (lives == 0) {
@@ -186,6 +190,13 @@ public final class MazeState {
         }
     }
 
+
+    /**
+     * Methode permettant de verifier si toutes les valeur de tab sont vrai ce qui permettra dans une autre methode d'en deduire si Pacman
+     * a mangé tous les dot ou non.
+     * @param tab
+     * @return si tous les elemnts de tab sont true
+     */
     private static boolean areAllTrue(boolean[][] tab) {
         for (boolean[] t : tab) {
             for (boolean value : t) {
@@ -197,6 +208,10 @@ public final class MazeState {
         return true;
     }
 
+
+    /**
+     * Si Pacman a mangé tous les points alors on affiche l'ecran YOU WIN.
+     */
     private void playerWin(){
         if(areAllTrue(gridState)){
             isGameRunning=false;
@@ -221,6 +236,9 @@ public final class MazeState {
             resetCritter(critter);
     }
 
+    /**
+     * Permet de réeinitialiser Gridstate le nombre de vies et le nombre de points.
+     */
     private void resetGame() {
         resetCritters();
         for(boolean[] k:gridState) for(int i=0;i<k.length-1;i++){
@@ -232,20 +250,13 @@ public final class MazeState {
 
     }
 
+    /**
+     * Permet de réeinitialiser toutes les valeurs du jeu afin de commencer une nouvelle partie.
+     */
     private void restartGame() {
         resetGame();// Réinitialisez toutes les valeurs du jeu à l'état initial
         isGameRunning = true; // Redémarrez le jeu
         gameRoot.getChildren().remove(gameRoot.getChildren().size() - 1);
-        
-
-        /*System.out.println("Vie"+lives+" score"+score);
-        for(boolean[] k:gridState){ 
-            for(boolean i : k){
-                System.out.print(i);
-            }
-            System.out.println("");
-        }*/ //DEBUG
-
     }
 
     public MazeConfig getConfig() {

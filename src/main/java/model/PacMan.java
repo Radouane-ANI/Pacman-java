@@ -1,5 +1,6 @@
 package model;
 
+import geometry.IntCoordinates;
 import geometry.RealCoordinates;
 
 /**
@@ -39,6 +40,20 @@ public final class PacMan implements Critter {
     public void setPos(RealCoordinates pos) {
         this.pos = pos;
     }
+
+    /**
+     * @param gridState
+     * @return retourne s'il y a un dot a l'endroit ou pacman se trouve
+     */
+    public boolean PacManDot(boolean[][] gridState){
+        IntCoordinates pacPos = PacMan.INSTANCE.getPos().round();
+        if (!gridState[pacPos.y()][pacPos.x()]) {    
+            gridState[pacPos.y()][pacPos.x()] = true;
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      *

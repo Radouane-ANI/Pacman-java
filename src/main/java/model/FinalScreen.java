@@ -49,12 +49,21 @@ public class FinalScreen {
         FinalScreenLayout.getChildren().addAll(playAgainButton, exitButton, homeButton, image);
     }
 
+    /**
+     * Permet d'affecter une aciton a un bouton
+     * @param button 
+     * @param action
+     */
     private void setupButton(Button button, ButtonAction action) {
         button.setOnAction(e -> action.performAction());
         button.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");
         applyHoverAnimation(button);
     }
 
+    /**
+     * permet de changer a couleur d'un bouton lorsqu'on clique dessus
+     * @param button
+     */
     private void applyHoverAnimation(Button button) {
         button.setOnMousePressed(e -> button.setStyle("-fx-background-color: violet; -fx-text-fill: black; -fx-font-size: 16px;"));
         button.setOnMouseReleased(e -> button.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;"));
