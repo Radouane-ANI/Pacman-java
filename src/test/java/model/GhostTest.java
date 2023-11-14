@@ -108,4 +108,49 @@ public class GhostTest {
 
     }
 
+    @Test
+    public void testChangeSkin() {
+        Ghost ghost = Ghost.BLINKY; // Initialise un fantôme pour les tests
+
+        // Test lorsque Pac-Man n'est pas énergisé
+        PacMan.INSTANCE.setEnergized(false);
+        int resultNormalSkin = ghost.changeSkin();
+        assertEquals(2, resultNormalSkin);
+
+        // Test lorsque Pac-Man est énergisé
+        PacMan.INSTANCE.setEnergized(true);
+        int resultVulnerableSkin = ghost.changeSkin();
+        assertEquals(1, resultVulnerableSkin);
+
+        // Test lorsque Pac-Man n'est plus énergisé
+        PacMan.INSTANCE.setEnergized(false);
+        int resultNoChange = ghost.changeSkin();
+        assertEquals(0, resultNoChange);
+    }
+
+    @Test
+    public void testFuite() {
+        // Initialisation des positions des fantômes
+        Ghost.BLINKY.setPos(new RealCoordinates(3, 3));
+        Ghost.INKY.setPos(new RealCoordinates(2, 4));
+        Ghost.PINKY.setPos(new RealCoordinates(4, 4));
+        Ghost.CLYDE.setPos(new RealCoordinates(3, 5));
+
+        PacMan pacMan = PacMan.INSTANCE; // Initialise Pacman pour les tests
+        pacMan.setPos(new RealCoordinates(3, 4));
+        
+        Ghost.fuite();
+
+        // Test de fuite lorsque Pac-Man est au Sud de Blinky
+        assertNotEquals(Direction.SOUTH, Ghost.BLINKY.getDirection());
+
+        // Test de fuite lorsque Pac-Man est à l'Est de Inky
+        assertNotEquals(Direction.EAST, Ghost.INKY.getDirection());
+
+        // Test de fuite lorsque Pac-Man est à l'Ouest de Pinky
+        assertNotEquals(Direction.WEST, Ghost.PINKY.getDirection());
+
+        // Test de fuite lorsque Pac-Man est au Nord de Clyde
+        assertNotEquals(Direction.NORTH, Ghost.CLYDE.getDirection());
+    }
 }
