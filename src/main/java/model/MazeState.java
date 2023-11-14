@@ -2,12 +2,15 @@ package model;
 
 import config.Cell;
 import config.MazeConfig;
+import config.Cell.Content;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
 import javafx.scene.layout.Pane;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javafx.stage.Stage;
 
@@ -66,13 +69,19 @@ public final class MazeState {
     }
 
     public void update(long deltaTns) {
+<<<<<<< src/main/java/model/MazeState.java
         if (!isGameRunning) {
             return; // Arrêtez d'exécuter la mise à jour du jeu si le jeu n'est pas en cours d'exécution
         }
         else{
+            if (!PacMan.INSTANCE.isEnergized()) {
             Ghost.BLINKY.iaBlinky();
-            // FIXME: too many things in this method. Maybe some responsibilities can be delegated to other methods or classes?
-            for  (var critter: critters) {
+            } else {
+                Ghost.fuite();
+            }
+            // FIXME: too many things in this method. Maybe some responsibilities can be
+            // delegated to other methods or classes?
+            for (var critter : critters) {
                 var curPos = critter.getPos();
                 var nextPos = critter.nextPos(deltaTns);
                 var curNeighbours = curPos.intNeighbours();
@@ -80,7 +89,8 @@ public final class MazeState {
                 if (!curNeighbours.containsAll(nextNeighbours)) { // the critter would overlap new cells. Do we allow it?
                     switch (critter.getDirection()) {
                         case NORTH -> {
-                            for (var n: curNeighbours) if (config.getCell(n).northWall()) {
+                            for (var n : curNeighbours)
+                                if (config.getCell(n).northWall()) {
                                 nextPos = curPos.floorY();
                                 critter.setDirection(Direction.NONE);
                                 break;
@@ -114,8 +124,23 @@ public final class MazeState {
                 critter.setPos(nextPos.warp(width, height));
             }
 
+<<<<<<< src/main/java/model/MazeState.java
             if(PacMan.INSTANCE.PacManDot(gridState))addScore(1);
-
+            if (config.getCell(pacPos).initialContent() == Content.ENERGIZER) {
+                // Change le contenu de la cellule en NOTHING.
+                config.setCell(pacPos, config.getCell(pacPos).updateNextItemType(Content.NOTHING));
+    
+                // Activez energized sur Pac-Man
+                PacMan.INSTANCE.setEnergized(true);
+            }
+            // Vérifie si la cellule où se trouve Pac-Man contient un Energizer
+            if (config.getCell(pacPos).initialContent() == Content.ENERGIZER) {
+                // Change le contenu de la cellule en NOTHING.
+                config.setCell(pacPos, config.getCell(pacPos).updateNextItemType(Content.NOTHING));
+    
+                // Activez energized sur Pac-Man
+                PacMan.INSTANCE.setEnergized(true);
+            }
             var pacPos = PacMan.INSTANCE.getPos().round();
             for (var critter : critters) {
                 if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {

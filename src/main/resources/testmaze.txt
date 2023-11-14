@@ -1,0 +1,23 @@
+6 6
++- - - - - -+
+|E         B|  
+   - - - -  
+| |       | |
+ 
+|I|       |C|
+         
+| |       | |
+   
+| |       | |
+   - - - - 
+|P   J      |
++- - - - - -+
+
+
+
+
+
+this.blinkyPos = blinkyPos;
+        this.inkyPos = inkyPos;
+        this.pinkyPos = pinkyPos;
+        this.clydePos = clydePos;

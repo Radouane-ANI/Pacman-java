@@ -5,14 +5,19 @@ import geometry.IntCoordinates;
 import static config.Cell.Content.DOT;
 import static config.Cell.*;
 import static config.Cell.Content.NOTHING;
+
 import static config.Cell.Content.ENERGIZER; // Ajout de la constante ENERGIZER
+
+
 import java.io.File ; // Ajout de la classe File
 import java.io.FileNotFoundException ; // Ajout de la classe FileNotFoundException pour gérer l'exception si le fichier n'extiste pas
-import java.util.Scanner ; // Ajout de la classe Scanner pour lire le fichier
-import java.util.HashMap ; // Ajout de la classe HashMap pour stocker les caractères du fichier
+import java.io.FileReader;
+import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Scanner;
+import java.io.BufferedReader; // Ajout de la classe BufferedReader pour lire le fichier
 import config.Cell.Content;
+import java.io.IOException; // Ajout de la classe IOException pour gérer l'exception si le fichier n'extiste pas
 
 public class MazeConfig {
     public MazeConfig(Cell[][] grid, IntCoordinates pacManPos, IntCoordinates blinkyPos, IntCoordinates pinkyPos,
@@ -23,32 +28,43 @@ public class MazeConfig {
         }
         this.pacManPos = pacManPos;
         this.blinkyPos = blinkyPos;
-        this.inkyPos = inkyPos;
         this.pinkyPos = pinkyPos;
+        this.inkyPos = inkyPos;
         this.clydePos = clydePos;
+    }
+    public MazeConfig(String filepath){
+        MazeConfig maze = makeLabyrinthe(filepath);
+        this.grid = maze.grid;
+        this.pacManPos = maze.pacManPos;
+        this.blinkyPos = maze.blinkyPos;
+        this.pinkyPos = maze.pinkyPos;
+        this.inkyPos = maze.inkyPos;
+        
+        this.clydePos = maze.clydePos;
     }
 
     private final Cell[][] grid;
     private final IntCoordinates pacManPos, blinkyPos, pinkyPos, inkyPos, clydePos;
-    private static Map<Character, Cell> itemDictionary = new HashMap<>();
-    private static void iniDictionary(){
+    private static Map<Character, Cell.Content> itemDictionary = new HashMap<>();
+    private static Map<Character, Boolean> wallDictionary = new HashMap<>();
+    private static void itemDictionary(){
         if(itemDictionary.size() != 0) return;
-        itemDictionary.put('A', open(ENERGIZER));
-        itemDictionary.put('B', closed(ENERGIZER));
-        itemDictionary.put('C', hPipe(ENERGIZER));
-        itemDictionary.put('D', vPipe(ENERGIZER));
-        itemDictionary.put('E', swVee(ENERGIZER));
-        itemDictionary.put('F', nwVee(ENERGIZER));
-        itemDictionary.put('G', neVee(ENERGIZER));
-        itemDictionary.put('H', seVee(ENERGIZER));
-        itemDictionary.put('I', nTee(ENERGIZER));
-        itemDictionary.put('J', eTee(ENERGIZER));
-        itemDictionary.put('K', sTee(ENERGIZER));
-        itemDictionary.put('L', wTee(ENERGIZER));
-        itemDictionary.put('M', nU(ENERGIZER));
-        itemDictionary.put('N', eU(ENERGIZER));
-        itemDictionary.put('O', sU(ENERGIZER));
-        itemDictionary.put('P', wU(ENERGIZER));
+        itemDictionary.put('E', ENERGIZER);
+        itemDictionary.put('D', DOT);
+        itemDictionary.put(' ', NOTHING);
+        itemDictionary.put('J', NOTHING);
+        itemDictionary.put('B', NOTHING);
+        itemDictionary.put('C', NOTHING);
+        itemDictionary.put('I', NOTHING);
+        itemDictionary.put('P', NOTHING);
+    }
+    private static void wallDictionary(){
+        if(wallDictionary.size() != 0) return;
+        wallDictionary.put('|', true);
+        wallDictionary.put('-', true);
+        wallDictionary.put(' ', false);
+        wallDictionary.put('+', false);
+        
     }
     public IntCoordinates getPacManPos() {
         return pacManPos;
@@ -81,54 +97,142 @@ public class MazeConfig {
     public Cell getCell(IntCoordinates pos) {
         return grid[Math.floorMod(pos.y(), getHeight())][Math.floorMod(pos.x(), getWidth())];
     }
+    private static void detector(int width,int y ,String l1, String l2, String l3, Cell[][] grid , IntCoordinates[] pos){
+        Cell.Content CONTENT = NOTHING;
+        boolean north ; boolean east ; boolean south ; boolean west ;
+        Cell[] gridx = new Cell[width];
+        int j = 0;
+        for(int i = 1 ;  i < width*2 ; i+=2){
+            if(l2.length() > i){
+                switch (l2.charAt(i)) {
+                    case 'J':
+                        pos[0] = new IntCoordinates(j,y);
+                        CONTENT = NOTHING;
+                        break;
+                    case 'B':
+                        pos[1] = new IntCoordinates(j,y);
+                        CONTENT = NOTHING;
+                        break;
+                    case 'P':
+                        pos[2] = new IntCoordinates(j,y);
+                        CONTENT = NOTHING;
+                        break;
+                    case 'I':
+                        pos[3] = new IntCoordinates(j,y);
+                        CONTENT = NOTHING;
+                        break;
+                    case 'C':
+                        pos[4] = new IntCoordinates(j,y);
+                        CONTENT = NOTHING;
+                        break;
+                    default:
+                        CONTENT = itemDictionary.get(l2.charAt(i));
+                        break;
+                }
+            } else {
+                CONTENT = NOTHING;
+            }
+            
+            
+            north = wallDictionary.get
+            ((l1.length() > i) ? l1.charAt(i) : ' ');
+            east = wallDictionary.get
+            ((l2.length() > i+1) ? l2.charAt(i+1) : ' ');
+            south = wallDictionary.get((l3.length() > i)?(l3.charAt(i)) : ' ' );
+            west = wallDictionary.get
+            ((l2.length() > i-1) ?  l2.charAt(i-1) : ' ');
+            gridx[j] = new Cell(north, east, south, west, CONTENT);
+            
+            j++;
+            
+            }
+            grid[y] = gridx; 
+        }
+
+    public void setCell(IntCoordinates pos, Cell c){
+        grid[Math.floorMod(pos.y(), getHeight())][Math.floorMod(pos.x(), getWidth())] = c;
+    }
 
     public Cell[][] getGrid(){return grid;}
 
     // simple example with a square shape
     // TODO: mazes should be loaded from a text file
     public static MazeConfig makeExample1() {
-        File maze = new File("src/main/resources/maze.txt") ; // Création d'un objet File qui contient le fichier maze.txt
-        iniDictionary();
-        try{
-            Scanner scanner = new Scanner(maze) ; // Création d'un objet Scanner pour lire le fichier
-            int height = scanner.nextInt() ; // Lecture de la hauteur du labyrinthe
-            int width = scanner.nextInt() ; // Lecture de la largeur du labyrinthe
-            Cell[][] grid = new Cell[height][width] ; // Création d'un tableau de cellules de taille height x width
-            int i = 0;  // Compteur pour parcourir les lignes du fichier
-            scanner.nextLine();
-            while(scanner.hasNextLine()){
-                String line = scanner.nextLine();
-                int ji = -1;
-                for (int j = 0; j < line.length(); j++) {
-                    ji++; // index de la colonne
-                    char currentChar = line.charAt(j); // caractère courant
-                    char nextChar = (j + 1 < line.length()) ? line.charAt(j + 1) : ' '; // caractère suivant
+        
+        String filePath = "src/main/resources/maze.txt";
+        BufferedReader reader = null;
+        itemDictionary();
+        wallDictionary();
+        IntCoordinates[] pos = new IntCoordinates[5];
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+            String[] xy = line.split(" ");
             
-                    if (itemDictionary.containsKey(currentChar)) { // Si le caractère courant est présent dans le dictionnaire
-                        Cell currentItem = itemDictionary.get(currentChar); // On récupère la cellule correspondante
-                        Content nextItem = (nextChar == 'e') ? ENERGIZER : (nextChar == 'd') ? DOT : NOTHING; // On récupère le contenu de la cellule coreespondante au caractère suivant
-                        grid[i][ji] = currentItem.updateNextItemType(nextItem); // On met à jour le contenu de la cellule
+            Cell[][] grid = new Cell[Integer.parseInt(xy[0])][Integer.parseInt(xy[1])];
+           
+            String l1 = reader.readLine(); 
+            String l2 = reader.readLine(); 
+            String l3 = reader.readLine(); 
+            detector(Integer.parseInt(xy[0]),0, l1, l2, l3, grid,pos);
             
-                        if (nextChar == 'e' || nextChar == 'd') {
-                            j += 1;
-                        }
-                    }
-                    
-                }
-                i++;
+            for(int i = 1 ; i < Integer.parseInt(xy[0])    ; i++){
+                l1 = l3; 
+                l2 = reader.readLine();  
+                l3 = reader.readLine(); 
+                detector(Integer.parseInt(xy[0]), i, l1, l2, l3, grid,pos);
+                
             }
                 return new MazeConfig(grid,
-                new IntCoordinates(3, 0),
-                new IntCoordinates(0, 3),
-                new IntCoordinates(3, 5),
-                new IntCoordinates(5, 5),
-                new IntCoordinates(5, 1)
-                );
-            }
-        catch (FileNotFoundException e) { // Si le fichier n'existe pas
-        return null;
-
+                pos[0],
+                pos[1],
+                pos[2],
+                pos[3],
+                pos[4]);
+                
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the file.");
+            e.printStackTrace();
+            return null;
         }
+    }
+    public MazeConfig makeLabyrinthe(String filePath) {
         
+       
+        BufferedReader reader = null;
+        itemDictionary();
+        wallDictionary();
+        IntCoordinates[] pos = new IntCoordinates[5];
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+            String[] xy = line.split(" ");
+            
+            Cell[][] grid = new Cell[Integer.parseInt(xy[0])][Integer.parseInt(xy[1])];
+           
+            String l1 = reader.readLine(); 
+            String l2 = reader.readLine(); 
+            String l3 = reader.readLine(); 
+            detector(Integer.parseInt(xy[0]),0, l1, l2, l3, grid,pos);
+            
+            for(int i = 1 ; i < Integer.parseInt(xy[0])    ; i++){
+                l1 = l3; 
+                l2 = reader.readLine();  
+                l3 = reader.readLine(); 
+                detector(Integer.parseInt(xy[0]), i, l1, l2, l3, grid,pos);
+                
+            }
+                return new MazeConfig(grid,
+                pos[0],
+                pos[1],
+                pos[2],
+                pos[3],
+                pos[4]);
+                
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the file.");
+            e.printStackTrace();
+            return null;
+        }
     }
 }
