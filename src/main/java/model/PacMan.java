@@ -3,8 +3,6 @@ package model;
 import geometry.IntCoordinates;
 import java.util.Timer;
 import java.util.TimerTask;
-
->>>>>>> src/main/java/model/PacMan.java
 import geometry.RealCoordinates;
 
 /**

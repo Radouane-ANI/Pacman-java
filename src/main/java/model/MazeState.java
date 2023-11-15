@@ -69,7 +69,6 @@ public final class MazeState {
     }
 
     public void update(long deltaTns) {
-<<<<<<< src/main/java/model/MazeState.java
         if (!isGameRunning) {
             return; // Arrêtez d'exécuter la mise à jour du jeu si le jeu n'est pas en cours d'exécution
         }
@@ -123,8 +122,7 @@ public final class MazeState {
 
                 critter.setPos(nextPos.warp(width, height));
             }
-
-<<<<<<< src/main/java/model/MazeState.java
+            var pacPos = PacMan.INSTANCE.getPos().round();
             if(PacMan.INSTANCE.PacManDot(gridState))addScore(1);
             if (config.getCell(pacPos).initialContent() == Content.ENERGIZER) {
                 // Change le contenu de la cellule en NOTHING.
@@ -141,16 +139,16 @@ public final class MazeState {
                 // Activez energized sur Pac-Man
                 PacMan.INSTANCE.setEnergized(true);
             }
-            var pacPos = PacMan.INSTANCE.getPos().round();
+            
             for (var critter : critters) {
                 if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
                     if (PacMan.INSTANCE.isEnergized()) {
                         addScore(10);
                         resetCritter(critter);
-                    }else {
+                    }/*else {
                         playerLost();
                         return;
-                    }
+                    }*/
                 }
             }
             playerWin(); // si tous les points sont recuperé le win screen sera affiché
@@ -238,6 +236,11 @@ public final class MazeState {
      * Si Pacman a mangé tous les points alors on affiche l'ecran YOU WIN.
      */
     private void playerWin(){
+        for (boolean[] t : gridState) {
+            for (boolean value : t) {
+                System.out.println(value);
+            }
+        }
         if(areAllTrue(gridState)){
             isGameRunning=false;
             ButtonAction playAgainAction = () -> {
