@@ -153,6 +153,7 @@ public class MazeConfig {
         grid[Math.floorMod(pos.y(), getHeight())][Math.floorMod(pos.x(), getWidth())] = c;
     }
 
+    public Cell[][] getGrid(){return grid;}
 
     // simple example with a square shape
     // TODO: mazes should be loaded from a text file
@@ -234,9 +235,4 @@ public class MazeConfig {
             return null;
         }
     }
-    
-    
-        
-        
 }
-

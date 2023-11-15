@@ -11,6 +11,12 @@ public record Cell(boolean northWall, boolean eastWall, boolean southWall, boole
      * methode qui permet de mettre a jour le type de contenu d'une case(cellule)
      * @param c type de contenu a mettre a jour
      */
+    public boolean isDot(){
+        return (initialContent == Content.DOT);
+    }
+    public boolean isEnergizer(){
+        return (initialContent == Content.ENERGIZER);
+    }
     public Cell updateNextItemType(Content c){
         return new Cell(northWall, eastWall, southWall, westWall, c);
     }
