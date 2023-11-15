@@ -3,7 +3,8 @@ package model;
 import geometry.RealCoordinates;
 
 /**
- * Implements Pac-Man character using singleton pattern. FIXME: check whether singleton is really a good idea.
+ * Implements Pac-Man character using singleton pattern. FIXME: check whether
+ * singleton is really a good idea.
  */
 public final class PacMan implements Critter {
     private Direction direction = Direction.NONE;
@@ -32,6 +33,7 @@ public final class PacMan implements Critter {
 
     @Override
     public void setDirection(Direction direction) {
+        // System.out.println("Pacman direction: " + direction);
         this.direction = direction;
     }
 
@@ -51,5 +53,9 @@ public final class PacMan implements Critter {
 
     public void setEnergized(boolean energized) {
         this.energized = energized;
+    }
+
+    public void freeze() {
+        this.direction = Direction.NONE;
     }
 }

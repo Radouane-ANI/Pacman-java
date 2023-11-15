@@ -3,9 +3,11 @@ package model;
 import config.MazeConfig;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
+import gui.PacmanController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static model.Ghost.*;
 
@@ -107,13 +109,16 @@ public final class MazeState {
         }
         for (var critter : critters) {
             if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
-                if (PacMan.INSTANCE.isEnergized()) {
-                    addScore(10);
-                    resetCritter(critter);
-                } else {
-                    playerLost();
-                    return;
-                }
+                makeGhostsInvisibleAndImmobile2();
+                SetBoulbi(true);
+                // if (PacMan.INSTANCE.isEnergized()) {
+                // addScore(10);
+                // resetCritter(critter);
+
+                // if (!GetBoulbi()) {
+                // playerLost();
+                return;
+
             }
         }
     }
@@ -132,19 +137,25 @@ public final class MazeState {
         return boulbirespawn;
     }
 
-    private void playerLost() {
+    public void SetBoulbi(boolean boulbirespawn) {
+        this.boulbirespawn = boulbirespawn;
+
+    }
+
+    public void playerLost() {
         // FIXME: this should be displayed in the JavaFX view, not in the console. A
         // game over screen would be nice too.
 
-        boulbirespawn = true;
         lives--;
-        boulbirespawn = false;
+
         if (lives == 0) {
             System.out.println("Game over!");
             System.exit(0);
         }
         System.out.println("Lives: " + lives);
+        remarcheLe();
         resetCritters();
+
     }
 
     private void resetCritter(Critter critter) {
@@ -153,6 +164,7 @@ public final class MazeState {
     }
 
     private void resetCritters() {
+
         for (var critter : critters)
             resetCritter(critter);
     }
@@ -163,5 +175,10 @@ public final class MazeState {
 
     public boolean getGridState(IntCoordinates pos) {
         return gridState[pos.y()][pos.x()];
+    }
+
+    private boolean AnimationMort() {
+        return true;
+
     }
 }

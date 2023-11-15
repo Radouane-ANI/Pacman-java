@@ -19,6 +19,7 @@ public enum Ghost implements Critter {
     static final MazeConfig config = MazeConfig.makeExample1();
     private RealCoordinates pos;
     private Direction direction = Direction.NONE;
+    private boolean isVisible = true;
     // tableau passerBlinky de la taille de la carte qui dit si blinky est deja
     // passer par la
     // (utile pour le bactracking) :
@@ -50,14 +51,39 @@ public enum Ghost implements Critter {
         return 1;
     }
 
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
+
+    }
+
+    public static void makeGhostsInvisibleAndImmobile2() {
+        for (Ghost ghost : Ghost.values()) {
+            ghost.setVisible(false);
+            System.out.println("met invis les ghost");
+        }
+    }
+
+    public static void remarcheLe() {
+        for (Ghost ghost : Ghost.values()) {
+            ghost.setVisible(true);
+            System.out.println("saremarche");
+        }
+    }
+
     public static void updateGhostPositions() { // fais bouger les fantomes dans une direction aleatoires
         Random rd = new Random();
         for (Ghost ghost : Ghost.values()) {
-            switch (rd.nextInt(4)) {
-                case 0 -> ghost.direction = Direction.NORTH;
-                case 1 -> ghost.direction = Direction.EAST;
-                case 2 -> ghost.direction = Direction.SOUTH;
-                case 3 -> ghost.direction = Direction.WEST;
+            if (ghost.isVisible()) { // Only update the ghost if it is visible
+                switch (rd.nextInt(4)) {
+                    case 0 -> ghost.direction = Direction.NORTH;
+                    case 1 -> ghost.direction = Direction.EAST;
+                    case 2 -> ghost.direction = Direction.SOUTH;
+                    case 3 -> ghost.direction = Direction.WEST;
+                }
             }
         }
     }
@@ -65,8 +91,10 @@ public enum Ghost implements Critter {
     public void iaBlinky() {
         passerBlinky = new boolean[config.getHeight()][config.getWidth()];
         if (possible((int) BLINKY.pos.x(), (int) BLINKY.pos.y()).size() > 0 || BLINKY.direction == Direction.NONE) {
-            Direction path = prochainePositionBlinky();
-            changeDirection(path, BLINKY);
+            if (BLINKY.isVisible()) {
+                Direction path = prochainePositionBlinky();
+                changeDirection(path, BLINKY);
+            }
         }
     }
 
@@ -127,7 +155,8 @@ public enum Ghost implements Critter {
     public List<Character> possible(int x, int y) {
         List<Character> possible = new ArrayList<Character>();
         IntCoordinates p = new IntCoordinates(x, y);
-        // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est deja passer
+        // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est
+        // deja passer
         if (y > 0 && !config.getCell(p).northWall() && passerBlinky[x][y - 1] == false) {
             possible.add('n');
         }

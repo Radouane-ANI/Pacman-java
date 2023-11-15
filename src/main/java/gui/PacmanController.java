@@ -7,15 +7,28 @@ import model.PacMan;
 import javafx.scene.input.KeyEvent;
 
 public class PacmanController {
+
+    private boolean freeze = false;
+
+    public void freeze() {
+        this.freeze = true;
+    }
+
+    public void unfreeze() {
+        this.freeze = false;
+    }
+
     public void keyPressedHandler(KeyEvent event) {
-        PacMan.INSTANCE.setDirection(
-                switch (event.getCode()) {
-                    case LEFT -> Direction.WEST;
-                    case RIGHT -> Direction.EAST;
-                    case UP -> Direction.NORTH;
-                    case DOWN -> Direction.SOUTH;
-                    default -> PacMan.INSTANCE.getDirection(); // do nothing
-                });
+        if (!freeze) {
+            PacMan.INSTANCE.setDirection(
+                    switch (event.getCode()) {
+                        case LEFT -> Direction.WEST;
+                        case RIGHT -> Direction.EAST;
+                        case UP -> Direction.NORTH;
+                        case DOWN -> Direction.SOUTH;
+                        default -> PacMan.INSTANCE.getDirection(); // do nothing
+                    });
+        }
     }
 
     public void keyReleasedHandler(KeyEvent event) { // à chaque fois que l'on relache un bouton les fantomes bougent
