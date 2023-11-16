@@ -189,4 +189,12 @@ public final class MazeState {
     public boolean getGridState(IntCoordinates pos) {
         return gridState[pos.y()][pos.x()];
     }
+
+    public static int getScore() {
+        return score;
+    }
+    
+    public static int getLives() {
+        return lives;
+    }
 }

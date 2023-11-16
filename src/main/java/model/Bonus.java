@@ -20,6 +20,15 @@ public enum Bonus {
     private IntCoordinates pos;
 
     /**
+     * modifie la valeur de actif
+     *
+     * @param actif boolean bonus actif ou non
+     */
+    public void setActif(boolean actif) {
+        this.actif = actif;
+    }
+
+    /**
      * Obtient la position du bonus.
      *
      * @return Les coordonnées du bonus.
