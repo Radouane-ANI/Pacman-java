@@ -14,6 +14,11 @@ public final class PacMan implements Critter {
     private RealCoordinates pos;
     private boolean energized;
     private boolean reEnergized;
+    private int speed = 4;
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 
     private PacMan() {
     }
@@ -27,7 +32,7 @@ public final class PacMan implements Critter {
 
     @Override
     public double getSpeed() {
-        return isEnergized() ? 6 : 4;
+        return isEnergized() ? 6 : speed;
     }
 
     @Override

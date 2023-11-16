@@ -21,10 +21,10 @@ public final class MazeState {
     private final boolean[][] gridState;
 
     private final List<Critter> critters;
-    private int score;
+    private static int score;
 
     private final Map<Critter, RealCoordinates> initialPos;
-    private int lives = 3;
+    private static int lives = 3;
 
     public MazeState(MazeConfig config) {
         this.config = config;
@@ -130,15 +130,25 @@ public final class MazeState {
                     return;
                 }
             }
+        }Bonus.spawnBonus(); // a une probabilite de faire spawn un bonus
+        for (var bonus : Bonus.values()) {
+            if (bonus.isActif() && bonus.getPos().equals(pacPos)) { // si pacman mange le bonus appelle la fonction
+                bonus.manger();
+            }
         }
     }
 
-    private void addScore(int increment) {
+    public static void addLives(int increment) {
+        lives += increment;
+        System.out.println("Lives: " + lives);
+    }
+
+    public static void addScore(int increment) {
         score += increment;
         displayScore();
     }
 
-    private void displayScore() {
+    private static void displayScore() {
         // FIXME: this should be displayed in the JavaFX view, not in the console
         System.out.println("Score: " + score);
     }
