@@ -4,6 +4,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import config.Cell;
+import config.MazeConfig;
 import geometry.IntCoordinates;
 
 /**
@@ -46,14 +48,15 @@ public enum Bonus {
 
     private static long time = System.currentTimeMillis();
     private static Random random = new Random();
+    static MazeConfig config = MazeConfig.makeExample1();
 
     /**
      * Génère un bonus aléatoire en fonction d'une probabilité.
      *
      * @return Un bonus généré aléatoirement ou null s'il n'y a pas de bonus.
      */
-    public static Bonus generateRandomBonus() {
-        int rd = random.nextInt(10);
+    private static Bonus generateRandomBonus() {
+        int rd = random.nextInt(6);
 
         if (rd == 1) {
             Bonus bonus = chooseRandomBonus();
@@ -95,7 +98,7 @@ public enum Bonus {
             Bonus b = generateRandomBonus();
             if (b != null) {
                 b.actif = true;
-                b.pos = new IntCoordinates(3, 3);
+                b.pos = spawnPosition();
             }
         }
     }
@@ -113,6 +116,8 @@ public enum Bonus {
                 break;
             case ECLAIR:
                 PacMan.INSTANCE.setSpeed(8);
+
+                // Timer pour rétablir la vitesse après un certain délai
                 Timer timer = new Timer();
                 timer.schedule(new TimerTask() {
                     @Override
@@ -120,10 +125,25 @@ public enum Bonus {
                         PacMan.INSTANCE.setSpeed(4);
                         timer.cancel();
                     }
-                }, 7000); // 7 secondes
+                }, 8000); // 8 secondes
                 break;
         }
         time = System.currentTimeMillis();
         this.actif = false;
+    }
+
+    /**
+     * Génère une position de spawn acessible pour le bonus.
+     *
+     * @return Les coordonnées de la position de spawn.
+     */
+    private static IntCoordinates spawnPosition() {
+        IntCoordinates i;
+        do {
+            int x = random.nextInt(config.getWidth());
+            int y = random.nextInt(config.getHeight());
+            i = new IntCoordinates(x, y);
+        } while (config.getCell(i).initialContent() != Cell.Content.DOT);
+        return i;
     }
 }
