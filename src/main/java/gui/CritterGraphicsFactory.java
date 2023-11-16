@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
+import model.Bonus;
 import model.Critter;
 import model.Direction;
 import model.Ghost;
@@ -82,6 +83,34 @@ public final class CritterGraphicsFactory {
                                 break;
                         }
                     }
+                }
+            }
+
+            @Override
+            public Node getNode() {
+                return image;
+            }
+        };
+    }
+
+    public GraphicsUpdater makeGraphics(Bonus bonus) {
+        var size = 0.7;
+        var url = switch (bonus) {
+            case CERISE -> "cerise.png";
+            case COEUR -> "coeur.png";
+            case ECLAIR -> "eclair.png";
+        };
+        var image = new ImageView(new Image(url, scale * size, scale * size, true, true));
+        image.setVisible(false);
+        return new GraphicsUpdater() {
+            @Override
+            public void update() {
+                if (bonus.isActif()) {
+                    image.setTranslateX((bonus.getPos().x() + (1 - size) / 2) * scale);
+                    image.setTranslateY((bonus.getPos().y() + (1 - size) / 2) * scale);
+                    image.setVisible(true);
+                }else{
+                    image.setVisible(false);
                 }
             }
 

@@ -54,8 +54,14 @@ public enum Bonus {
         return Bonuss[randomIndex];
     }
 
-    public void spawnBonus() {
-        if (System.currentTimeMillis() - time > 3000) {
+    public static void spawnBonus() {
+        boolean autorise = true; // n'autorise pas deux bonus actif en parallel
+        for (Bonus bonus : Bonus.values()) {
+            if(bonus.actif){
+                autorise = false; 
+            }
+        }
+        if (System.currentTimeMillis() - time > 3000 && autorise) {
             time = System.currentTimeMillis();
             Bonus b = generateRandomBonus();
             if (b != null) {
@@ -69,6 +75,7 @@ public enum Bonus {
                     @Override
                     public void run() {
                         b.actif = false;
+                        timer.cancel();
                     }
 
                 }, 10000); // 10 000 millisecondes = 10 secondes
@@ -76,4 +83,6 @@ public enum Bonus {
             }
         }
     }
+
+    
 }
