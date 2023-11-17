@@ -128,16 +128,16 @@ public enum Ghost implements Critter {
         IntCoordinates p = new IntCoordinates(x, y);
         // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est
         // deja passer
-        if (y > 0 && !config.getCell(p).northWall() && passerBlinky[x][y - 1] == false) {
+        if (y > 0 && !config.getCell(p).northWall() && passerBlinky[y - 1][x] == false) {
             possible.add('n');
         }
-        if (y < passerBlinky[0].length - 1 && !config.getCell(p).southWall() && passerBlinky[x][y + 1] == false) {
+        if (y < passerBlinky.length - 1 && !config.getCell(p).southWall() && passerBlinky[y + 1][x] == false) {
             possible.add('s');
         }
-        if (x < passerBlinky.length - 1 && !config.getCell(p).eastWall() && passerBlinky[x + 1][y] == false) {
+        if (x < passerBlinky[0].length - 1 && !config.getCell(p).eastWall() && passerBlinky[y][x + 1] == false) {
             possible.add('e');
         }
-        if (x > 0 && !config.getCell(p).westWall() && passerBlinky[x - 1][y] == false) {
+        if (x > 0 && !config.getCell(p).westWall() && passerBlinky[y][x - 1] == false) {
             possible.add('w');
         }
         return possible; // renvoie la liste de toute les directions des intersection
