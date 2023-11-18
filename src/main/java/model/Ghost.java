@@ -51,8 +51,12 @@ public enum Ghost implements Critter {
         return 1;
     }
 
-    // Cette méthode change le skin d'un fantome en fonction de l'état d'energized
-    // de Pac-Man
+    /**
+     * Change le skin du fantôme en fonction de l'état énergisé de Pac-Man.
+     *
+     * @return Un entier indiquant le changement de skin : 0 pour un skin normal, 1
+     *         pour un skin vulnérable, 2 pour aucun changement.
+     */
     public int changeSkin() {
         if (PacMan.INSTANCE.isEnergized() && skinVulnerable != 1) {
             skinVulnerable = 1; // Changement de skin requis
@@ -64,7 +68,11 @@ public enum Ghost implements Critter {
         return 2; // ne rien faire
     }
 
-    public static void updateGhostPositions() { // fais bouger les fantomes dans une direction aleatoires
+    /**
+     * Met à jour les positions de tous les fantômes en changeant aléatoirement
+     * leurs directions.
+     */
+    public static void updateGhostPositions() {
         Random rd = new Random();
         for (Ghost ghost : Ghost.values()) {
             switch (rd.nextInt(4)) {
@@ -76,6 +84,9 @@ public enum Ghost implements Critter {
         }
     }
 
+    /**
+     * Implémente le comportement IA du fantôme BLINKY.
+     */
     public void iaBlinky() {
         passerBlinky = new boolean[config.getHeight()][config.getWidth()];
         if (possible((int) BLINKY.pos.x(), (int) BLINKY.pos.y()).size() > 0 || BLINKY.direction == Direction.NONE) {
@@ -101,8 +112,14 @@ public enum Ghost implements Critter {
         }
     }
 
-    // algorithm de backtracking qui trouve tous les chemin ves pacman et les mets
-    // dans la liste satique TousCheminVersPacman
+    /**
+     * Trouve tous les chemins de la position actuelle du fantôme à Pac-Man en
+     * utilisant le backtracking.
+     *
+     * @param x      La coordonnée x de la position du fantôme.
+     * @param y      La coordonnée y de la position du fantôme.
+     * @param chemin Le chemin actuel en cours d'exploration.
+     */
     public void cheminVersPacman(int x, int y, List<Character> chemin) {
         passerBlinky[x][y] = true; // marque la position comme visite
 
@@ -137,7 +154,13 @@ public enum Ghost implements Critter {
 
     }
 
-    // verifie toute les intersection a une coordonnee x et y
+    /**
+     * Vérifie les directions possibles à une position donnée.
+     *
+     * @param x La coordonnée x de la position.
+     * @param y La coordonnée y de la position.
+     * @return Une liste de directions possibles à partir de la position donnée.
+     */
     public List<Character> possible(int x, int y) {
         List<Character> possible = new ArrayList<Character>();
         IntCoordinates p = new IntCoordinates(x, y);
@@ -158,8 +181,12 @@ public enum Ghost implements Critter {
         return possible; // renvoie la liste de toute les directions des intersection
     }
 
-    // applique l'algorithme de bactracking et renvoie la premiere Direction du plus
-    // court chemin vers pacman
+    /**
+     * Trouve la prochaine position pour le fantôme BLINKY en utilisant l'algorithme
+     * A*.
+     *
+     * @return La prochaine direction pour le fantôme.
+     */
     public Direction prochainePositionBlinky() {
         TousCheminVersPacman.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
         cheminVersPacman((int) BLINKY.pos.x(), (int) BLINKY.pos.y(), new ArrayList<Character>()); // calcule tous les
@@ -178,8 +205,13 @@ public enum Ghost implements Critter {
         return Direction.NONE; // renvoie None si pacman est innacessible ou si on est sur lui
     }
 
-    // change la direction de n'importe quel phantome donner en argument en
-    // s'alignant avec les tunnels si le fantome est dans un angle
+    /**
+     * Change la direction du fantôme, s'alignant avec les tunnels si le fantôme est
+     * à un angle.
+     *
+     * @param dir   La nouvelle direction pour le fantôme.
+     * @param ghost Le fantôme dont la direction est modifiée.
+     */
     public void changeDirection(Direction dir, Ghost ghost) {
         if (ghost.direction != dir) {
             if ((ghost.direction == Direction.WEST || ghost.direction == Direction.EAST)
@@ -202,6 +234,10 @@ public enum Ghost implements Critter {
         }
     }
 
+    /**
+     * Initie un comportement de fuite du fantôme, changeant de direction en
+     * fonction de la distance par rapport à Pac-Man.
+     */
     public static void fuite() {
         for (Ghost ghost : Ghost.values()) {
             // Liste des directions possibles
