@@ -24,7 +24,7 @@ public class App extends Application {
         //System.out.println("6");
         var maze = new MazeState(MazeConfig.makeExample1());
         //System.out.println("7");
-        var gameView = new GameView(maze, root, 30.0);
+        var gameView = new GameView(maze, root, 25.0); //changement du scale
         //System.out.println("8");
         primaryStage.setScene(gameScene);
         primaryStage.show();

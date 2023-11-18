@@ -50,7 +50,7 @@ public final class PacMan implements Critter {
      * @param direction direction du pacman
      * @return un bool si il y'a un mur en face de l'instance du PACMAN
      */
-    public static boolean  estPossible(Direction direction){
+    public boolean  estPossible(Direction direction){
         var pacPos = PacMan.INSTANCE.getPos().round();
         switch(direction){
             case NORTH:

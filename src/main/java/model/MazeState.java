@@ -3,6 +3,7 @@ package model;
 import config.MazeConfig;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
+import gui.PacmanController;
 
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public final class MazeState {
     }
 
     public void update(long deltaTns) {
-        Ghost.BLINKY.iaBlinky();
+        //Ghost.BLINKY.iaBlinky();
         // FIXME: too many things in this method. Maybe some responsibilities can be
         // delegated to other methods or classes?
         for (var critter : critters) {
@@ -96,15 +97,18 @@ public final class MazeState {
                 }
 
             }
-
+        
             critter.setPos(nextPos.warp(width, height));
+            
         }
         // FIXME Pac-Man rules should somehow be in Pacman class
         var pacPos = PacMan.INSTANCE.getPos().round();
-        if (!gridState[pacPos.y()][pacPos.x()]) {
+        if (!gridState[pacPos.y()][pacPos.x()] && (config.getCell(pacPos).initialContent() == config.getCell(pacPos).initialContent().DOT || config.getCell(pacPos).initialContent() == config.getCell(pacPos).initialContent().ENERGIZER)) {
             addScore(1);
             gridState[pacPos.y()][pacPos.x()] = true;
         }
+        
+        
         for (var critter : critters) {
             if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
                 if (PacMan.INSTANCE.isEnergized()) {

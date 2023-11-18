@@ -192,7 +192,7 @@ public class MazeConfig {
      */
     public static MazeConfig makeExample1() {
         
-        String filePath = "src/main/resources/maze.txt";
+        String filePath = "src/main/resources/maze2.txt";
         BufferedReader reader = null;
         itemDictionary();
         wallDictionary();
@@ -238,7 +238,50 @@ public class MazeConfig {
      * @param filePath chemin du fichier
      * @return MazeConfig
      */
-    
+    public MazeConfig makeLabyrinthe(String filePath) {
+        
+       
+        BufferedReader reader = null;
+        itemDictionary();
+        wallDictionary();
+        IntCoordinates[] pos = new IntCoordinates[5];
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+            String[] xy = line.split(" ");
+            
+            Cell[][] grid = new Cell[Integer.parseInt(xy[0])][Integer.parseInt(xy[1])];
+            
+            String l1 = reader.readLine();
+            String l2 = reader.readLine(); 
+            String l3 = reader.readLine(); 
+            detector(Integer.parseInt(xy[1]),0, l1, l2, l3, grid,pos);
+            
+            for(int i = 1 ; i < Integer.parseInt(xy[0]) ; i++){
+                l1 = l3; 
+                l2 = reader.readLine();  
+                l3 = reader.readLine(); 
+                
+                detector(Integer.parseInt(xy[1]), i, l1, l2, l3, grid,pos);
+                
+            }
+            
+            
+                return new MazeConfig(grid,
+                pos[0],
+                pos[1],
+                pos[2],
+                pos[3],
+                pos[4]);
+                
+        }  
+            catch (IOException e) {
+            System.out.println("Le fichier n'existe pas.");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     
     
         

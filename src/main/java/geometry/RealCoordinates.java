@@ -68,11 +68,10 @@ public record RealCoordinates(double x, double y) {
             ry += height;
         while (Math.round(rx) >= width)
             rx -= width;
-        while (Math.round(rx) >= height)
+        while (Math.round(ry) >= height)
             ry -= height;
         return new RealCoordinates(rx, ry);
-    }
-
+    }  
     public double distance(RealCoordinates other) {
         return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
     }
