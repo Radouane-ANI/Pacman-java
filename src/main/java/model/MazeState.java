@@ -195,7 +195,6 @@ public final class MazeState {
             isGameRunning=false;
 
             FinalScreen fs = new FinalScreen(false);
-
             gameRoot.getChildren().add(fs.getFinalScreenLayout());
         }else{
             System.out.println("Lives: " + lives);

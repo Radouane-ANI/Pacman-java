@@ -23,7 +23,7 @@ public final class CritterGraphicsFactory {
 
     public GraphicsUpdater makeGraphics(Critter critter) {
         var size = 0.7;
-        var url = (critter instanceof PacMan) ? switch (Data.getskin()){
+        var url = (critter instanceof PacMan) ? switch (Data.getskin()){//switch qui sert a choisir l'image correspond a la créature et a son skin
             case 1 -> "pacman.png";
             case 2 -> "pacmanblue.png";
             case 3 -> "pacmangreen.png";

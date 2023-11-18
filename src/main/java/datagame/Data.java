@@ -6,6 +6,7 @@ import model.*;
 import javafx.stage.Stage;
 
 public class Data {
+    //Base de donnée, chaque donnée est protégé avec un champs private. Avec getter/setter associé
     private static Stage primaryStage;
     public static Stage getprimaryStage(){return primaryStage;}
     public static void setprimaryStage(Stage p){primaryStage=p;}

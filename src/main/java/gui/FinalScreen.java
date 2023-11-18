@@ -30,7 +30,8 @@ public class FinalScreen {
         setupButton(playAgainButton, () ->{
             Game game = new Game();
             primaryStage.setScene(game.getScene());
-        });
+        });//À chaque nouvelle partie une nouvelle instance de Game est crée ce qui permet un réeinitialisation complete du jeu
+
         setupButton(exitButton, () -> {System.exit(0);});
         setupButton(homeButton, () -> {
             MainMenu mainMenu = new MainMenu();

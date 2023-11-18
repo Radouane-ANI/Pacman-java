@@ -29,19 +29,22 @@ public class PacmanSkin {
     private void initialize() {
         Pane root = new Pane();
 
+        //Image de fond
         Image imagebg = new Image(/* ../ressources/*/"accueil.jpg");
         ImageView imageViewbg = new ImageView(imagebg);
         imageViewbg.setFitHeight(500); // Hauteur ajustée pour l'image de fond
         imageViewbg.setFitWidth(500);  // Largeur ajustée pour l'image de fond
 
+        //Bouton pour retourner au menu d'accueil
         Button home = new Button("Home");
         setupButton(home, () -> {
             primaryStage.setScene(mainMenu.getScene());
             primaryStage.show();
         });
-        home.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");
-        applyHoverAnimation(home);
+        home.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");//style
+        applyHoverAnimation(home);//animation
 
+        //création des boutons avec leurs images et actions
         Button pacman = createImageButton(/* ../ressources/*/"pacman.png");
         setupButton(pacman, () -> {Data.setskin(1);});
         Button pacmanblue = createImageButton(/* ../ressources/*/"pacmanblue.png");
@@ -49,6 +52,7 @@ public class PacmanSkin {
         Button pacmangreen = createImageButton(/* ../ressources/*/"pacmangreen.png");
         setupButton(pacmangreen, () -> {Data.setskin(3);});
 
+        //positionnements des elements
         home.setLayoutX(220);
         home.setLayoutY(350);
         pacman.setLayoutX(100);
@@ -58,11 +62,18 @@ public class PacmanSkin {
         pacmangreen.setLayoutX(300);
         pacmangreen.setLayoutY(200);
 
+        //ajout des elements au Pane
         root.getChildren().addAll(imageViewbg, home, pacman, pacmanblue, pacmangreen);
 
+        //Création d'une nouvelle scene avec pour argument notre Pane root
         scene = new Scene(root, 500, 500);
     }
 
+    /**
+     * Methode qui sert a creer des image cliquable avec une action associé
+     * @param imagePath chemin de l'image
+     * @return
+     */
     private Button createImageButton(String imagePath) {
         Image image = new Image(imagePath);
         ImageView imageView = new ImageView(image);
@@ -75,11 +86,20 @@ public class PacmanSkin {
         return button;
     }
 
+    /**
+     * Animation d'un boutton
+     * @param button
+     */
     private void applyHoverAnimation(Button button) {
         button.setOnMousePressed(e -> button.setStyle("-fx-background-color: violet; -fx-text-fill: black; -fx-font-size: 16px;"));
         button.setOnMouseReleased(e -> button.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;"));
     }
 
+    /**
+     * associe a un bouton une action
+     * @param button
+     * @param action
+     */
     private void setupButton(Button button, ButtonAction action) {
         button.setOnAction(e -> action.performAction());
         applyHoverAnimation(button);
