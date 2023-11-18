@@ -1,6 +1,8 @@
 package gui;
 
 import geometry.IntCoordinates;
+import model.MazeState;
+
 import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Pane;
 import model.Bonus;

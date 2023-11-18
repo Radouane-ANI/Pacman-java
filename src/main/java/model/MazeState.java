@@ -5,14 +5,16 @@ import config.MazeConfig;
 import config.Cell.Content;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
+import gui.FinalScreen;
+import datagame.Data;
+
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javafx.stage.Stage;
 
 import static model.Ghost.*;
 
@@ -36,8 +38,8 @@ public final class MazeState {
     Stage primaryStage;
     Pane gameRoot;
 
-    public MazeState(MazeConfig config, Pane gameRoot,Stage primaryStage) {
-        this.primaryStage = primaryStage;
+    public MazeState(MazeConfig config, Pane gameRoot) {
+        this.primaryStage = Data.getprimaryStage();
         this.config = config;
         this.gameRoot = gameRoot;
 
@@ -204,13 +206,8 @@ public final class MazeState {
         boulbirespawn = false;
         if (lives == 0) {
             isGameRunning=false;
-            ButtonAction playAgainAction = () -> {
-                System.out.println("Reset game");
-                restartGame();
-            };
 
-            FinalScreen fs = new FinalScreen(playAgainAction, primaryStage, false);
-
+            FinalScreen fs = new FinalScreen(false);
             gameRoot.getChildren().add(fs.getFinalScreenLayout());
         }else{
             System.out.println("Lives: " + lives);
@@ -241,19 +238,10 @@ public final class MazeState {
      * Si Pacman a mangé tous les points alors on affiche l'ecran YOU WIN.
      */
     private void playerWin(){
-        // for (boolean[] t : gridState) {
-        //     for (boolean value : t) {
-        //         System.out.println(value);
-        //     }
-        // }
         if(areAllTrue(gridState)){
             isGameRunning=false;
-            ButtonAction playAgainAction = () -> {
-                System.out.println("Reset game");
-                restartGame();
-            };
 
-            FinalScreen fs = new FinalScreen(playAgainAction, primaryStage, true);
+            FinalScreen fs = new FinalScreen(true);
 
             gameRoot.getChildren().add(fs.getFinalScreenLayout());
         }
@@ -267,34 +255,6 @@ public final class MazeState {
     private void resetCritters() {
         for (var critter : critters)
             resetCritter(critter);
-    }
-
-    /**
-     * Permet de réeinitialiser Gridstate le nombre de vies et le nombre de points.
-     */
-    private void resetGame() {
-        resetCritters();
-        for(boolean[] k:gridState) for(int i=0;i<k.length-1;i++){
-            k[i]=false;
-        }
-        gridState_init(gridState, grid);
-        lives=3;
-        score=0;
-        this.config = MazeConfig.makeExample1();System.out.println(Bonus.CERISE.isApparut());
-        for(Bonus bonus : Bonus.values()){
-            bonus.setApparut(false);
-            bonus.setActif(false);
-        }
-
-    }
-
-    /**
-     * Permet de réeinitialiser toutes les valeurs du jeu afin de commencer une nouvelle partie.
-     */
-    private void restartGame() {
-        resetGame();// Réinitialisez toutes les valeurs du jeu à l'état initial
-        isGameRunning = true; // Redémarrez le jeu
-        gameRoot.getChildren().remove(gameRoot.getChildren().size() - 1);
     }
 
     public MazeConfig getConfig() {
