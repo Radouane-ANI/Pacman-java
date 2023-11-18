@@ -1,10 +1,12 @@
 package gui;
 
+import model.ButtonAction;
+import datagame.Data;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import model.ButtonAction;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -12,9 +14,11 @@ public class MainMenu {
     // Menu d'accueil
     private Scene scene;
     private Stage stage;
+    PacmanSkin skin;
 
-    public MainMenu(Stage stage) {
-        this.stage = stage;
+    public MainMenu() {
+        skin = new PacmanSkin(this);
+        this.stage = Data.getprimaryStage();
         initialize();
     }
 
@@ -32,11 +36,21 @@ public class MainMenu {
         
         // Création du bouton pour jouer
         Button playButton = new Button("Jouer");
-        playButton.setOnAction(e -> startGame());
+        playButton.setOnAction(e -> {
+            startGame();
+        });
         playButton.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");
         applyHoverAnimation(playButton);
         playButton.setLayoutX(40);
         playButton.setLayoutY(200);
+
+        // Création du bouton pour choisir les skin
+        Button changeskin = new Button("Skin");
+        changeskin.setOnAction(e -> changeSkin());
+        changeskin.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");
+        applyHoverAnimation(changeskin);
+        changeskin.setLayoutX(230);
+        changeskin.setLayoutY(200);
 
         var image = new ImageView(new Image(/* ../ressources/*/"accueil.jpg"));
         image.setFitWidth(500);
@@ -44,7 +58,7 @@ public class MainMenu {
         image.setPreserveRatio(false);
 
         // Ajout des elements au layout
-        root.getChildren().addAll(image, playButton, exitButton);
+        root.getChildren().addAll(image, playButton, exitButton,changeskin);
         
         // Création de la scène avec le layout
         scene = new Scene(root, 500, 500);
@@ -55,8 +69,16 @@ public class MainMenu {
      * Définition de la scène de jeu comme scène principale de la fenêtre
      */
     private void startGame() {
-        Game game = new Game(stage);
+        Game game = new Game();
         stage.setScene(game.getScene());
+    }
+
+    /**
+     * Création de l'instance de la classe Game qui lance le jeu
+     * Définition de la scène de jeu comme scène principale de la fenêtre
+     */
+    private void changeSkin() {
+        stage.setScene(skin.getScene());
     }
 
     /**

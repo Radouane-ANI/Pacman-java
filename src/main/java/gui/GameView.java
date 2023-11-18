@@ -1,9 +1,10 @@
 package gui;
 
 import geometry.IntCoordinates;
+import model.MazeState;
+
 import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Pane;
-import model.MazeState;
 
 import java.util.ArrayList;
 import java.util.List;

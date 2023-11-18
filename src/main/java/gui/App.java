@@ -1,12 +1,15 @@
 package gui;
 
+import datagame.Data;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
-        MainMenu mainMenu = new MainMenu(primaryStage);
+        Data.setprimaryStage(primaryStage);
+        MainMenu mainMenu = new MainMenu();
         primaryStage.setTitle("Pac-Man");
         primaryStage.setScene(mainMenu.getScene());
         primaryStage.show();
