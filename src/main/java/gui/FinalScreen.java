@@ -23,14 +23,11 @@ public class FinalScreen {
     private final Button homeButton = new Button("Home");
     boolean win;
 
-    public FinalScreen(boolean win) {
+    public FinalScreen(ButtonAction reseAction, boolean win) {
         Stage primaryStage = Data.getprimaryStage();
         this.win = win;
 
-        setupButton(playAgainButton, () ->{
-            Game game = new Game();
-            primaryStage.setScene(game.getScene());
-        });//À chaque nouvelle partie une nouvelle instance de Game est crée ce qui permet un réeinitialisation complete du jeu
+        setupButton(playAgainButton, reseAction);//À chaque nouvelle partie une nouvelle instance de Game est crée ce qui permet un réeinitialisation complete du jeu
 
         setupButton(exitButton, () -> {System.exit(0);});
         setupButton(homeButton, () -> {

@@ -6,6 +6,7 @@ import config.Cell.Content;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
 import gui.FinalScreen;
+import gui.Game;
 import datagame.Data;
 
 import javafx.scene.layout.Pane;
@@ -207,7 +208,13 @@ public final class MazeState {
         if (lives == 0) {
             isGameRunning=false;
 
-            FinalScreen fs = new FinalScreen(false);
+            ButtonAction resetAction = () -> {
+                System.out.println("Reset game");
+                resetGame();
+                Game game = new Game();
+                primaryStage.setScene(game.getScene());
+            };
+            FinalScreen fs = new FinalScreen(resetAction,false);
             gameRoot.getChildren().add(fs.getFinalScreenLayout());
         }else{
             System.out.println("Lives: " + lives);
@@ -241,7 +248,13 @@ public final class MazeState {
         if(areAllTrue(gridState)){
             isGameRunning=false;
 
-            FinalScreen fs = new FinalScreen(true);
+            ButtonAction resetAction = () -> {
+                System.out.println("Reset game");
+                resetGame();
+                Game game = new Game();
+                primaryStage.setScene(game.getScene());
+            };
+            FinalScreen fs = new FinalScreen(resetAction,false);
 
             gameRoot.getChildren().add(fs.getFinalScreenLayout());
         }
@@ -280,12 +293,12 @@ public final class MazeState {
 
     /**
      * Permet de réeinitialiser toutes les valeurs du jeu afin de commencer une nouvelle partie.
-     */
+     *//*
     private void restartGame() {
         resetGame();// Réinitialisez toutes les valeurs du jeu à l'état initial
         isGameRunning = true; // Redémarrez le jeu
         gameRoot.getChildren().remove(gameRoot.getChildren().size() - 1);
-    }
+    }*/
 
 
     public MazeConfig getConfig() {
