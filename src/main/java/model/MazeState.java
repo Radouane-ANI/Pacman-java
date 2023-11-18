@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import static model.Ghost.*;
 
 public final class MazeState {
-    private final MazeConfig config;
+    private MazeConfig config;
     private final int height;
     private final int width;
     private boolean isGameRunning = true;
@@ -27,10 +27,10 @@ public final class MazeState {
     private final Cell[][] grid;
 
     private final List<Critter> critters;
-    private int score;
+    private static int score;
 
     private final Map<Critter, RealCoordinates> initialPos;
-    private int lives = 3;
+    private static int lives = 3;
 
 
     Stage primaryStage;
@@ -124,13 +124,7 @@ public final class MazeState {
             }
             var pacPos = PacMan.INSTANCE.getPos().round();
             if(PacMan.INSTANCE.PacManDot(gridState))addScore(1);
-            if (config.getCell(pacPos).initialContent() == Content.ENERGIZER) {
-                // Change le contenu de la cellule en NOTHING.
-                config.setCell(pacPos, config.getCell(pacPos).updateNextItemType(Content.NOTHING));
-    
-                // Activez energized sur Pac-Man
-                PacMan.INSTANCE.setEnergized(true);
-            }
+            
             // Vérifie si la cellule où se trouve Pac-Man contient un Energizer
             if (config.getCell(pacPos).initialContent() == Content.ENERGIZER) {
                 // Change le contenu de la cellule en NOTHING.
@@ -145,10 +139,16 @@ public final class MazeState {
                     if (PacMan.INSTANCE.isEnergized()) {
                         addScore(10);
                         resetCritter(critter);
-                    }/*else {
+                    }else {
                         playerLost();
                         return;
-                    }*/
+                    }
+                }
+            }
+            Bonus.spawnBonus(); // a une probabilite de faire spawn un bonus
+            for (var bonus : Bonus.values()) {
+                if (bonus.isActif() && bonus.getPos().equals(pacPos)) { // si pacman mange le bonus appelle la fonction
+                    bonus.manger();
                 }
             }
             playerWin(); // si tous les points sont recuperé le win screen sera affiché
@@ -176,12 +176,17 @@ public final class MazeState {
         }
     }
 
-    private void addScore(int increment) {
+    public static void addLives(int increment) {
+        lives += increment;
+        System.out.println("Lives: " + lives);
+    }
+
+    public static void addScore(int increment) {
         score += increment;
         displayScore();
     }
 
-    private void displayScore() {
+    private static void displayScore() {
         // FIXME: this should be displayed in the JavaFX view, not in the console
         System.out.println("Score: " + score);
     }
@@ -236,11 +241,11 @@ public final class MazeState {
      * Si Pacman a mangé tous les points alors on affiche l'ecran YOU WIN.
      */
     private void playerWin(){
-        for (boolean[] t : gridState) {
-            for (boolean value : t) {
-                System.out.println(value);
-            }
-        }
+        // for (boolean[] t : gridState) {
+        //     for (boolean value : t) {
+        //         System.out.println(value);
+        //     }
+        // }
         if(areAllTrue(gridState)){
             isGameRunning=false;
             ButtonAction playAgainAction = () -> {
@@ -275,6 +280,11 @@ public final class MazeState {
         gridState_init(gridState, grid);
         lives=3;
         score=0;
+        this.config = MazeConfig.makeExample1();System.out.println(Bonus.CERISE.isApparut());
+        for(Bonus bonus : Bonus.values()){
+            bonus.setApparut(false);
+            bonus.setActif(false);
+        }
 
     }
 
@@ -293,5 +303,13 @@ public final class MazeState {
 
     public boolean getGridState(IntCoordinates pos) {
         return gridState[pos.y()][pos.x()];
+    }
+
+    public static int getScore() {
+        return score;
+    }
+    
+    public static int getLives() {
+        return lives;
     }
 }

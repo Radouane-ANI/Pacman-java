@@ -67,7 +67,7 @@ public class CellGraphicsFactory {
         return new GraphicsUpdater() {
             @Override
             public void update() {
-                dot.setVisible(!state.getGridState(pos));
+                dot.setVisible((!state.getGridState(pos)) || state.getConfig().getCell(pos).isEnergizer());
             }
 
             @Override

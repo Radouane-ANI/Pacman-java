@@ -3,6 +3,7 @@ package gui;
 import geometry.IntCoordinates;
 import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Pane;
+import model.Bonus;
 import model.MazeState;
 
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class GameView {
         graphicsUpdaters = new ArrayList<>();
         for (var critter : maze.getCritters())
             addGraphics(critterFactory.makeGraphics(critter));
+        for (var bonus : Bonus.values())
+            addGraphics(critterFactory.makeGraphics(bonus));
         for (int x = 0; x < maze.getWidth(); x++)
             for (int y = 0; y < maze.getHeight(); y++)
                 addGraphics(cellFactory.makeGraphics(maze, new IntCoordinates(x, y)));

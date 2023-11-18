@@ -14,6 +14,11 @@ public final class PacMan implements Critter {
     private RealCoordinates pos;
     private boolean energized;
     private boolean reEnergized;
+    private int speed = 4;
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 
     private PacMan() {
     }
@@ -27,7 +32,7 @@ public final class PacMan implements Critter {
 
     @Override
     public double getSpeed() {
-        return isEnergized() ? 6 : 4;
+        return isEnergized() ? speed + 2 : speed;
     }
 
     @Override
@@ -49,15 +54,14 @@ public final class PacMan implements Critter {
      * @param gridState
      * @return retourne s'il y a un dot a l'endroit ou pacman se trouve
      */
-    public boolean PacManDot(boolean[][] gridState){
+    public boolean PacManDot(boolean[][] gridState) {
         IntCoordinates pacPos = PacMan.INSTANCE.getPos().round();
-        if (!gridState[pacPos.y()][pacPos.x()]) {    
+        if (!gridState[pacPos.y()][pacPos.x()]) {
             gridState[pacPos.y()][pacPos.x()] = true;
             return true;
         }
         return false;
     }
-
 
     /**
      *
@@ -68,17 +72,24 @@ public final class PacMan implements Critter {
         return energized;
     }
 
+    /**
+     * Définit l'état énergisé de Pac-Man et programme une tâche pour désactiver
+     * l'état énergisé après 5 secondes.
+     *
+     * @param energized Le nouvel état énergisé.
+     */
     public void setEnergized(boolean energized) {
         if (energized) {
-            if (this.energized) { // verifie si pacman a deja prisun energiseur
+            if (this.energized) { // verifie si pacman a deja pris un energiseur
                 this.reEnergized = true;
             }
-            // Planifiez une tâche pour désactiver energized après 5 secondes
+
+            // Programme une tâche pour désactiver l'état énergisé après 5 secondes
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if (!reEnergized) { // si pacman a deja prisun energiseur ne desactive pas l'energiseur
+                    if (!reEnergized) { // si pacman a deja pris un energiseur ne desactive pas l'energiseur
                         PacMan.INSTANCE.setEnergized(false);
                         timer.cancel();
                     }
@@ -89,6 +100,11 @@ public final class PacMan implements Critter {
         this.energized = energized;
     }
 
+    /**
+     * Change l'apparence de Pac-Man.
+     *
+     * @return La valeur de l'apparence.
+     */
     public int changeSkin() {
         return 2;
     }
