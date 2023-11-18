@@ -1,6 +1,9 @@
-package model;
+package gui;
 
-import gui.MainMenu;
+import model.ButtonAction;
+import datagame.Data;
+import gui.Game;
+
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -13,7 +16,6 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-
 public class FinalScreen {
     private final Group FinalScreenLayout = new Group();
     private final Button playAgainButton = new Button("Rejouer");
@@ -21,13 +23,17 @@ public class FinalScreen {
     private final Button homeButton = new Button("Home");
     boolean win;
 
-    public FinalScreen(ButtonAction playAgainAction, Stage primaryStage, boolean win) {
+    public FinalScreen(boolean win) {
+        Stage primaryStage = Data.getprimaryStage();
         this.win = win;
 
-        setupButton(playAgainButton, playAgainAction);
+        setupButton(playAgainButton, () ->{
+            Game game = new Game();
+            primaryStage.setScene(game.getScene());
+        });
         setupButton(exitButton, () -> {System.exit(0);});
         setupButton(homeButton, () -> {
-            MainMenu mainMenu = new MainMenu(primaryStage);
+            MainMenu mainMenu = new MainMenu();
             primaryStage.setScene(mainMenu.getScene());
             primaryStage.show();
         });
@@ -69,5 +75,5 @@ public class FinalScreen {
         button.setOnMouseReleased(e -> button.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;"));
     }
 
-    Node getFinalScreenLayout(){return FinalScreenLayout;}
+    public Node getFinalScreenLayout(){return FinalScreenLayout;}
 }
