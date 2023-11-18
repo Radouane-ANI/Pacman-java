@@ -250,12 +250,43 @@ public final class MazeState {
     private void resetCritter(Critter critter) {
         critter.setDirection(Direction.NONE);
         critter.setPos(initialPos.get(critter));
+        if(critter instanceof PacMan)
+        ((PacMan)critter).setEnergized(false);
     }
 
     private void resetCritters() {
         for (var critter : critters)
             resetCritter(critter);
     }
+
+    /**
+     * Permet de réeinitialiser Gridstate le nombre de vies et le nombre de points.
+     */
+    private void resetGame() {
+        resetCritters();
+        for(boolean[] k:gridState) for(int i=0;i<k.length-1;i++){
+            k[i]=false;
+        }
+        gridState_init(gridState, grid);
+        lives=3;
+        score=0;
+        this.config = MazeConfig.makeExample1();System.out.println(Bonus.CERISE.isApparut());
+        for(Bonus bonus : Bonus.values()){
+            bonus.setApparut(false);
+            bonus.setActif(false);
+        }
+
+    }
+
+    /**
+     * Permet de réeinitialiser toutes les valeurs du jeu afin de commencer une nouvelle partie.
+     */
+    private void restartGame() {
+        resetGame();// Réinitialisez toutes les valeurs du jeu à l'état initial
+        isGameRunning = true; // Redémarrez le jeu
+        gameRoot.getChildren().remove(gameRoot.getChildren().size() - 1);
+    }
+
 
     public MazeConfig getConfig() {
         return config;
