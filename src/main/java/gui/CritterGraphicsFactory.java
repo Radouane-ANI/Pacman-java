@@ -10,6 +10,7 @@ import model.Direction;
 import model.Ghost;
 import model.MazeState;
 import model.PacMan;
+import datagame.Data;
 
 public final class CritterGraphicsFactory {
     private final double scale;
@@ -22,7 +23,12 @@ public final class CritterGraphicsFactory {
 
     public GraphicsUpdater makeGraphics(Critter critter) {
         var size = 0.7;
-        var url = (critter instanceof PacMan) ? "pacman.png" : switch ((Ghost) critter) {
+        var url = (critter instanceof PacMan) ? switch (Data.getskin()){
+            case 1 -> "pacman.png";
+            case 2 -> "pacmanblue.png";
+            case 3 -> "pacmangreen.png";
+            default -> "pacman.png";
+        } : switch ((Ghost) critter) {
             case BLINKY -> "ghost_blinky.png";
             case CLYDE -> "ghost_clyde.png";
             case INKY -> "ghost_inky.png";
@@ -53,12 +59,13 @@ public final class CritterGraphicsFactory {
                     // Jouez l'animation
                     fadeTransition.play();
                     image.setImage(new Image(url, scale * size, scale * size, true, true));
-                } else if (!(critter instanceof PacMan) && skin == 1) {
+                }else if (!(critter instanceof PacMan) && skin == 1) {
                     image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
                 }
                 image.setTranslateX((critter.getPos().x() + (1 - size) / 2) * scale);
                 image.setTranslateY((critter.getPos().y() + (1 - size) / 2) * scale);
                 if (critter instanceof PacMan) {
+                    
                     if (state.GetBoulbi()) {
                         image.setRotate(0);
                         image.setScaleX(1);
