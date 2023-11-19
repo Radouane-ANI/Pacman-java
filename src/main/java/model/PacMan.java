@@ -41,13 +41,13 @@ public final class PacMan implements Critter {
 
     @Override
     public void setDirection(Direction direction) {
-        
+        this.prevpos = this.pos;
         this.direction = direction;
     }
 
     @Override
     public void setPos(RealCoordinates pos) {
-        
+        this.prevpos = this.pos;
         this.pos = pos;
     }
     /**
