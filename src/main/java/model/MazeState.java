@@ -210,9 +210,7 @@ public final class MazeState {
 
             ButtonAction resetAction = () -> {
                 System.out.println("Reset game");
-                resetGame();
-                Game game = new Game();
-                primaryStage.setScene(game.getScene());
+                restartGame();
             };
             FinalScreen fs = new FinalScreen(resetAction,false);
             gameRoot.getChildren().add(fs.getFinalScreenLayout());
@@ -250,11 +248,9 @@ public final class MazeState {
 
             ButtonAction resetAction = () -> {
                 System.out.println("Reset game");
-                resetGame();
-                Game game = new Game();
-                primaryStage.setScene(game.getScene());
+                restartGame();
             };
-            FinalScreen fs = new FinalScreen(resetAction,false);
+            FinalScreen fs = new FinalScreen(resetAction,true);
 
             gameRoot.getChildren().add(fs.getFinalScreenLayout());
         }
@@ -293,12 +289,12 @@ public final class MazeState {
 
     /**
      * Permet de réeinitialiser toutes les valeurs du jeu afin de commencer une nouvelle partie.
-     *//*
+     */
     private void restartGame() {
-        resetGame();// Réinitialisez toutes les valeurs du jeu à l'état initial
-        isGameRunning = true; // Redémarrez le jeu
+        resetGame();
         gameRoot.getChildren().remove(gameRoot.getChildren().size() - 1);
-    }*/
+        isGameRunning = true;
+    }
 
 
     public MazeConfig getConfig() {
