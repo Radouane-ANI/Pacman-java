@@ -5,10 +5,7 @@ import geometry.IntCoordinates;
 import static config.Cell.Content.DOT;
 import static config.Cell.*;
 import static config.Cell.Content.NOTHING;
-
 import static config.Cell.Content.ENERGIZER; // Ajout de la constante ENERGIZER
-
-
 import java.io.File ; // Ajout de la classe File
 import java.io.FileNotFoundException ; // Ajout de la classe FileNotFoundException pour gérer l'exception si le fichier n'extiste pas
 import java.io.FileReader;
@@ -36,23 +33,11 @@ public class MazeConfig {
         this.inkyPos = inkyPos;
         this.clydePos = clydePos;
     }
-    /**
-     * Constructeur de MazeConfig qui prend en argument le chemin du fichier
-     * et realize le labyrinthe à partir de ce fichier
-     * @param filepath chemin du fichier
-     */
-    
 
     private final Cell[][] grid;
     private final IntCoordinates pacManPos, blinkyPos, pinkyPos, inkyPos, clydePos;
     private static Map<Character, Cell.Content> itemDictionary = new HashMap<>();
     private static Map<Character, Boolean> wallDictionary = new HashMap<>();
-    /**
-     * Initialise les dictionnaires itemDictionary et wallDictionary
-     * 
-     * 
-     * 
-     */
     private static void itemDictionary(){
         if(itemDictionary.size() != 0) return;
         itemDictionary.put('E', ENERGIZER);
@@ -103,7 +88,8 @@ public class MazeConfig {
     public Cell getCell(IntCoordinates pos) {
         return grid[Math.floorMod(pos.y(), getHeight())][Math.floorMod(pos.x(), getWidth())];
     }
-    /**
+        
+/**
      * Detecte les murs et les items dans une ligne du fichier et les ajoute dans le tableau grid et ajoute les positions des items (Pacman,les fantomes) dans le tableau pos
      * @param width largeur du labyrinthe
      * @param y ordonnée de la ligne qu'on est entrain de lire
@@ -176,6 +162,10 @@ public class MazeConfig {
     public void setCell(IntCoordinates pos, Cell c){
         grid[Math.floorMod(pos.y(), getHeight())][Math.floorMod(pos.x(), getWidth())] = c;
     }
+    /**
+     * Affiche le tableau grid
+     * @param tabCells tableau de cellules
+     */
     public static void affichegrid(Cell[][] tabCells){
         for(int i = 0 ; i < tabCells.length ; i++){
             for(int j = 0 ; j < tabCells[0].length ; j++){
@@ -278,13 +268,7 @@ public class MazeConfig {
             catch (IOException e) {
             System.out.println("Le fichier n'existe pas.");
             e.printStackTrace();
-            return null;
+            }
         }
     }
-
-    
-    
-        
-        
-}
 
