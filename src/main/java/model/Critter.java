@@ -8,9 +8,6 @@ public sealed interface Critter permits Ghost, PacMan {
     Direction getDirection();
 
     double getSpeed();
-    
-    int changeSkin();
-
 
     /**
      * @param deltaTNanoSeconds time since the last update in nanoseconds
