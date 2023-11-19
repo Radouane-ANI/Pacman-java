@@ -192,7 +192,7 @@ public class MazeConfig {
      */
     public static MazeConfig makeExample1() {
         
-        String filePath = "src/main/resources/maze2.txt";
+        String filePath = "src/main/resources/maze.txt";
         BufferedReader reader = null;
         itemDictionary();
         wallDictionary();
