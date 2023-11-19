@@ -268,6 +268,7 @@ public class MazeConfig {
             catch (IOException e) {
             System.out.println("Le fichier n'existe pas.");
             e.printStackTrace();
+            return null;
             }
         }
     }
