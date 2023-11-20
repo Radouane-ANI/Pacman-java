@@ -142,10 +142,10 @@ public final class MazeState {
                     if (PacMan.INSTANCE.isEnergized()) {
                         addScore(10);
                         resetCritter(critter);
-                    }else {
+                    }/*else {
                         playerLost();
                         return;
-                    }
+                    }*/
                 }
             }
             Bonus.spawnBonus(); // a une probabilite de faire spawn un bonus
@@ -254,7 +254,7 @@ public final class MazeState {
                 Game game = new Game();
                 primaryStage.setScene(game.getScene());
             };
-            FinalScreen fs = new FinalScreen(resetAction,false);
+            FinalScreen fs = new FinalScreen(resetAction,true);
 
             gameRoot.getChildren().add(fs.getFinalScreenLayout());
         }
