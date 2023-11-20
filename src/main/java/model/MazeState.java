@@ -279,7 +279,7 @@ public final class MazeState {
         gridState_init(gridState, grid);
         lives=3;
         score=0;
-        this.config = MazeConfig.makeExample1();System.out.println(Bonus.CERISE.isApparut());
+        this.config = MazeConfig.makeExample1();
         for(Bonus bonus : Bonus.values()){
             bonus.setApparut(false);
             bonus.setActif(false);
@@ -290,7 +290,7 @@ public final class MazeState {
     /**
      * Permet de réeinitialiser toutes les valeurs du jeu afin de commencer une nouvelle partie.
      */
-    private void restartGame() {
+    public void restartGame() {
         resetGame();
         gameRoot.getChildren().remove(gameRoot.getChildren().size() - 1);
         isGameRunning = true;

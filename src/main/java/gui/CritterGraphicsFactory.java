@@ -62,6 +62,15 @@ public final class CritterGraphicsFactory {
                     image.setImage(new Image(url, scale * size, scale * size, true, true));
                 }else if (!(critter instanceof PacMan) && skin == 1) {
                     image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
+                } else if ((critter instanceof PacMan) && PacMan.INSTANCE.changeSkin() != Data.getskin()) {
+                    var url = switch (Data.getskin()) {// switch qui sert a choisir l'image correspond a la créature et
+                                                       // a son skin
+                        case 1 -> "pacman.png";
+                        case 2 -> "pacmanblue.png";
+                        case 3 -> "pacmangreen.png";
+                        default -> "pacman.png";
+                    };PacMan.INSTANCE.setSkin(Data.getskin());
+                    image.setImage(new Image(url, scale * size, scale * size, true, true));
                 }
                 image.setTranslateX((critter.getPos().x() + (1 - size) / 2) * scale);
                 image.setTranslateY((critter.getPos().y() + (1 - size) / 2) * scale);

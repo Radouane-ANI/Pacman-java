@@ -19,6 +19,15 @@ public class Data {
     public static int getskin(){return skin;}
     public static void setskin(int s){skin=s;}
 
+    private static Game game;
+    public static Game getGame() {
+        return game;
+    }
+    public static void setGame(Game g) {
+        game = g;
+    }
+
+
 
 
     /*

@@ -15,6 +15,11 @@ public final class PacMan implements Critter {
     private boolean energized;
     private boolean reEnergized;
     private int speed = 4;
+    private int skin;
+
+    public void setSkin(int skin) {
+        this.skin = skin;
+    }
 
     public void setSpeed(int speed) {
         this.speed = speed;
@@ -106,7 +111,7 @@ public final class PacMan implements Critter {
      * @return La valeur de l'apparence.
      */
     public int changeSkin() {
-        return 2;
+        return skin;
     }
 
 }
