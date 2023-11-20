@@ -78,18 +78,9 @@ public enum Ghost implements Critter {
         return 1;
     }
 
-    public static void updateGhostPositions() { // fais bouger les fantomes dans une direction aleatoires
-        Random rd = new Random();
-        for (Ghost ghost : Ghost.values()) {
-            switch (rd.nextInt(4)) {
-                case 0 -> ghost.direction = Direction.NORTH;
-                case 1 -> ghost.direction = Direction.EAST;
-                case 2 -> ghost.direction = Direction.SOUTH;
-                case 3 -> ghost.direction = Direction.WEST;
-            }
-        }
-    }
-
+    /**
+     * Actualise la prochaine direction des fantomes selon leur IA
+     */
     public void iaBlinky() {
         //passerBlinky = new boolean[config.getHeight()][config.getWidth()];
         if (possible((int) BLINKY.pos.x(), (int) BLINKY.pos.y()).size() > 0 || BLINKY.direction == Direction.NONE) {
@@ -134,8 +125,12 @@ public enum Ghost implements Critter {
     }
 
 
-    //Backtracking V2
-    //Trouve le plus court chemin entre currentPos et cible, definitla variable cheminCourt (a changer)
+    /**
+     * Trouve le chemin le plus court dans le labyrinthe, entre un point A et un point B et le retourne dans la variable cheminCourt
+     * @param currentPos : point A, soit le point de départ a partir duquel on recherche
+     * @param cible : point B, soit le point d'arrivée qu'on cherche a atteindre de la plus courte des manieres
+     * @param chemin : le chemin actuel qui est en train d'etre determiné et comparé a cheminCourt
+     */
     public void cheminVersPacman(IntCoordinates currentPos, IntCoordinates cible, ArrayList<Character> chemin) {
         int x = currentPos.x();
         int y = currentPos.y();
@@ -174,7 +169,12 @@ public enum Ghost implements Critter {
         visiter[x][y] = false;
     }
 
-    // verifie toute les intersection a une coordonnee x et y
+    /**
+     * Détermine toutes les directions possibles a prendre a partir d'un point x,y
+     * @param x : position x sur dans le labyrinthe (ordonnée)
+     * @param y : position y sur dans le labyrinthe (abcisse)
+     * @return la liste des initiales des directions possibles ('n', 's', 'w' ou 'e')
+     */
     public List<Character> possible(int x, int y) {
         List<Character> possible = new ArrayList<Character>();
         IntCoordinates p = new IntCoordinates(x, y);
@@ -194,8 +194,10 @@ public enum Ghost implements Critter {
         return possible; // renvoie la liste de toute les directions des intersection
     }
 
-    // applique l'algorithme de bactracking et renvoie la premiere Direction du plus
-    // court chemin vers pacman
+    /**
+     * Determine le chemin le plus court entre Blinky et PacMan
+     * @return la prochaine direction a suivre selon cheminCourt
+     */
     public Direction prochainePositionBlinky() {
         cheminCourt.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
         cheminVersPacman(BLINKY.getPos().round(), PacMan.INSTANCE.getPos().round(), new ArrayList<Character>()); //trouve le chemin le plus court
@@ -211,6 +213,10 @@ public enum Ghost implements Critter {
         return Direction.NONE; //Renvoie none si pacman est inaccessible ou sur lui
     }
 
+    /**
+     * Determine le chemin le plus court entre Pinky et la premiere intersection/mur que pointe la direction de PacMan
+     * @return la prochaine direction a suivre selon cheminCourt
+     */
     public Direction prochainePositionPinky() {
         cheminCourt.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
         cheminVersPacman(PINKY.getPos().round(), predictionNextMove(PacMan.INSTANCE), new ArrayList<Character>()); //trouve le chemin le plus court
@@ -226,7 +232,10 @@ public enum Ghost implements Critter {
         return Direction.NONE; // renvoie None si pacman est innacessible ou si on est sur lui
     }
 
-    //Déplacment aléatoire de INKY (se dirige vers le point le plus éloigné de pacman)
+    /**
+     * Determine le chemin le plus court entre Inky et PacMan ou le point le plus eloigne de ce dernier
+     * @return la prochaine direction a suivre selon cheminCourt
+     */
     public Direction prochainePositionInky() {
         recCaseVisitable(PacMan.INSTANCE.getPos().round());
         int x = PacMan.INSTANCE.getPos().round().x();
@@ -246,7 +255,10 @@ public enum Ghost implements Critter {
         return Direction.NONE; //Renvoie none si pacman est inaccessible ou sur lui
     }
 
-    //Déplacment aléatoire de CLYDE
+    /**
+     * Determine le chemin le plus court entre Clyde et PacMan ou un point aléatoire dans le labyrinthe assez éloigné
+     * @return la prochaine direction a suivre selon cheminCourt
+     */
     public Direction prochainePositionClyde() {
         recCaseVisitable(PacMan.INSTANCE.getPos().round());
         IntCoordinates cible = (suitPacClyde ? PacMan.INSTANCE.getPos().round() : cibleRandomClyde);
@@ -264,8 +276,11 @@ public enum Ghost implements Critter {
         return Direction.NONE; //Renvoie none si pacman est inaccessible ou sur lui
     }
 
-    // change la direction de n'importe quel phantome donner en argument en
-    // s'alignant avec les tunnels
+    /**
+     * Change la direction du fantome entré en parametres si il ne rentre pas dans un mur
+     * @param dir : direction souhaité
+     * @param ghost : fantome qui doit changé de direction
+     */
     public void changeDirection(Direction dir, Ghost ghost) {
         if (ghost.direction != dir) {
             if (
@@ -285,6 +300,11 @@ public enum Ghost implements Critter {
 
     }
 
+    /**
+     * Détermine la prochaine position de PacMan en en regardant ou pointe sa direction
+     * @param p : PacMan
+     * @return les coordonnées de la première intersection/mur que rencontrerai PacMan si il continuait dans sa directions actuelles
+     */
     public static IntCoordinates predictionNextMove(PacMan p){//prédit la prochaine position de pacman 
         Direction direction = (p.getDirection());
         IntCoordinates currentGuess = p.getPos().round();
@@ -319,12 +339,12 @@ public enum Ghost implements Critter {
         }
     }
 
-    public static IntCoordinates oppositePacMan(PacMan p){ //donne le point le plus eloigné de pacman
-        int x = (p.getPos().round().x() > config.getWidth() - p.getPos().round().x() ? 0 : config.getWidth());
-        int y = (p.getPos().round().y() > config.getHeight() - p.getPos().round().y() ? 0 : config.getHeight());
-        return new IntCoordinates(x, y);
-    }
-
+    /**
+     * Détermine le point le plus éloigné du point x,y 
+     * @param x : position x sur dans le labyrinthe (ordonnée)
+     * @param y : position y sur dans le labyrinthe (abcisse)
+     * @return les coordonnées du point le plus éloigné du point x,y
+     */
     public static IntCoordinates trouverCasePlusEloignee(int x, int y) {
         int n = caseVisitable.length;
         int m = caseVisitable[0].length;
@@ -346,6 +366,12 @@ public enum Ghost implements Critter {
         return caseLaPlusEloignee;
     }
 
+    /**
+     * Détermine un point aléatoirement assez éloigné du point x,y 
+     * @param x : position x sur dans le labyrinthe (ordonnée)
+     * @param y : position y sur dans le labyrinthe (abcisse)
+     * @return les coordonnées d'un point aléatoirement mais assez éloigné du point x,y
+     */
     public static IntCoordinates trouverPointAleatoire(int x, int y) {
         ArrayList<IntCoordinates> coordonneesTrueAvecDistanceMin = new ArrayList<>();
         int distanceMin = config.getHeight() + config.getWidth() / 2 - 1;
