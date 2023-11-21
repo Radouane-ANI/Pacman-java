@@ -10,6 +10,7 @@ import config.Cell;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
 import gui.PacmanController;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.effect.Blend;
 
 public enum Ghost implements Critter {
@@ -131,7 +132,7 @@ public enum Ghost implements Critter {
      * @param cible : point B, soit le point d'arrivée qu'on cherche a atteindre de la plus courte des manieres
      * @param chemin : le chemin actuel qui est en train d'etre determiné et comparé a cheminCourt
      */
-    public void cheminVersPacman(IntCoordinates currentPos, IntCoordinates cible, ArrayList<Character> chemin) {
+    public void cheminVersCible(IntCoordinates currentPos, IntCoordinates cible, ArrayList<Character> chemin) {
         int x = currentPos.x();
         int y = currentPos.y();
         visiter[x][y] = true;
@@ -146,19 +147,19 @@ public enum Ghost implements Critter {
             for (Character character : possible(x, y)) { // essayer toutes les positions possible depuis cette position
             if (character == 'n' && visiter[x][y - 1] == false) {
                 chemin.add('n');
-                cheminVersPacman(new IntCoordinates(x, y-1), cible, chemin);
+                cheminVersCible(new IntCoordinates(x, y-1), cible, chemin);
             }
             if (character == 'e' && visiter[x + 1][y] == false) {
                 chemin.add('e');
-                cheminVersPacman(new IntCoordinates(x + 1, y), cible, chemin);
+                cheminVersCible(new IntCoordinates(x + 1, y), cible, chemin);
             }
             if (character == 's' && visiter[x][y + 1] == false) {
                 chemin.add('s');
-                cheminVersPacman(new IntCoordinates(x, y + 1), cible, chemin);
+                cheminVersCible(new IntCoordinates(x, y + 1), cible, chemin);
             }
             if (character == 'w' && visiter[x - 1][y] == false) {
                 chemin.add('w');
-                cheminVersPacman(new IntCoordinates(x - 1, y), cible, chemin);
+                cheminVersCible(new IntCoordinates(x - 1, y), cible, chemin);
             }
             if (chemin.size() > 0) { // quand on a explore la position la retire
                 chemin.remove(chemin.size() - 1);
@@ -167,6 +168,38 @@ public enum Ghost implements Critter {
 
         }
         visiter[x][y] = false;
+    }
+
+    public int cheminVersCible(IntCoordinates depart, IntCoordinates cible, Ghost g){
+        int[] directions = {
+                calculDistance(depart.plus(IntCoordinates.NORTH_UNIT), cible),
+                calculDistance(depart.plus(IntCoordinates.EAST_UNIT), cible),
+                calculDistance(depart.plus(IntCoordinates.SOUTH_UNIT), cible),
+                calculDistance(depart.plus(IntCoordinates.WEST_UNIT), cible)
+            };
+        int directionActuelle;
+        Direction d = g.getDirection();
+        switch (d) {
+            case NORTH : directionActuelle = 0; break;
+            case WEST : directionActuelle = 1; break;
+            case SOUTH : directionActuelle = 2; break;
+            case EAST : directionActuelle = 3; break;
+            default : directionActuelle = -1; break;
+        }
+        int solution = -1;
+        for (int i = 0 ; i < directions.length ; i++){
+            if (i != (directionActuelle + (directionActuelle < 2 ? 2 : -2)) && true/*condition qui verifie le mur : en faire une fonction annexe*/){
+                if (solution == -1){
+                    solution = i;
+                }else{
+                    if (directions[i] < directions[solution] || 
+                    (directions[i] == directions[solution] && i == directionActuelle)){
+                        solution = i;
+                    }
+                }
+            }
+        }
+        return solution;
     }
 
     /**
@@ -200,7 +233,7 @@ public enum Ghost implements Critter {
      */
     public Direction prochainePositionBlinky() {
         cheminCourt.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
-        cheminVersPacman(BLINKY.getPos().round(), PacMan.INSTANCE.getPos().round(), new ArrayList<Character>()); //trouve le chemin le plus court
+        cheminVersCible(BLINKY.getPos().round(), PacMan.INSTANCE.getPos().round(), new ArrayList<Character>()); //trouve le chemin le plus court
         if (cheminCourt.size() > 0) {
             return switch (cheminCourt.get(0)) {
                 case 'n' -> Direction.NORTH;
@@ -219,7 +252,7 @@ public enum Ghost implements Critter {
      */
     public Direction prochainePositionPinky() {
         cheminCourt.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
-        cheminVersPacman(PINKY.getPos().round(), predictionNextMove(PacMan.INSTANCE), new ArrayList<Character>()); //trouve le chemin le plus court
+        cheminVersCible(PINKY.getPos().round(), predictionNextMove(PacMan.INSTANCE), new ArrayList<Character>()); //trouve le chemin le plus court
         if (cheminCourt.size() > 0) {
             return switch (cheminCourt.get(0)) {
                 case 'n' -> Direction.NORTH;
@@ -242,7 +275,7 @@ public enum Ghost implements Critter {
         int y = PacMan.INSTANCE.getPos().round().y();
         IntCoordinates cible = (suitPacInky ? PacMan.INSTANCE.getPos().round() : trouverCasePlusEloignee(x, y));
         cheminCourt.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
-        cheminVersPacman(INKY.getPos().round(), cible, new ArrayList<Character>()); //trouve le chemin le plus court
+        cheminVersCible(INKY.getPos().round(), cible, new ArrayList<Character>()); //trouve le chemin le plus court
         if (cheminCourt.size() > 0) {
             return switch (cheminCourt.get(0)) {
                 case 'n' -> Direction.NORTH;
@@ -263,7 +296,7 @@ public enum Ghost implements Critter {
         recCaseVisitable(PacMan.INSTANCE.getPos().round());
         IntCoordinates cible = (suitPacClyde ? PacMan.INSTANCE.getPos().round() : cibleRandomClyde);
         cheminCourt.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
-        cheminVersPacman(CLYDE.getPos().round(), cible, new ArrayList<Character>()); //trouve le chemin le plus court
+        cheminVersCible(CLYDE.getPos().round(), cible, new ArrayList<Character>()); //trouve le chemin le plus court
         if (cheminCourt.size() > 0) {
             return switch (cheminCourt.get(0)) {
                 case 'n' -> Direction.NORTH;
@@ -393,6 +426,16 @@ public enum Ghost implements Critter {
         int indexAleatoire = random.nextInt(coordonneesTrueAvecDistanceMin.size());
         // Récupère les coordonnées (x, y) de la case correspondante
         return coordonneesTrueAvecDistanceMin.get(indexAleatoire);
+    }
+
+    /**
+     * Calcul la distance euclidienne entre deux points a et b 
+     * @param a : point a sur le labyrinthe
+     * @param b : point b sur le labyrinthe
+     * @return la distance euclidienne entre les points a et b 
+     */
+    public static int calculDistance(IntCoordinates a, IntCoordinates b){
+        return (a.x() - b.x())*(a.x() - b.x()) + (a.y() - b.y())*(a.y() - b.y());
     }
 
 }
