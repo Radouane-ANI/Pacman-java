@@ -46,11 +46,11 @@ public class PacmanSkin {
 
         //création des boutons avec leurs images et actions
         Button pacman = createImageButton(/* ../ressources/*/"pacman.png");
-        setupButton(pacman, () -> {Data.setskin(1);});
+        setupButton1(pacman, () -> {Data.setskin(1);});
         Button pacmanblue = createImageButton(/* ../ressources/*/"pacmanblue.png");
-        setupButton(pacmanblue, () -> {Data.setskin(2);});
+        setupButton1(pacmanblue, () -> {Data.setskin(2);});
         Button pacmangreen = createImageButton(/* ../ressources/*/"pacmangreen.png");
-        setupButton(pacmangreen, () -> {Data.setskin(3);});
+        setupButton1(pacmangreen, () -> {Data.setskin(3);});
 
         //positionnements des elements
         home.setLayoutX(220);
@@ -103,6 +103,11 @@ public class PacmanSkin {
     private void setupButton(Button button, ButtonAction action) {
         button.setOnAction(e -> action.performAction());
         applyHoverAnimation(button);
+    }
+
+    private void setupButton1(Button button, ButtonAction action) {
+        button.setOnAction(e -> action.performAction());
+        
     }
 
     public Scene getScene() {

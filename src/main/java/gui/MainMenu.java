@@ -69,8 +69,11 @@ public class MainMenu {
      * Définition de la scène de jeu comme scène principale de la fenêtre
      */
     private void startGame() {
-        Game game = new Game();
-        stage.setScene(game.getScene());
+        if (Data.getGame() == null) {
+            Game game = new Game();
+            Data.setGame(game);
+        }
+        stage.setScene(Data.getGame().getScene());
     }
 
     /**
