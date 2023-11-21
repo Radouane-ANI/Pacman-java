@@ -56,9 +56,9 @@ public final class MazeState {
     public void update(long deltaTns) {
 
         if (!PacMan.INSTANCE.isEnergized()) {
-            //Ghost.BLINKY.iaBlinky();
-            //Ghost.PINKY.iaPinky();
-            //Ghost.INKY.iaInky();
+            Ghost.BLINKY.iaBlinky();
+            Ghost.PINKY.iaPinky();
+            Ghost.INKY.iaInky();
             Ghost.CLYDE.iaClyde();
         } else {
             Ghost.fuite();
