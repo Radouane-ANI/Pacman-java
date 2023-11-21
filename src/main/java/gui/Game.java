@@ -20,7 +20,7 @@ public class Game {
         gameScene.setOnKeyPressed(pacmanController::keyPressedHandler);
         gameScene.setOnKeyReleased(pacmanController::keyReleasedHandler);
         var maze = new MazeState(MazeConfig.makeExample1(), root);
-        var gameView = new GameView(maze, root, 100.0);
+        var gameView = new GameView(maze, root, 30.0);
         primaryStage.setScene(gameScene);
         primaryStage.show();
         gameView.animate();
