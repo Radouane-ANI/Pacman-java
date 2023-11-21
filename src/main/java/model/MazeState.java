@@ -143,10 +143,10 @@ public final class MazeState {
                     if (PacMan.INSTANCE.isEnergized()) {
                         addScore(10);
                         resetCritter(critter);
-                    }/*else {
+                    }else {
                         playerLost();
                         return;
-                    }*/
+                    }
                 }
             }
             Bonus.spawnBonus(); // a une probabilite de faire spawn un bonus

@@ -40,14 +40,14 @@ public class FinalScreen {
         var image = new ImageView(new Image(/* ../ressources/*/img, 500, 500, true, true));
 
         // Positionnez les boutons et l'image à l'emplacement souhaité
-        playAgainButton.setLayoutX(200);
-        playAgainButton.setLayoutY(500);
-        exitButton.setLayoutX(300);
-        exitButton.setLayoutY(500);
-        homeButton.setLayoutX(400);
-        homeButton.setLayoutY(500);
-        image.setLayoutX(50);
-        image.setLayoutY(50);
+        playAgainButton.setLayoutX(250);
+        playAgainButton.setLayoutY(620);
+        exitButton.setLayoutX(350);
+        exitButton.setLayoutY(620);
+        homeButton.setLayoutX(450);
+        homeButton.setLayoutY(620);
+        image.setLayoutX(140);
+        image.setLayoutY(160);
 
         // Ajoutez les boutons et l'image au conteneur
         FinalScreenLayout.getChildren().addAll(playAgainButton, exitButton, homeButton, image);

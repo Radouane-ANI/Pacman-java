@@ -48,7 +48,7 @@ public enum Ghost implements Critter {
 
     @Override
     public double getSpeed() { // vitesse des fantomes
-        return 1;
+        return 2;
     }
 
     /**
@@ -168,7 +168,7 @@ public enum Ghost implements Critter {
         IntCoordinates p = new IntCoordinates(x, y);
         // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est
         // deja passer
-        if (y > 0 && !config.getCell(p).northWall() && passerBlinky[x][y - 1] == false) {
+        if (y > 0 && !config.getCell(p).northWall() && passerBlinky[y - 1][x] == false) {
         // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est
         // deja passer
         }if (y > 0 && !config.getCell(p).northWall() && passerBlinky[y - 1][x] == false) {
