@@ -54,11 +54,16 @@ public final class MazeState {
     }
 
     public void update(long deltaTns) {
+
         if (!PacMan.INSTANCE.isEnergized()) {
-            Ghost.BLINKY.iaBlinky();
+            //Ghost.BLINKY.iaBlinky();
+            //Ghost.PINKY.iaPinky();
+            //Ghost.INKY.iaInky();
+            Ghost.CLYDE.iaClyde();
         } else {
             Ghost.fuite();
         }
+
         // FIXME: too many things in this method. Maybe some responsibilities can be
         // delegated to other methods or classes?
         for (var critter : critters) {
