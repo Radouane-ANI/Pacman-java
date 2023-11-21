@@ -11,6 +11,7 @@ import datagame.Data;
 
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import gui.PacmanController;
 
 import java.util.List;
 import java.util.Map;
