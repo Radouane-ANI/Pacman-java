@@ -23,17 +23,17 @@ public final class CritterGraphicsFactory {
     }
 
     public GraphicsUpdater makeGraphics(Critter critter) {
-        var size = 0.7;
+        var size = 0.82;
         var url = (critter instanceof PacMan) ? switch (Data.getskin()){//switch qui sert a choisir l'image correspond a la créature et a son skin
             case 1 -> "pacman.png";
             case 2 -> "pacmanblue.png";
             case 3 -> "pacmangreen.png";
             default -> "pacman.png";
         } : switch ((Ghost) critter) {
-            case BLINKY -> "ghost_blinky.png";
-            case CLYDE -> "ghost_clyde.png";
-            case INKY -> "ghost_inky.png";
-            case PINKY -> "ghost_pinky.png";
+            case BLINKY -> "BlinkyB.png";
+            case CLYDE -> "ClydeH.png";
+            case INKY -> "InkyG.png";
+            case PINKY -> "PinkyD.png";
         };
         var image = new ImageView(new Image(url, scale * size, scale * size, true, true));
         return new GraphicsUpdater() {
@@ -43,10 +43,10 @@ public final class CritterGraphicsFactory {
                 int skin = critter.changeSkin();
                 if (!(critter instanceof PacMan) && skin == 0) {
                     var url = switch ((Ghost) critter) {
-                        case BLINKY -> "ghost_blinky.png";
-                        case CLYDE -> "ghost_clyde.png";
-                        case INKY -> "ghost_inky.png";
-                        case PINKY -> "ghost_pinky.png";
+                        case BLINKY -> "BlinkyB.png";
+                        case CLYDE -> "ClydeH.png";
+                        case INKY -> "InkyG.png";
+                        case PINKY -> "PinkyD.png";
                     };
                     // Créez une instance de FadeTransition
                     FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), image);
@@ -99,6 +99,8 @@ public final class CritterGraphicsFactory {
                                 break;
                         }
                     }
+                }else if(!PacMan.INSTANCE.isEnergized()){
+                    image.setImage(setCritterImage(critter, size));
                 }
             }
 
@@ -160,5 +162,98 @@ public GraphicsUpdater makeGraphics(Bonus bonus) {
         }
     };
 }
+
+    /**
+     * Définit l'image pour la créature donnée en fonction de sa direction.
+     *
+     * @param critter La créature pour laquelle définir l'image.
+     * @param size    Le facteur de taille pour l'image de la créature.
+     * @return Un objet Image représentant la créature avec la direction spécifiée.
+     */
+    public Image setCritterImage(Critter critter, double size) {
+        Direction direction = critter.getDirection();
+        String imageFileName = "";
+
+        switch ((Ghost) critter) {
+            case BLINKY:
+                switch (direction) {
+                    case SOUTH:
+                        imageFileName = "BlinkyB.png";
+                        break;
+                    case NORTH:
+                        imageFileName = "BlinkyH.png";
+                        break;
+                    case EAST:
+                        imageFileName = "BlinkyD.png";
+                        break;
+                    case WEST:
+                        imageFileName = "BlinkyG.png";
+                        break;
+                    default:
+                        imageFileName = "BlinkyB.png";
+                        break;
+                }
+                break;
+            case INKY:
+                switch (direction) {
+                    case SOUTH:
+                        imageFileName = "InkyB.png";
+                        break;
+                    case NORTH:
+                        imageFileName = "InkyH.png";
+                        break;
+                    case EAST:
+                        imageFileName = "InkyD.png";
+                        break;
+                    case WEST:
+                        imageFileName = "InkyG.png";
+                        break;
+                    default:
+                        imageFileName = "InkyG.png";
+                        break;
+                }
+                break;
+            case PINKY:
+                switch (direction) {
+                    case SOUTH:
+                        imageFileName = "PinkyB.png";
+                        break;
+                    case NORTH:
+                        imageFileName = "PinkyH.png";
+                        break;
+                    case EAST:
+                        imageFileName = "PinkyD.png";
+                        break;
+                    case WEST:
+                        imageFileName = "PinkyG.png";
+                        break;
+                    default:
+                        imageFileName = "PinkyD.png";
+                        break;
+                }
+                break;
+            case CLYDE:
+                switch (direction) {
+                    case SOUTH:
+                        imageFileName = "ClydeB.png";
+                        break;
+                    case NORTH:
+                        imageFileName = "ClydeH.png";
+                        break;
+                    case EAST:
+                        imageFileName = "ClydeD.png";
+                        break;
+                    case WEST:
+                        imageFileName = "ClydeG.png";
+                        break;
+                    default:
+                        imageFileName = "ClydeH.png";
+                        break;
+                }
+                break;
+        }
+
+        return new Image(imageFileName, scale * size, scale * size, true, true);
+    }
 
 }
