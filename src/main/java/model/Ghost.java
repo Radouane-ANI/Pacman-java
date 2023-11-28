@@ -25,6 +25,8 @@ public enum Ghost implements Critter {
     private static boolean[][] passerBlinky = new boolean[config.getHeight()][config.getWidth()];
     private static List<Character> TousCheminVersPacman = new ArrayList<>();
     private int skinVulnerable;
+    private boolean manger;
+    private int speed = 2;
 
     @Override
     public RealCoordinates getPos() {
@@ -48,7 +50,25 @@ public enum Ghost implements Critter {
 
     @Override
     public double getSpeed() { // vitesse des fantomes
-        return 2;
+        return speed;
+    }
+
+    /**
+     * Définit si le fantôme est en mode "manger" ou non.
+     *
+     * @param manger True si le fantôme est en mode "manger", sinon False.
+     */
+    public void setManger(boolean manger) {
+        this.manger = manger;
+    }
+
+    /**
+     * Obtient l'étàt actuelle du fantôme manger ou non.
+     *
+     * @return Les coordonnées réelles du fantôme.
+     */
+    public boolean getManger() {
+        return manger;
     }
 
     /**
@@ -169,9 +189,10 @@ public enum Ghost implements Critter {
         // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est
         // deja passer
         if (y > 0 && !config.getCell(p).northWall() && passerBlinky[y - 1][x] == false) {
-        // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est
-        // deja passer
-        }if (y > 0 && !config.getCell(p).northWall() && passerBlinky[y - 1][x] == false) {
+            // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est
+            // deja passer
+        }
+        if (y > 0 && !config.getCell(p).northWall() && passerBlinky[y - 1][x] == false) {
             possible.add('n');
         }
         if (y < passerBlinky.length - 1 && !config.getCell(p).southWall() && passerBlinky[y + 1][x] == false) {
@@ -216,7 +237,8 @@ public enum Ghost implements Critter {
         if (ghost.direction != dir) {
             if ((ghost.direction == Direction.WEST || ghost.direction == Direction.EAST)
                     && (dir != Direction.WEST && dir != Direction.EAST)) {
-                if (ghost.pos.x() - (int) ghost.pos.x() < 0.05) {  // attend le dernier moment pour teleporter le fantomer des les angles
+                if (ghost.pos.x() - (int) ghost.pos.x() < 0.05) { // attend le dernier moment pour teleporter le
+                                                                  // fantomer des les angles
                     ghost.pos = ghost.pos.floorX(); // arrondie la coordonnee en x pour etre face au trou
                 } else {
                     dir = ghost.direction;
@@ -224,7 +246,8 @@ public enum Ghost implements Critter {
             }
             if ((ghost.direction == Direction.NORTH || ghost.direction == Direction.SOUTH)
                     && (dir != Direction.NORTH && dir != Direction.SOUTH)) {
-                if (ghost.pos.y() - (int) ghost.pos.y() < 0.05) { // attend le dernier moment pour teleporter le fantomer des les angles
+                if (ghost.pos.y() - (int) ghost.pos.y() < 0.05) { // attend le dernier moment pour teleporter le
+                                                                  // fantomer des les angles
                     ghost.pos = ghost.pos.floorY(); // arrondie la coordonnee en y pour etre face au trou
                 } else {
                     dir = ghost.direction;
@@ -239,29 +262,82 @@ public enum Ghost implements Critter {
      * fonction de la distance par rapport à Pac-Man.
      */
     public static void fuite() {
+        Character directionToTake;
         for (Ghost ghost : Ghost.values()) {
-            // Liste des directions possibles
-            List<Character> possibleDirections = ghost.possible((int) ghost.pos.x(), (int) ghost.pos.y());
+            if (ghost.manger) {
+                directionToTake = ghost.retour();
+            } else {
+                // Liste des directions possibles
+                List<Character> possibleDirections = ghost.possible((int) ghost.pos.x(), (int) ghost.pos.y());
 
-            // Choix de la direction avec la distance la plus longue
-            Character directionToTake = possibleDirections.get(0);
-            double maxDistance = 0;
-            for (Character direction : possibleDirections) {
-                // formule de la distance
-                double distance = Math.sqrt(Math.pow(
-                        (int) ghost.pos.x() + (direction == 'e' ? 1 : direction == 'w' ? -1 : 0)
-                                - PacMan.INSTANCE.getPos().x(),
-                        2)
-                        + Math.pow((int) ghost.pos.y() + (direction == 'n' ? -1 : direction == 's' ? 1 : 0)
-                                - PacMan.INSTANCE.getPos().y(), 2));
-                if (distance > maxDistance) {
-                    directionToTake = direction;
-                    maxDistance = distance;
+                // Choix de la direction avec la distance la plus longue
+                directionToTake = possibleDirections.get(0);
+                double maxDistance = 0;
+                for (Character direction : possibleDirections) {
+                    // formule de la distance
+                    double distance = Math.sqrt(Math.pow(
+                            (int) ghost.pos.x() + (direction == 'e' ? 1 : direction == 'w' ? -1 : 0)
+                                    - PacMan.INSTANCE.getPos().x(),
+                            2)
+                            + Math.pow((int) ghost.pos.y() + (direction == 'n' ? -1 : direction == 's' ? 1 : 0)
+                                    - PacMan.INSTANCE.getPos().y(), 2));
+                    if (distance > maxDistance) {
+                        directionToTake = direction;
+                        maxDistance = distance;
+                    }
                 }
             }
             // Changement de direction du fantome
             ghost.changeDirection(Direction.fromChar(directionToTake), ghost);
         }
+    }
+
+    /**
+     * Détermine la direction à prendre pour retourner à la position de départ du
+     * fantôme,
+     *
+     * @return La direction ('n', 'e', 's' ou 'w') vers la position de départ du
+     *         fantôme.
+     */
+    public Character retour() {
+        char r = 'n';
+        IntCoordinates posDepart = null;
+
+        switch (this) {
+            case BLINKY:
+                posDepart = config.getBlinkyPos();
+                break;
+            case CLYDE:
+                posDepart = config.getClydePos();
+                break;
+            case INKY:
+                posDepart = config.getInkyPos();
+                break;
+            case PINKY:
+                posDepart = config.getPinkyPos();
+                break;
+        }
+
+        if (posDepart != null) {
+            if (this.pos.round().equals(posDepart)) {
+                manger = false;
+                speed = 2;
+            } else {
+                r = AStar.findPath(config, this.pos.cast(), posDepart);
+                speed = 8;
+            }
+        }
+
+        return r;
+    }
+
+    /**
+     * Définit la vitesse du fantôme.
+     *
+     * @param speed La nouvelle vitesse du fantôme.
+     */
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 
 }

@@ -3,6 +3,12 @@ package model;
 public enum Direction {
     NONE, NORTH, EAST, SOUTH, WEST;
 
+    /**
+     * Convertit un caractère en une direction.
+     *
+     * @param direction Le caractère représentant la direction ('n', 'e', 's' ou 'w').
+     * @return La direction correspondante.
+     */
     public static Direction fromChar(Character direction) {
         switch (direction) {
             case 'n':
@@ -14,7 +20,7 @@ public enum Direction {
             case 'w':
                 return WEST;
             default:
-                throw new IllegalArgumentException("Unknown direction: " + direction);
+                return NORTH;
         }
     }
 

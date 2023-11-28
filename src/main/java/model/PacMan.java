@@ -126,6 +126,9 @@ public final class PacMan implements Critter {
                     if (!reEnergized) { // si pacman a deja pris un energiseur ne desactive pas l'energiseur
                         PacMan.INSTANCE.setEnergized(false);
                         timer.cancel();
+                        for (var ghost : Ghost.values()) {
+                            ghost.setSpeed(2);
+                        }
                     }
                     reEnergized = false;
                 }

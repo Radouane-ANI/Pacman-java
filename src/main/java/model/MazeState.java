@@ -141,8 +141,10 @@ public final class MazeState {
             for (var critter : critters) {
                 if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
                     if (PacMan.INSTANCE.isEnergized()) {
-                        addScore(10);
-                        resetCritter(critter);
+                        if(!((Ghost)critter).getManger()){
+                            addScore(10);
+                        }
+                        ((Ghost)critter).setManger(true);
                     }else {
                         playerLost();
                         return;
