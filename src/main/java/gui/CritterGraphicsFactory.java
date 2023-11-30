@@ -71,6 +71,8 @@ public final class CritterGraphicsFactory {
                         default -> "pacman.png";
                     };PacMan.INSTANCE.setSkin(Data.getskin());
                     image.setImage(new Image(url, scale * size, scale * size, true, true));
+                }else if(critter instanceof Ghost && ((Ghost) critter).getManger()){
+                    image.setImage(new Image("yeux.png", scale * size, scale * size, true, true));
                 }
                 image.setTranslateX((critter.getPos().x() + (1 - size) / 2) * scale);
                 image.setTranslateY((critter.getPos().y() + (1 - size) / 2) * scale);

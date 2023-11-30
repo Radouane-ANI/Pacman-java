@@ -322,6 +322,7 @@ public enum Ghost implements Critter {
             if (this.pos.round().equals(posDepart)) {
                 manger = false;
                 speed = 2;
+                skinVulnerable = 2;
             } else {
                 r = AStar.findPath(config, this.pos.cast(), posDepart);
                 speed = 8;

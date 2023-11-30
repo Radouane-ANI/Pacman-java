@@ -143,7 +143,7 @@ public enum Bonus {
                         PacMan.INSTANCE.setSpeed(4);
                         timer.cancel();
                     }
-                }, 8000); // 8 secondes
+                }, 12000); // 12 secondes
                 break;
         }
         time = System.currentTimeMillis();
