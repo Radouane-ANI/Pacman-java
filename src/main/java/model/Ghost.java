@@ -237,7 +237,7 @@ public enum Ghost implements Critter {
         if (ghost.direction != dir) {
             if ((ghost.direction == Direction.WEST || ghost.direction == Direction.EAST)
                     && (dir != Direction.WEST && dir != Direction.EAST)) {
-                if (ghost.pos.x() - (int) ghost.pos.x() < 0.05) { // attend le dernier moment pour teleporter le
+                if ((ghost.pos.x() - (int) ghost.pos.x() < 0.06) || (ghost.pos.x() - (int) ghost.pos.x() < 0.26 && ghost.speed > 7)) { // attend le dernier moment pour teleporter le
                                                                   // fantomer des les angles
                     ghost.pos = ghost.pos.floorX(); // arrondie la coordonnee en x pour etre face au trou
                 } else {
@@ -246,7 +246,7 @@ public enum Ghost implements Critter {
             }
             if ((ghost.direction == Direction.NORTH || ghost.direction == Direction.SOUTH)
                     && (dir != Direction.NORTH && dir != Direction.SOUTH)) {
-                if (ghost.pos.y() - (int) ghost.pos.y() < 0.05) { // attend le dernier moment pour teleporter le
+                if ((ghost.pos.y() - (int) ghost.pos.y() < 0.06) || (ghost.pos.y() - (int) ghost.pos.y() < 0.25 && ghost.speed > 7)) { // attend le dernier moment pour teleporter le
                                                                   // fantomer des les angles
                     ghost.pos = ghost.pos.floorY(); // arrondie la coordonnee en y pour etre face au trou
                 } else {
