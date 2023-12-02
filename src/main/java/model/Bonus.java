@@ -13,11 +13,31 @@ import geometry.IntCoordinates;
  */
 public enum Bonus {
 
-    CERISE, ECLAIR, COEUR;
+    CERISE, ECLAIR, COEUR, ENCRE, GLACON, PERDU;
 
     private boolean apparut;
     private boolean actif;
     private IntCoordinates pos;
+    private boolean perdu;
+    private boolean encrer;
+
+    /**
+     * Obtient l'etat encrer ou non 
+     * 
+     * @return L'ecran est en etat encrer ou non 
+     */
+    public boolean isEncrer() {
+        return encrer;
+    }
+
+    /**
+     * Obtient la position du bonus.
+     * 
+     * @return Pacman est en etat perdu ou non
+     */
+    public boolean isPerdu() {
+        return perdu;
+    }
 
     /**
      * modifie la valeur de apparut
@@ -125,6 +145,8 @@ public enum Bonus {
      * Gère l'effet de manger un bonus, applique les récompenses associées.
      */
     public void manger() {
+        Timer timer = new Timer();
+
         switch (this) {
             case CERISE:
                 MazeState.addScore(100);
@@ -136,7 +158,6 @@ public enum Bonus {
                 PacMan.INSTANCE.setSpeed(8);
 
                 // Timer pour rétablir la vitesse après un certain délai
-                Timer timer = new Timer();
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
@@ -144,6 +165,42 @@ public enum Bonus {
                         timer.cancel();
                     }
                 }, 8000); // 8 secondes
+                break;
+            case ENCRE:
+                encrer = true;
+
+                // Timer pour rétablir les directions de pacman
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        encrer = false;
+                    }
+                }, 5000); // 5 secondes
+                break;
+            case GLACON:
+                PacMan.INSTANCE.setSpeed(2);
+
+                // Timer pour rétablir la vitesse après un certain délai
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        PacMan.INSTANCE.setSpeed(4);
+                    }
+                }, 5000); // 5 secondes
+
+                break;
+            case PERDU:
+                perdu = true;
+
+                // Timer pour rétablir les directions de pacman
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        perdu = false;
+                    }
+                }, 5000); // 5 secondes
+                break;
+            default:
                 break;
         }
         time = System.currentTimeMillis();

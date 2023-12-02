@@ -44,6 +44,7 @@ public class GameView {
             addGraphics(critterFactory.makeGraphics(critter));
         for (var bonus : Bonus.values())
             addGraphics(critterFactory.makeGraphics(bonus));
+        addGraphics(critterFactory.makeGraphics());
         for (int x = 0; x < maze.getWidth(); x++)
             for (int y = 0; y < maze.getHeight(); y++)
                 addGraphics(cellFactory.makeGraphics(maze, new IntCoordinates(x, y)));
