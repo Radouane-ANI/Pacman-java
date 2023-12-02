@@ -12,11 +12,15 @@ import model.Ghost;
 import model.MazeState;
 import model.PacMan;
 import datagame.Data;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class CritterGraphicsFactory {
     private final double scale;
     private final MazeState state;
-
+    // private static Map<String, String> GhostAnimationDictionary = new HashMap<>();
+    private static Map<String, String> GhostAnimationDictionary = new HashMap<>();
+    private static int tick = 0;
     public CritterGraphicsFactory(double scale, MazeState state) {
         this.scale = scale;
         this.state = state;
@@ -39,6 +43,7 @@ public final class CritterGraphicsFactory {
         return new GraphicsUpdater() {
             @Override
             public void update() {
+                tick++;
                 // Change le skin des fantomes en fonction de l'etat energized de pacman
                 int skin = critter.changeSkin();
                 if (!(critter instanceof PacMan) && skin == 0) {
@@ -102,10 +107,14 @@ public final class CritterGraphicsFactory {
                         }
                     }
                 }else if(!PacMan.INSTANCE.isEnergized()){
-                    image.setImage(setCritterImage(critter, size));
+                    String CritterImage = setCritterImage(critter, size);
+                    if(tick/30 % 2 == 0){ // on change le sprite du fantome en fonction du tick
+                    image.setImage(new Image(CritterImage+"1.png", scale * size, scale * size, true, true));} //sprite 2
+                    else{
+                    image.setImage(new Image(CritterImage+".png", scale * size, scale * size, true, true));} // sprite 1
+                    }
                 }
-            }
-
+            
             @Override
             public Node getNode() {
                 return image;
@@ -166,13 +175,13 @@ public GraphicsUpdater makeGraphics(Bonus bonus) {
 }
 
     /**
-     * Définit l'image pour la créature donnée en fonction de sa direction.
+     * Définit le debut du nom du fichier image pour la créature donnée en fonction de sa direction.
      *
      * @param critter La créature pour laquelle définir l'image.
      * @param size    Le facteur de taille pour l'image de la créature.
-     * @return Un objet Image représentant la créature avec la direction spécifiée.
+     * @return un String qui correspond au nom de l'image de la créature
      */
-    public Image setCritterImage(Critter critter, double size) {
+    public String setCritterImage(Critter critter, double size) {
         Direction direction = critter.getDirection();
         String imageFileName = "";
 
@@ -180,82 +189,81 @@ public GraphicsUpdater makeGraphics(Bonus bonus) {
             case BLINKY:
                 switch (direction) {
                     case SOUTH:
-                        imageFileName = "BlinkyB.png";
+                        imageFileName = "BlinkyB";
                         break;
                     case NORTH:
-                        imageFileName = "BlinkyH.png";
+                        imageFileName = "BlinkyH";
                         break;
                     case EAST:
-                        imageFileName = "BlinkyD.png";
+                        imageFileName = "BlinkyD";
                         break;
                     case WEST:
-                        imageFileName = "BlinkyG.png";
+                        imageFileName = "BlinkyG";
                         break;
                     default:
-                        imageFileName = "BlinkyB.png";
+                        imageFileName = "BlinkyB";
                         break;
                 }
                 break;
             case INKY:
                 switch (direction) {
                     case SOUTH:
-                        imageFileName = "InkyB.png";
+                        imageFileName = "InkyB";
                         break;
                     case NORTH:
-                        imageFileName = "InkyH.png";
+                        imageFileName = "InkyH";
                         break;
                     case EAST:
-                        imageFileName = "InkyD.png";
+                        imageFileName = "InkyD";
                         break;
                     case WEST:
-                        imageFileName = "InkyG.png";
+                        imageFileName = "InkyG";
                         break;
                     default:
-                        imageFileName = "InkyG.png";
+                        imageFileName = "InkyG";
                         break;
                 }
                 break;
             case PINKY:
                 switch (direction) {
                     case SOUTH:
-                        imageFileName = "PinkyB.png";
+                        imageFileName = "PinkyB";
                         break;
                     case NORTH:
-                        imageFileName = "PinkyH.png";
+                        imageFileName = "PinkyH";
                         break;
                     case EAST:
-                        imageFileName = "PinkyD.png";
+                        imageFileName = "PinkyD";
                         break;
                     case WEST:
-                        imageFileName = "PinkyG.png";
+                        imageFileName = "PinkyG";
                         break;
                     default:
-                        imageFileName = "PinkyD.png";
+                        imageFileName = "PinkyD";
                         break;
                 }
                 break;
             case CLYDE:
                 switch (direction) {
                     case SOUTH:
-                        imageFileName = "ClydeB.png";
+                        imageFileName = "ClydeB";
                         break;
                     case NORTH:
-                        imageFileName = "ClydeH.png";
+                        imageFileName = "ClydeH";
                         break;
                     case EAST:
-                        imageFileName = "ClydeD.png";
+                        imageFileName = "ClydeD";
                         break;
                     case WEST:
-                        imageFileName = "ClydeG.png";
+                        imageFileName = "ClydeG";
                         break;
                     default:
-                        imageFileName = "ClydeH.png";
+                        imageFileName = "ClydeH";
                         break;
                 }
                 break;
         }
-
-        return new Image(imageFileName, scale * size, scale * size, true, true);
+        return imageFileName;
     }
 
 }
