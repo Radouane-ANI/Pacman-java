@@ -20,8 +20,10 @@ public class Game {
         var pacmanController = new PacmanController();
         gameScene.setOnKeyPressed(pacmanController::keyPressedHandler);
         gameScene.setOnKeyReleased(pacmanController::keyReleasedHandler);
+        int scale = 30;
+        Data.setScale(scale);
         maze = new MazeState(MazeConfig.makeExample1(), root);
-        var gameView = new GameView(maze, root, 30.0);
+        var gameView = new GameView(maze, root, scale);
         primaryStage.setScene(gameScene);
         primaryStage.show();
         gameView.animate();
