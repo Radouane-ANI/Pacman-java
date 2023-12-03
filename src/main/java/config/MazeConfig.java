@@ -124,6 +124,32 @@ public class MazeConfig {
     public Cell getCell(IntCoordinates pos) {
         return grid[Math.floorMod(pos.y(), getHeight())][Math.floorMod(pos.x(), getWidth())];
     }
+    public int getHeightFile(String filePath) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+            String[] xy = line.split(" ");
+            return Integer.parseInt(xy[0]);
+        } catch (IOException e) {
+            System.out.println("Le fichier n'existe pas.");
+            e.printStackTrace();
+            return 0;
+        }
+    }
+    public int getWidthFile(String filePath) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+            String[] xy = line.split(" ");
+            return Integer.parseInt(xy[1]);
+        } catch (IOException e) {
+            System.out.println("Le fichier n'existe pas.");
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
     private static void detector(int width, int y, String l1, String l2, String l3, Cell[][] grid,
             IntCoordinates[] pos) {
