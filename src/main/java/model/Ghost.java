@@ -60,17 +60,25 @@ public enum Ghost implements Critter {
 
     }
 
-    public static void makeGhostsInvisibleAndImmobile2() {
+    /**
+     * Make all ghosts invisible
+     * 
+     */
+    public static void makeGhostsInvisible() {
         for (Ghost ghost : Ghost.values()) {
             ghost.setVisible(false);
-            System.out.println("met invis les ghost");
+
         }
     }
 
-    public static void remarcheLe() {
+    /**
+     * Make all ghosts visible
+     * 
+     */
+    public static void makeGhostVisibleAgain() {
         for (Ghost ghost : Ghost.values()) {
             ghost.setVisible(true);
-            System.out.println("saremarche");
+
         }
     }
 

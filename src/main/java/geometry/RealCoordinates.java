@@ -12,7 +12,6 @@ public record RealCoordinates(double x, double y) {
     public static final RealCoordinates SOUTH_UNIT = new RealCoordinates(0, 1);
     public static final RealCoordinates WEST_UNIT = new RealCoordinates(-1, 0);
 
-
     public RealCoordinates plus(RealCoordinates other) {
         return new RealCoordinates(x + other.x, y + other.y);
     }
@@ -23,16 +22,15 @@ public record RealCoordinates(double x, double y) {
 
     /**
      *
-     * @return the coordinates of all integer squares that a unit square with current coordinates would intersect
-      */
+     * @return the coordinates of all integer squares that a unit square with
+     *         current coordinates would intersect
+     */
     public Set<IntCoordinates> intNeighbours() {
         return new HashSet<>(List.of(
                 new IntCoordinates((int) Math.floor(x), (int) Math.floor(y)),
                 new IntCoordinates((int) Math.floor(x), (int) Math.ceil(y)),
                 new IntCoordinates((int) Math.ceil(x), (int) Math.floor(y)),
-                new IntCoordinates((int) Math.ceil(x), (int) Math.ceil(y))
-        )
-        );
+                new IntCoordinates((int) Math.ceil(x), (int) Math.ceil(y))));
     }
 
     public IntCoordinates round() {

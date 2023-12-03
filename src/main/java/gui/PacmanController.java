@@ -3,23 +3,13 @@ package gui;
 import model.Direction;
 import model.Ghost;
 import model.PacMan;
-
+import model.MazeState;
 import javafx.scene.input.KeyEvent;
 
 public class PacmanController {
 
-    private boolean freeze = false;
-
-    public void freeze() {
-        this.freeze = true;
-    }
-
-    public void unfreeze() {
-        this.freeze = false;
-    }
-
     public void keyPressedHandler(KeyEvent event) {
-        if (!freeze) {
+        if (!PacMan.INSTANCE.SiPacmanMort()) {
             PacMan.INSTANCE.setDirection(
                     switch (event.getCode()) {
                         case LEFT -> Direction.WEST;

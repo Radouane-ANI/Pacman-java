@@ -10,6 +10,7 @@ public final class PacMan implements Critter {
     private Direction direction = Direction.NONE;
     private RealCoordinates pos;
     private boolean energized;
+    public boolean PacmanMort;
 
     private PacMan() {
     }
@@ -55,7 +56,24 @@ public final class PacMan implements Critter {
         this.energized = energized;
     }
 
+    /**
+     *
+     * Set direction None
+     */
     public void freeze() {
+        this.PacmanMort = true;
         this.direction = Direction.NONE;
+    }
+
+    public void unfreeze() {
+        this.PacmanMort = false;
+    }
+
+    public boolean SiPacmanMort() {
+        return PacmanMort;
+    }
+
+    public void SetPacmanMort(boolean PacmanMort) {
+        this.PacmanMort = PacmanMort;
     }
 }

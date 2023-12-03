@@ -15,7 +15,9 @@ public final class MazeState {
     private final MazeConfig config;
     private final int height;
     private final int width;
-    private boolean boulbirespawn;
+
+    private boolean AudioPlayed;
+    private boolean PacmanMort;
 
     private final boolean[][] gridState;
 
@@ -50,6 +52,14 @@ public final class MazeState {
 
     public int getHeight() {
         return height;
+    }
+
+    public boolean SetAudioPlayed(boolean AudioPlayed) {
+        return this.AudioPlayed = AudioPlayed;
+    }
+
+    public boolean GetAudioPlayed() {
+        return AudioPlayed;
     }
 
     public void update(long deltaTns) {
@@ -109,14 +119,12 @@ public final class MazeState {
         }
         for (var critter : critters) {
             if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
-                makeGhostsInvisibleAndImmobile2();
-                SetBoulbi(true);
+                makeGhostsInvisible();
+                SetPacmanMort(true);
                 // if (PacMan.INSTANCE.isEnergized()) {
                 // addScore(10);
                 // resetCritter(critter);
 
-                // if (!GetBoulbi()) {
-                // playerLost();
                 return;
 
             }
@@ -133,12 +141,12 @@ public final class MazeState {
         System.out.println("Score: " + score);
     }
 
-    public boolean GetBoulbi() {
-        return boulbirespawn;
+    public boolean GetPacmanMort() {
+        return PacmanMort;
     }
 
-    public void SetBoulbi(boolean boulbirespawn) {
-        this.boulbirespawn = boulbirespawn;
+    public void SetPacmanMort(boolean PacmanMort) {
+        this.PacmanMort = PacmanMort;
 
     }
 
@@ -153,7 +161,7 @@ public final class MazeState {
             System.exit(0);
         }
         System.out.println("Lives: " + lives);
-        remarcheLe();
+        makeGhostVisibleAgain();
         resetCritters();
 
     }
@@ -164,7 +172,7 @@ public final class MazeState {
     }
 
     private void resetCritters() {
-
+        SetAudioPlayed(false);
         for (var critter : critters)
             resetCritter(critter);
     }
@@ -177,8 +185,4 @@ public final class MazeState {
         return gridState[pos.y()][pos.x()];
     }
 
-    private boolean AnimationMort() {
-        return true;
-
-    }
 }
