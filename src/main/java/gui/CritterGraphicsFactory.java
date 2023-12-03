@@ -65,7 +65,7 @@ public final class CritterGraphicsFactory {
                     // Jouez l'animation
                     fadeTransition.play();
                     image.setImage(new Image(url, scale * size, scale * size, true, true));
-                }else if (!(critter instanceof PacMan) && skin == 1) {
+                } else if (!(critter instanceof PacMan) && skin == 1) {
                     image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
                 } else if ((critter instanceof PacMan) && PacMan.INSTANCE.changeSkin() != Data.getskin()) {
                     var url = switch (Data.getskin()) {// switch qui sert a choisir l'image correspond a la créature et
@@ -74,7 +74,8 @@ public final class CritterGraphicsFactory {
                         case 2 -> "pacmanblue.png";
                         case 3 -> "pacmangreen.png";
                         default -> "pacman.png";
-                    };PacMan.INSTANCE.setSkin(Data.getskin());
+                    };
+                    PacMan.INSTANCE.setSkin(Data.getskin());
                     image.setImage(new Image(url, scale * size, scale * size, true, true));
                 }else if(critter instanceof Ghost && ((Ghost) critter).getManger()){
                     image.setImage(new Image("yeux.png", scale * size, scale * size, true, true));
@@ -82,7 +83,7 @@ public final class CritterGraphicsFactory {
                 image.setTranslateX((critter.getPos().x() + (1 - size) / 2) * scale);
                 image.setTranslateY((critter.getPos().y() + (1 - size) / 2) * scale);
                 if (critter instanceof PacMan) {
-                    
+
                     if (state.GetBoulbi()) {
                         image.setRotate(0);
                         image.setScaleX(1);

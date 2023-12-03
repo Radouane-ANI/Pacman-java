@@ -13,11 +13,31 @@ import geometry.IntCoordinates;
  */
 public enum Bonus {
 
-    CERISE, ECLAIR, COEUR;
+    CERISE, ECLAIR, COEUR, ENCRE, GLACON, PERDU;
 
     private boolean apparut;
     private boolean actif;
     private IntCoordinates pos;
+    private boolean perdu;
+    private boolean encrer;
+
+    /**
+     * Obtient l'etat encrer ou non 
+     * 
+     * @return L'ecran est en etat encrer ou non 
+     */
+    public boolean isEncrer() {
+        return encrer;
+    }
+
+    /**
+     * Obtient la position du bonus.
+     * 
+     * @return Pacman est en etat perdu ou non
+     */
+    public boolean isPerdu() {
+        return perdu;
+    }
 
     /**
      * modifie la valeur de apparut
@@ -124,19 +144,20 @@ public enum Bonus {
     /**
      * Gère l'effet de manger un bonus, applique les récompenses associées.
      */
-    public void manger() {
+    public void manger(MazeState state) {
+        Timer timer = new Timer();
+
         switch (this) {
             case CERISE:
-                MazeState.addScore(100);
+                state.addScore(100);
                 break;
             case COEUR:
-                MazeState.addLives(1);
+                state.addLives(1);
                 break;
             case ECLAIR:
                 PacMan.INSTANCE.setSpeed(8);
 
                 // Timer pour rétablir la vitesse après un certain délai
-                Timer timer = new Timer();
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
