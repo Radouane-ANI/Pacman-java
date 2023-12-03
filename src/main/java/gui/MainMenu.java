@@ -34,14 +34,9 @@ public class MainMenu {
         // Création du layout principal
         Pane root = new Pane();
 
-        // Son clic sur bouton
-        Media clicMedia = new Media(new File("src/main/resources/clic.mp3").toURI().toString());
-        MediaPlayer clicPlayer = new MediaPlayer(clicMedia);
-
          // Création du bouton pour exit
         Button exitButton = new Button("Exit");
         exitButton.setOnAction(e -> {
-            clicPlayer.play();
             System.exit(0);
         });
         exitButton.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");
@@ -52,7 +47,6 @@ public class MainMenu {
         // Création du bouton pour jouer
         Button playButton = new Button("Jouer");
         playButton.setOnAction(e -> {
-            clicPlayer.play();
             startGame();
         });
         playButton.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");
@@ -63,7 +57,6 @@ public class MainMenu {
         // Création du bouton pour choisir les skin
         Button changeskin = new Button("Skin");
         changeskin.setOnAction(e -> {
-            clicPlayer.play();
             changeSkin();
         });
         changeskin.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");
@@ -104,14 +97,9 @@ public class MainMenu {
     }
 
     /**
-     * permet de changer a couleur d'un bouton lorsqu'on clique dessus
-     * @param button
+     * Methode qui permet de donner un style au bouton et de jouer un son lorsque l'on passe ou clique dessus
+     * @param b bouton sur lequel les changemetns seront appliqués
      */
-    private void applyHoverAnimation(Button button) {
-        button.setOnMousePressed(e -> button.setStyle("-fx-background-color: violet; -fx-text-fill: black; -fx-font-size: 16px;"));
-        button.setOnMouseReleased(e -> button.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;"));
-    }
-
     private void gestionButton(Button b){
         Media survolMedia = new Media(new File("src/main/resources/onclic.mp3").toURI().toString());
         MediaPlayer survolPlayer = new MediaPlayer(survolMedia);
