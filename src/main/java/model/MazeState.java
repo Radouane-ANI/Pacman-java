@@ -31,10 +31,10 @@ public final class MazeState {
     private final Cell[][] grid;
 
     private final List<Critter> critters;
-    private static int score;
+    private int score;
 
     private final Map<Critter, RealCoordinates> initialPos;
-    private static int lives = 3;
+    private int lives = 3;
 
 
     Stage primaryStage;
@@ -152,7 +152,7 @@ public final class MazeState {
             Bonus.spawnBonus(); // a une probabilite de faire spawn un bonus
             for (var bonus : Bonus.values()) {
                 if (bonus.isActif() && bonus.getPos().equals(pacPos)) { // si pacman mange le bonus appelle la fonction
-                    bonus.manger();
+                    bonus.manger(this);
                 }
             }
             playerWin(); // si tous les points sont recuperé le win screen sera affiché
@@ -180,17 +180,17 @@ public final class MazeState {
         }
     }
 
-    public static void addLives(int increment) {
+    public void addLives(int increment) {
         lives += increment;
         System.out.println("Lives: " + lives);
     }
 
-    public static void addScore(int increment) {
+    public void addScore(int increment) {
         score += increment;
         displayScore();
     }
 
-    private static void displayScore() {
+    private void displayScore() {
         // FIXME: this should be displayed in the JavaFX view, not in the console
         System.out.println("Score: " + score);
     }
@@ -306,11 +306,11 @@ public final class MazeState {
         return gridState[pos.y()][pos.x()];
     }
 
-    public static int getScore() {
+    public int getScore() {
         return score;
     }
     
-    public static int getLives() {
+    public int getLives() {
         return lives;
     }
 }

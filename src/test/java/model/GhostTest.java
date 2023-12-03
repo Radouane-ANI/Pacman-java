@@ -74,7 +74,7 @@ public class GhostTest {
 
     @Test
     public void testIaBlinky() { 
-        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt");
+        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt",false);
         Ghost.config = Labyrinthetest; // initialise un labyrinthe pour les test
 
         Ghost ghost = Ghost.BLINKY; // Initialise un fantôme pour les tests

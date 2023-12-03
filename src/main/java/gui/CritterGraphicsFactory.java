@@ -24,7 +24,8 @@ public final class CritterGraphicsFactory {
 
     public GraphicsUpdater makeGraphics(Critter critter) {
         var size = 0.7;
-        var url = (critter instanceof PacMan) ? switch (Data.getskin()){//switch qui sert a choisir l'image correspond a la créature et a son skin
+        var url = (critter instanceof PacMan) ? switch (Data.getskin()) {// switch qui sert a choisir l'image correspond
+                                                                         // a la créature et a son skin
             case 1 -> "pacman.png";
             case 2 -> "pacmanblue.png";
             case 3 -> "pacmangreen.png";
@@ -60,7 +61,7 @@ public final class CritterGraphicsFactory {
                     // Jouez l'animation
                     fadeTransition.play();
                     image.setImage(new Image(url, scale * size, scale * size, true, true));
-                }else if (!(critter instanceof PacMan) && skin == 1) {
+                } else if (!(critter instanceof PacMan) && skin == 1) {
                     image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
                 } else if ((critter instanceof PacMan) && PacMan.INSTANCE.changeSkin() != Data.getskin()) {
                     var url = switch (Data.getskin()) {// switch qui sert a choisir l'image correspond a la créature et
@@ -69,13 +70,14 @@ public final class CritterGraphicsFactory {
                         case 2 -> "pacmanblue.png";
                         case 3 -> "pacmangreen.png";
                         default -> "pacman.png";
-                    };PacMan.INSTANCE.setSkin(Data.getskin());
+                    };
+                    PacMan.INSTANCE.setSkin(Data.getskin());
                     image.setImage(new Image(url, scale * size, scale * size, true, true));
                 }
                 image.setTranslateX((critter.getPos().x() + (1 - size) / 2) * scale);
                 image.setTranslateY((critter.getPos().y() + (1 - size) / 2) * scale);
                 if (critter instanceof PacMan) {
-                    
+
                     if (state.GetBoulbi()) {
                         image.setRotate(0);
                         image.setScaleX(1);
@@ -108,57 +110,5 @@ public final class CritterGraphicsFactory {
             }
         };
     }
-
-    /**
- * Crée un GraphicsUpdater pour un bonus donné, permettant de mettre à jour
- * l'affichage graphique du bonus.
- *
- * @param bonus Le bonus pour lequel créer le GraphicsUpdater.
- * @return Un GraphicsUpdater pour le bonus spécifié.
- */
-public GraphicsUpdater makeGraphics(Bonus bonus) {
-    // Définit la taille de l'image
-    var size = 0.7;
-
-    // Récupère l'URL de l'image en fonction du type de bonus
-    var url = switch (bonus) {
-        case CERISE -> "cerise.png";
-        case COEUR -> "coeur.png";
-        case ECLAIR -> "eclair.png";
-    };
-
-    // Crée une nouvelle ImageView avec l'image correspondante
-    var image = new ImageView(new Image(url, scale * size, scale * size, true, true));
-    image.setVisible(false);
-
-    // Retourne un nouveau GraphicsUpdater personnalisé pour le bonus
-    return new GraphicsUpdater() {
-        /**
-         * Met à jour l'affichage en fonction de l'état du bonus.
-         */
-        @Override
-        public void update() {
-            if (bonus.isActif()) {
-                // Positionne l'image en fonction des coordonnées du bonus
-                image.setTranslateX((bonus.getPos().x() + (1 - size) / 2) * scale);
-                image.setTranslateY((bonus.getPos().y() + (1 - size) / 2) * scale);
-                image.setVisible(true);
-            } else {
-                // Cache l'image si le bonus n'est pas actif
-                image.setVisible(false);
-            }
-        }
-
-        /**
-         * Récupère le Node associé à l'image du bonus.
-         *
-         * @return Le Node représentant l'image du bonus.
-         */
-        @Override
-        public Node getNode() {
-            return image;
-        }
-    };
-}
 
 }
