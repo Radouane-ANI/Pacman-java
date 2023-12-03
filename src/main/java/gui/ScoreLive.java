@@ -40,8 +40,6 @@ public class ScoreLive {
         double live_x = Data.getWidth()-(Data.getWidth()*0.2);
         double live_y = Data.getHeight()-(Data.getHeight()*0.15);
 
-        System.out.println(Data.getWidth());
-
         imageView.setLayoutX(score_x);
         imageView.setLayoutY(score_y);
 
