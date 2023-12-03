@@ -144,15 +144,15 @@ public enum Bonus {
     /**
      * Gère l'effet de manger un bonus, applique les récompenses associées.
      */
-    public void manger() {
+    public void manger(MazeState state) {
         Timer timer = new Timer();
 
         switch (this) {
             case CERISE:
-                MazeState.addScore(100);
+                state.addScore(100);
                 break;
             case COEUR:
-                MazeState.addLives(1);
+                state.addLives(1);
                 break;
             case ECLAIR:
                 PacMan.INSTANCE.setSpeed(8);
@@ -164,7 +164,7 @@ public enum Bonus {
                         PacMan.INSTANCE.setSpeed(4);
                         timer.cancel();
                     }
-                }, 8000); // 8 secondes
+                }, 10000); // 10 secondes
                 break;
             case ENCRE:
                 encrer = true;
@@ -175,7 +175,7 @@ public enum Bonus {
                     public void run() {
                         encrer = false;
                     }
-                }, 5000); // 5 secondes
+                }, 7000); // 7 secondes
                 break;
             case GLACON:
                 PacMan.INSTANCE.setSpeed(2);
@@ -186,7 +186,7 @@ public enum Bonus {
                     public void run() {
                         PacMan.INSTANCE.setSpeed(4);
                     }
-                }, 5000); // 5 secondes
+                }, 8000); // 8 secondes
 
                 break;
             case PERDU:
@@ -198,7 +198,7 @@ public enum Bonus {
                     public void run() {
                         perdu = false;
                     }
-                }, 5000); // 5 secondes
+                }, 7000); // 7 secondes
                 break;
             default:
                 break;
