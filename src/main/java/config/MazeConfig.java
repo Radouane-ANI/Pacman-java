@@ -19,8 +19,9 @@ import config.Cell.Content;
 import java.io.IOException; // Ajout de la classe IOException pour gérer l'exception si le fichier n'extiste pas
 
 public class MazeConfig {
+    private boolean hardMode;
     public MazeConfig(Cell[][] grid, IntCoordinates pacManPos, IntCoordinates blinkyPos, IntCoordinates pinkyPos,
-            IntCoordinates inkyPos, IntCoordinates clydePos) {
+            IntCoordinates inkyPos, IntCoordinates clydePos,boolean hardMode) {
         this.grid = new Cell[grid.length][grid[0].length];
 
         for (int i = 0; i < getHeight(); i++) {
@@ -34,6 +35,7 @@ public class MazeConfig {
         this.pinkyPos = pinkyPos;
         this.inkyPos = inkyPos;
         this.clydePos = clydePos;
+        this.hardMode = hardMode;
     }
 
     /**
@@ -42,8 +44,8 @@ public class MazeConfig {
      * 
      * @param filepath chemin du fichier
      */
-    public MazeConfig(String filepath) {
-        MazeConfig maze = makeLabyrinthe(filepath);
+    public MazeConfig(String filepath,boolean hardMode) {
+        MazeConfig maze = makeLabyrinthe(filepath,hardMode);
         this.grid = maze.grid;
         this.pacManPos = maze.pacManPos;
         this.blinkyPos = maze.blinkyPos;
@@ -51,6 +53,7 @@ public class MazeConfig {
         this.inkyPos = maze.inkyPos;
 
         this.clydePos = maze.clydePos;
+        this.hardMode = hardMode;
     }
 
     private final Cell[][] grid;
@@ -85,6 +88,9 @@ public class MazeConfig {
         wallDictionary.put(' ', false);
         wallDictionary.put('+', false);
 
+    }
+    public boolean IsHardMode(){
+        return this.hardMode;
     }
 
     public IntCoordinates getPacManPos() {
@@ -238,7 +244,8 @@ public class MazeConfig {
                     pos[1],
                     pos[2],
                     pos[3],
-                    pos[4]);
+                    pos[4],
+                    false);
 
         } catch (IOException e) {
             System.out.println("An error occurred while reading the file.");
@@ -254,7 +261,7 @@ public class MazeConfig {
      * @param filePath chemin du fichier
      * @return MazeConfig
      */
-    public MazeConfig makeLabyrinthe(String filePath) {
+    public MazeConfig makeLabyrinthe(String filePath,boolean hardMode) {
 
         BufferedReader reader = null;
         itemDictionary();
@@ -286,7 +293,8 @@ public class MazeConfig {
                     pos[1],
                     pos[2],
                     pos[3],
-                    pos[4]);
+                    pos[4],
+                    hardMode);
 
         } catch (IOException e) {
             System.out.println("Le fichier n'existe pas.");

@@ -10,11 +10,11 @@ public class LabyrintheTest {
      
     @Test
     public void testFile(){ //Test de la lecture du fichier
-        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt");
+        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt",false);
         //Test de la longueur du labyrinthe dans notre cas c'est 6
-        assertEquals(6,Labyrinthetest.getHeight());
+        assertEquals(Labyrinthetest.getHeightFile("src/main/resources/testmaze.txt"),Labyrinthetest.getHeight());
         //Test de la largeur du labyrinthe dans notre cas c'est aussi 6
-        assertEquals(6,Labyrinthetest.getWidth());
+        assertEquals(Labyrinthetest.getWidthFile("src/main/resources/testmaze.txt"),Labyrinthetest.getWidth());
         //Test de la position de PacMan dans notre cas c'est (2,5)
         assertEquals((new IntCoordinates(2, 5)),(Labyrinthetest.getPacManPos()));
         //Test de la position de Blinky dans notre cas c'est (5,0)
