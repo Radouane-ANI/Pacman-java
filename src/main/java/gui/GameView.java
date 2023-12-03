@@ -38,12 +38,14 @@ public class GameView {
         root.setMinHeight(maze.getHeight() * scale);
         root.setStyle("-fx-background-color: #000000");
         var critterFactory = new CritterGraphicsFactory(scale, maze);
+        var bonusFactory = new BonusGraphicsFactory(scale);
         var cellFactory = new CellGraphicsFactory(scale);
         graphicsUpdaters = new ArrayList<>();
         for (var critter : maze.getCritters())
             addGraphics(critterFactory.makeGraphics(critter));
         for (var bonus : Bonus.values())
-            addGraphics(critterFactory.makeGraphics(bonus));
+            addGraphics(bonusFactory.makeGraphics(bonus));
+        addGraphics(bonusFactory.makeGraphics());
         for (int x = 0; x < maze.getWidth(); x++)
             for (int y = 0; y < maze.getHeight(); y++)
                 addGraphics(cellFactory.makeGraphics(maze, new IntCoordinates(x, y)));
