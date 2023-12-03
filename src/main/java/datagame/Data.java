@@ -11,7 +11,7 @@ public class Data {
     public static Stage getprimaryStage(){return primaryStage;}
     public static void setprimaryStage(Stage p){primaryStage=p;}
 
-    public static MainMenu mainMenu;
+    private static MainMenu mainMenu;
     public static MainMenu getmainMenu(){return mainMenu;}
     public static void setmainMenu(MainMenu m){mainMenu=m;}
 
@@ -20,18 +20,14 @@ public class Data {
     public static void setskin(int s){skin=s;}
 
     private static Game game;
-    public static Game getGame() {
-        return game;
-    }
-    public static void setGame(Game g) {
-        game = g;
-    }
+    public static Game getGame() {return game;}
+    public static void setGame(Game g) {game = g;}
 
 
 
 
     /*
-    public static  get
+    public static get
     public static void set
     */
 }
