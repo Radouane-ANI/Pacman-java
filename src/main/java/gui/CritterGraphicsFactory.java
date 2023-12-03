@@ -109,7 +109,7 @@ public final class CritterGraphicsFactory {
                     }
                 }else if(!PacMan.INSTANCE.isEnergized()){
                     String CritterImage = setCritterImage(critter, size);
-                    if(tick/30 % 2 == 0){ // on change le sprite du fantome en fonction du tick
+                    if(tick/30 % 3 == 0){ // on change le sprite du fantome en fonction du tick
                     image.setImage(new Image(CritterImage+"1.png", scale * size, scale * size, true, true));} //sprite 2
                     else{
                     image.setImage(new Image(CritterImage+".png", scale * size, scale * size, true, true));} // sprite 1
@@ -122,59 +122,6 @@ public final class CritterGraphicsFactory {
             }
         };
     }
-
-    /**
- * Crée un GraphicsUpdater pour un bonus donné, permettant de mettre à jour
- * l'affichage graphique du bonus.
- *
- * @param bonus Le bonus pour lequel créer le GraphicsUpdater.
- * @return Un GraphicsUpdater pour le bonus spécifié.
- */
-public GraphicsUpdater makeGraphics(Bonus bonus) {
-    // Définit la taille de l'image
-    var size = 0.7;
-
-    // Récupère l'URL de l'image en fonction du type de bonus
-    var url = switch (bonus) {
-        case CERISE -> "cerise.png";
-        case COEUR -> "coeur.png";
-        case ECLAIR -> "eclair.png";
-    };
-
-    // Crée une nouvelle ImageView avec l'image correspondante
-    var image = new ImageView(new Image(url, scale * size, scale * size, true, true));
-    image.setVisible(false);
-
-    // Retourne un nouveau GraphicsUpdater personnalisé pour le bonus
-    return new GraphicsUpdater() {
-        /**
-         * Met à jour l'affichage en fonction de l'état du bonus.
-         */
-        @Override
-        public void update() {
-            if (bonus.isActif()) {
-                // Positionne l'image en fonction des coordonnées du bonus
-                image.setTranslateX((bonus.getPos().x() + (1 - size) / 2) * scale);
-                image.setTranslateY((bonus.getPos().y() + (1 - size) / 2) * scale);
-                image.setVisible(true);
-            } else {
-                // Cache l'image si le bonus n'est pas actif
-                image.setVisible(false);
-            }
-        }
-
-        /**
-         * Récupère le Node associé à l'image du bonus.
-         *
-         * @return Le Node représentant l'image du bonus.
-         */
-        @Override
-        public Node getNode() {
-            return image;
-        }
-    };
-}
-
     /**
      * Définit le debut du nom du fichier image pour la créature donnée en fonction de sa direction.
      *
