@@ -14,7 +14,7 @@ public class BonusTest {
         Bonus bonus = Bonus.CERISE;
         bonus.setActif(true);
 
-        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt");
+        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt", false);
         MazeState m = new MazeState(Labyrinthetest, null);
         // Perform the action to be tested
         bonus.manger(m);
