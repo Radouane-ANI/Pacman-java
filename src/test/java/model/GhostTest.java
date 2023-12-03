@@ -161,4 +161,39 @@ public class GhostTest {
         // Test de fuite lorsque Pac-Man est au Nord de Clyde
         assertNotEquals(Direction.NORTH, Ghost.CLYDE.getDirection());
     }
+
+    @Test
+    void testRetour() {
+        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt", false);
+        MazeState m = new MazeState(Labyrinthetest, null);
+
+        // Initialiser les positions et l'état des Ghosts pour le test
+        Ghost.BLINKY.setPos(new RealCoordinates(0, 0));
+        Ghost.BLINKY.setManger(true);
+        // Appeler la méthode retour() sur Ghost.BLINKY
+        char direction = Ghost.BLINKY.retour();
+        
+        // Vérifier que la direction retournée est correcte
+        assertEquals('e', direction);
+        // Vérifier que l'etat du Ghost est correcte
+        assertEquals(true, Ghost.BLINKY.getManger());
+        assertEquals(8, Ghost.BLINKY.getSpeed());
+
+        // Réinitialiser les positions et l'état des Ghosts pour le test suivant
+        Ghost.BLINKY.setPos(Labyrinthetest.getBlinkyPos().toRealCoordinates(1));
+        Ghost.BLINKY.setManger(true);
+        // Appeler la méthode retour() sur Ghost.BLINKY
+        direction = Ghost.BLINKY.retour();
+
+        // Vérifier que la direction retournée est correcte
+        assertEquals('n', direction);
+        // Vérifier que l'etat du Ghost est correcte
+        assertEquals(false, Ghost.BLINKY.getManger());
+        assertEquals(2, Ghost.BLINKY.getSpeed());
+
+
+    }
+
+
+
 }

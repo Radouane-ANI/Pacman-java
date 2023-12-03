@@ -15,8 +15,6 @@ import gui.PacmanController;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static model.Ghost.*;
 
@@ -141,8 +139,10 @@ public final class MazeState {
             for (var critter : critters) {
                 if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
                     if (PacMan.INSTANCE.isEnergized()) {
-                        addScore(10);
-                        resetCritter(critter);
+                        if(!((Ghost)critter).getManger()){
+                            addScore(10);
+                        }
+                        ((Ghost)critter).setManger(true);
                     }else {
                         playerLost();
                         return;
