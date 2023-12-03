@@ -164,7 +164,7 @@ public class GhostTest {
 
     @Test
     void testRetour() {
-        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt");
+        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt", false);
         MazeState m = new MazeState(Labyrinthetest, null);
 
         // Initialiser les positions et l'état des Ghosts pour le test

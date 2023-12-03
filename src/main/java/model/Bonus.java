@@ -164,7 +164,43 @@ public enum Bonus {
                         PacMan.INSTANCE.setSpeed(4);
                         timer.cancel();
                     }
-                }, 12000); // 12 secondes
+                }, 10000); // 10 secondes
+                break;
+            case ENCRE:
+                encrer = true;
+
+                // Timer pour rétablir les directions de pacman
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        encrer = false;
+                    }
+                }, 7000); // 7 secondes
+                break;
+            case GLACON:
+                PacMan.INSTANCE.setSpeed(2);
+
+                // Timer pour rétablir la vitesse après un certain délai
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        PacMan.INSTANCE.setSpeed(4);
+                    }
+                }, 8000); // 8 secondes
+
+                break;
+            case PERDU:
+                perdu = true;
+
+                // Timer pour rétablir les directions de pacman
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        perdu = false;
+                    }
+                }, 7000); // 7 secondes
+                break;
+            default:
                 break;
         }
         time = System.currentTimeMillis();
