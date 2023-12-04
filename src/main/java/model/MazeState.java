@@ -8,7 +8,8 @@ import geometry.RealCoordinates;
 import gui.FinalScreen;
 import gui.Game;
 import datagame.Data;
-
+import gui.ScoreLive;
+import javafx.scene.Node;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -35,15 +36,14 @@ public final class MazeState {
     private final int width;
     private boolean isGameRunning = true;
     private boolean boulbirespawn;
+    int index_sc;
 
     private final boolean[][] gridState;
     private final Cell[][] grid;
 
     private final List<Critter> critters;
-    private int score;
 
     private final Map<Critter, RealCoordinates> initialPos;
-    private int lives = 3;
 
     Stage primaryStage;
     Pane gameRoot;
@@ -55,6 +55,7 @@ public final class MazeState {
 
         height = config.getHeight();
         width = config.getWidth();
+
         critters = List.of(PacMan.INSTANCE, Ghost.CLYDE, BLINKY, INKY, PINKY);
         gridState = new boolean[height][width];
         grid = config.getGrid();
@@ -66,6 +67,12 @@ public final class MazeState {
                 PINKY, config.getPinkyPos().toRealCoordinates(1.0));
         resetCritters();
         gridState_init(gridState, grid);
+        Data.setWidth(grid.length * Data.getScale());
+        Data.setHeight(grid[0].length * Data.getScale());
+
+        ScoreLive sc = new ScoreLive();
+        gameRoot.getChildren().add(sc.getLayout());
+        index_sc = gameRoot.getChildren().size() - 1;
     }
 
     public List<Critter> getCritters() {
@@ -159,6 +166,7 @@ public final class MazeState {
 
                 // Activez energized sur Pac-Man
                 PacMan.INSTANCE.setEnergized(true);
+                addScore(5);
                 try { // Lorsque le pacman mange un dot il emet un son.
                     File soundFile = new File("src/main/resources/power_dot.wav");
                     AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
@@ -187,7 +195,8 @@ public final class MazeState {
             Bonus.spawnBonus(); // a une probabilite de faire spawn un bonus
             for (var bonus : Bonus.values()) {
                 if (bonus.isActif() && bonus.getPos().equals(pacPos)) { // si pacman mange le bonus appelle la fonction
-                    bonus.manger(this);
+                    bonus.manger();
+                    displayScore();
                 }
             }
             playerWin(); // si tous les points sont recuperé le win screen sera affiché
@@ -220,18 +229,20 @@ public final class MazeState {
     }
 
     public void addLives(int increment) {
-        lives += increment;
-        System.out.println("Lives: " + lives);
+        Data.setLive(increment);
+        displayScore();
     }
 
     public void addScore(int increment) {
-        score += increment;
+        Data.setScore(increment);
         displayScore();
     }
 
     private void displayScore() {
-        // FIXME: this should be displayed in the JavaFX view, not in the console
-        System.out.println("Score: " + score);
+        gameRoot.getChildren().remove(index_sc);
+        ScoreLive sc = new ScoreLive();
+        gameRoot.getChildren().add(sc.getLayout());
+        index_sc = gameRoot.getChildren().size() - 1;
     }
 
     public boolean GetBoulbi() {
@@ -244,9 +255,9 @@ public final class MazeState {
      */
     private void playerLost() {
         boulbirespawn = true;
-        lives--;
+        Data.setLive(-1);
         boulbirespawn = false;
-        if (lives == 0) {
+        if (Data.getLive() == 0) {
             isGameRunning = false;
 
             ButtonAction resetAction = () -> {
@@ -256,7 +267,7 @@ public final class MazeState {
             FinalScreen fs = new FinalScreen(resetAction, false);
             gameRoot.getChildren().add(fs.getFinalScreenLayout());
         } else {
-            System.out.println("Lives: " + lives);
+            displayScore();
             resetCritters();
         }
     }
@@ -319,8 +330,8 @@ public final class MazeState {
                 k[i] = false;
             }
         gridState_init(gridState, grid);
-        lives = 3;
-        score = 0;
+        Data.resetLive();
+        Data.resetScore();
         this.config = MazeConfig.makeExample1();
         for (Bonus bonus : Bonus.values()) {
             bonus.setApparut(false);
@@ -336,6 +347,7 @@ public final class MazeState {
     public void restartGame() {
         resetGame();
         gameRoot.getChildren().remove(gameRoot.getChildren().size() - 1);
+        displayScore();
         isGameRunning = true;
     }
 
@@ -347,11 +359,4 @@ public final class MazeState {
         return gridState[pos.y()][pos.x()];
     }
 
-    public int getScore() {
-        return score;
-    }
-
-    public int getLives() {
-        return lives;
-    }
 }

@@ -5,7 +5,6 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
-import model.Bonus;
 import model.Critter;
 import model.Direction;
 import model.Ghost;
@@ -163,7 +162,7 @@ public final class CritterGraphicsFactory {
                     }
                 } else if (!PacMan.INSTANCE.isEnergized()) {
                     String CritterImage = setCritterImage(critter, size);
-                    if (tick / 30 % 3 == 0) { // on change le sprite du fantome en fonction du tick
+                    if (tick / 30 % 2 == 0) { // on change le sprite du fantome en fonction du tick
                         image.setImage(new Image(CritterImage + "1.png", scale * size, scale * size, true, true));
                     } // sprite 2
                     else {

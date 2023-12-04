@@ -35,7 +35,7 @@ public class GameView {
         this.gameRoot = root;
         // pixels per cell
         root.setMinWidth(maze.getWidth() * scale);
-        root.setMinHeight(maze.getHeight() * scale);
+        root.setMinHeight(maze.getHeight() * scale + 80);
         root.setStyle("-fx-background-color: #000000");
         var critterFactory = new CritterGraphicsFactory(scale, maze);
         var bonusFactory = new BonusGraphicsFactory(scale);
