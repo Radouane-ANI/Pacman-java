@@ -5,19 +5,13 @@ import model.ButtonAction;
 import java.io.File;
 
 import datagame.Data;
-import gui.Game;
 
-import javafx.animation.ScaleTransition;
-import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -27,6 +21,8 @@ public class FinalScreen {
     private final Button exitButton = new Button("Exit");
     private final Button homeButton = new Button("Home");
     boolean win;
+    double width = Data.getWidth();
+    double height = Data.getHeight();
 
     public FinalScreen(ButtonAction reseAction, boolean win) {
         Stage primaryStage = Data.getprimaryStage();
@@ -44,14 +40,14 @@ public class FinalScreen {
         var image = new ImageView(new Image(/* ../ressources/*/img, 500, 500, true, true));
 
         // Positionnez les boutons et l'image à l'emplacement souhaité
-        playAgainButton.setLayoutX(250);
-        playAgainButton.setLayoutY(620);
-        exitButton.setLayoutX(350);
-        exitButton.setLayoutY(620);
-        homeButton.setLayoutX(450);
-        homeButton.setLayoutY(620);
-        image.setLayoutX(140);
-        image.setLayoutY(160);
+        playAgainButton.setLayoutX(width*0.52);
+        playAgainButton.setLayoutY(height*0.65);
+        exitButton.setLayoutX(width*0.64);
+        exitButton.setLayoutY(height*0.65);
+        homeButton.setLayoutX(width*0.42);
+        homeButton.setLayoutY(height*0.65);
+        image.setLayoutX(width*0.24);
+        image.setLayoutY(height*0.16);
 
         // Ajoutez les boutons et l'image au conteneur
         FinalScreenLayout.getChildren().addAll(playAgainButton, exitButton, homeButton, image);

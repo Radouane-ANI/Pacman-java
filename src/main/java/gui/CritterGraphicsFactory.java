@@ -5,7 +5,6 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
-import model.Bonus;
 import model.Critter;
 import model.Direction;
 import model.Ghost;

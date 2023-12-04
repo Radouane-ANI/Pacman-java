@@ -24,7 +24,6 @@ public class MainMenu {
     public MainMenu() {
         width = Data.getWidth_accueil();
         height = Data.getHeight_accueil();
-        System.out.println(width+"  "+height);
         Data.setmainMenu(this);
         skin = new PacmanSkin();
         this.stage = Data.getprimaryStage();
