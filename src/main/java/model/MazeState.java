@@ -159,7 +159,8 @@ public final class MazeState {
             Bonus.spawnBonus(); // a une probabilite de faire spawn un bonus
             for (var bonus : Bonus.values()) {
                 if (bonus.isActif() && bonus.getPos().equals(pacPos)) { // si pacman mange le bonus appelle la fonction
-                    bonus.manger(this);
+                    bonus.manger();
+                    displayScore();
                 }
             }
             playerWin(); // si tous les points sont recuperé le win screen sera affiché

@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 import config.Cell;
 import config.MazeConfig;
+import datagame.Data;
 import geometry.IntCoordinates;
 
 /**
@@ -144,15 +145,15 @@ public enum Bonus {
     /**
      * Gère l'effet de manger un bonus, applique les récompenses associées.
      */
-    public void manger(MazeState state) {
+    public void manger() {
         Timer timer = new Timer();
 
         switch (this) {
             case CERISE:
-                state.addScore(100);
+                Data.setScore(100);
                 break;
             case COEUR:
-                state.addLives(1);
+                Data.setLive(1);
                 break;
             case ECLAIR:
                 PacMan.INSTANCE.setSpeed(8);
