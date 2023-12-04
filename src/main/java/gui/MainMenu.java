@@ -8,6 +8,9 @@ import model.ButtonAction;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+
 public class MainMenu {
     // Menu d'accueil
     private Scene scene;
@@ -32,7 +35,7 @@ public class MainMenu {
         
         // Création du bouton pour jouer
         Button playButton = new Button("Jouer");
-        playButton.setOnAction(e -> startGame());
+        playButton.setOnAction(e -> startGameWithDelay());
         playButton.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");
         applyHoverAnimation(playButton);
         playButton.setLayoutX(40);
@@ -50,6 +53,25 @@ public class MainMenu {
         scene = new Scene(root, 500, 500);
     }
 
+    private void startGameWithDelay() {
+        ImageView readyImage = new ImageView(new Image("cherry.png"));
+        readyImage.setFitWidth(500);
+        readyImage.setFitHeight(500);
+        readyImage.setLayoutX(0);
+        readyImage.setLayoutY(0);
+
+        Pane rootWithImage = new Pane();
+        rootWithImage.getChildren().addAll(readyImage);
+
+        Scene sceneWithImage = new Scene(rootWithImage, 500, 500);
+        stage.setScene(sceneWithImage);
+
+        PauseTransition delay = new PauseTransition(Duration.seconds(3)); // 3 secondes de délai
+        delay.setOnFinished(e -> startGame());
+        delay.play();
+    }
+
+  
     /**
      * Création de l'instance de la classe Game qui lance le jeu
      * Définition de la scène de jeu comme scène principale de la fenêtre
