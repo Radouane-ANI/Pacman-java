@@ -1,6 +1,7 @@
 package model;
 
-import config.MazeConfig;
+import datagame.Data;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -14,20 +15,18 @@ public class BonusTest {
         Bonus bonus = Bonus.CERISE;
         bonus.setActif(true);
 
-        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt", false);
-        MazeState m = new MazeState(Labyrinthetest, null);
         // Perform the action to be tested
-        bonus.manger(m);
+        bonus.manger();
 
         // Verify the expected outcomes
-        assertEquals(100, m.getScore()); // Adjust this based on the actual implementation
+        assertEquals(100, Data.getScore()); // Adjust this based on the actual implementation
         assertFalse(bonus.isActif());
 
         bonus = Bonus.ECLAIR;
         bonus.setActif(true);
 
         // Perform the action to be tested
-        bonus.manger(m);
+        bonus.manger();
 
         // Verify the expected outcomes
         assertEquals(8, PacMan.INSTANCE.getSpeed()); // Adjust this based on the actual implementation
@@ -37,10 +36,9 @@ public class BonusTest {
         bonus.setActif(true);
 
         // Perform the action to be tested
-        bonus.manger(m);
-
+        bonus.manger();
         // Verify the expected outcomes
-        assertEquals(4, m.getLives()); // Adjust this based on the actual implementation
+        assertEquals(4, Data.getLive()); // Adjust this based on the actual implementation
         assertFalse(bonus.isActif());
     }
 }
