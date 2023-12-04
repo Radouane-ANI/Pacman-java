@@ -41,7 +41,7 @@ public class PacmanSkin {
         //Image de fond
         Image imagebg = new Image(/* ../ressources/*/"accueil.jpeg");
         ImageView imageViewbg = new ImageView(imagebg);
-        imageViewbg.setFitHeight(height); // Hauteur ajustée pour l'image de fond
+        imageViewbg.setFitHeight(height+1); // Hauteur ajustée pour l'image de fond
         imageViewbg.setFitWidth(width);  // Largeur ajustée pour l'image de fond
 
         //Bouton pour retourner au menu d'accueil
