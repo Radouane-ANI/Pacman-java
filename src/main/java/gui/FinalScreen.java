@@ -37,8 +37,7 @@ public class FinalScreen {
         setupButton(exitButton, () -> {
             System.exit(0);});
         setupButton(homeButton, () -> {
-            MainMenu mainMenu = new MainMenu(500,500);
-            primaryStage.setScene(mainMenu.getScene());
+            primaryStage.setScene(Data.getmainMenu().getScene());
         });
 
         String img = win ? "win.png" : "game_over.png";

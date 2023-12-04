@@ -109,7 +109,7 @@ public final class CritterGraphicsFactory {
                     }
                 }else if(!PacMan.INSTANCE.isEnergized()){
                     String CritterImage = setCritterImage(critter, size);
-                    if(tick/30 % 3 == 0){ // on change le sprite du fantome en fonction du tick
+                    if(tick/30 % 2 == 0){ // on change le sprite du fantome en fonction du tick
                     image.setImage(new Image(CritterImage+"1.png", scale * size, scale * size, true, true));} //sprite 2
                     else{
                     image.setImage(new Image(CritterImage+".png", scale * size, scale * size, true, true));} // sprite 1

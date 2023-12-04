@@ -1,10 +1,9 @@
 package gui;
 
-import model.ButtonAction;
 import datagame.Data;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
@@ -18,14 +17,16 @@ public class MainMenu {
     // Menu d'accueil
     private Scene scene;
     private Stage stage;
-    int width;
-    int height;
-    PacmanSkin skin;
+    private int width;
+    private int height;
+    private PacmanSkin skin;
 
-    public MainMenu(int w,int h) {
-        width = w;
-        height = h;
-        skin = new PacmanSkin(this);
+    public MainMenu() {
+        width = Data.getWidth_accueil();
+        height = Data.getHeight_accueil();
+        System.out.println(width+"  "+height);
+        Data.setmainMenu(this);
+        skin = new PacmanSkin();
         this.stage = Data.getprimaryStage();
         initialize();
     }
@@ -35,43 +36,45 @@ public class MainMenu {
         Pane root = new Pane();
 
          // Création du bouton pour exit
-        Button exitButton = new Button("Exit");
-        exitButton.setOnAction(e -> {
-            System.exit(0);
-        });
-        exitButton.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");
+        Label exitButton = new Label("Exit");
+        exitButton.setOnMouseClicked(e -> System.exit(0));
+        exitButton.setStyle("-fx-text-fill: white;-fx-alignment: center;-fx-font-weight: bold; -fx-background-color: transparent; -fx-font-size: 25px; -fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;");
         gestionButton(exitButton);
-        exitButton.setLayoutX(width*0.8);
-        exitButton.setLayoutY(height*0.4);
+        exitButton.setLayoutX(width*0.45);
+        exitButton.setLayoutY(height*0.80);
         
         // Création du bouton pour jouer
-        Button playButton = new Button("Jouer");
-        playButton.setOnAction(e -> {
-            startGame();
-        });
-        playButton.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");
+        Label playButton = new Label("Jouer");
+        playButton.setOnMouseClicked(e -> startGame());
+        playButton.setStyle("-fx-text-fill: white;-fx-alignment: center;-fx-font-weight: bold; -fx-background-color: transparent; -fx-font-size: 25px; -fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;");
         gestionButton(playButton);
         playButton.setLayoutX(width*0.45);
-        playButton.setLayoutY(height*0.4);
+        playButton.setLayoutY(height*0.60);
 
         // Création du bouton pour choisir les skin
-        Button changeskin = new Button("Skin");
-        changeskin.setOnAction(e -> {
-            changeSkin();
-        });
-        changeskin.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");
+        Label changeskin = new Label("Skin");
+        changeskin.setOnMouseClicked(e -> changeSkin());
+        changeskin.setStyle("-fx-text-fill: white;-fx-alignment: center;-fx-font-weight: bold; -fx-background-color: transparent; -fx-font-size: 25px; -fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;");
         gestionButton(changeskin);
-        changeskin.setLayoutX(width*0.15);
-        changeskin.setLayoutY(height*0.4);
+        changeskin.setLayoutX(width*0.45);
+        changeskin.setLayoutY(height*0.70);
 
-        var image = new ImageView(new Image(/* ../ressources/*/"accueil.jpg"));
+        // GIF pacman
+        Image pacgif = new Image("pacmang.gif",350,0,true,true);
+        ImageView imageView = new ImageView(pacgif);
+        imageView.setLayoutX(width*0.02);
+        imageView.setLayoutY(height*0.80);
+        
+    
+        // Image de fond
+        var image = new ImageView(new Image("accueil.jpeg"));
         image.setFitWidth(width);
-        image.setFitHeight(height);
+        image.setFitHeight(height+1);
         image.setPreserveRatio(false);
 
         // Ajout des elements au layout
-        root.getChildren().addAll(image, playButton, exitButton,changeskin);
-        
+        root.getChildren().addAll(image, playButton, exitButton,changeskin,imageView);
+        stage.setResizable(false);
         // Création de la scène avec le layout
         scene = new Scene(root, width, height);
     }
@@ -100,29 +103,32 @@ public class MainMenu {
      * Methode qui permet de donner un style au bouton et de jouer un son lorsque l'on passe ou clique dessus
      * @param b bouton sur lequel les changemetns seront appliqués
      */
-    private void gestionButton(Button b){
+    private void gestionButton(Label b){
         Media survolMedia = new Media(new File("src/main/resources/onclic.mp3").toURI().toString());
         MediaPlayer survolPlayer = new MediaPlayer(survolMedia);
 
         // Gestion du survol
         b.setOnMouseEntered(e -> {
-            b.setStyle("-fx-background-color: violet; -fx-text-fill: black; -fx-font-size: 16px;");
+            b.setStyle("-fx-text-fill: yellow;-fx-alignment: center;-fx-font-weight: bold; -fx-background-color: transparent; -fx-font-size: 25px; -fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;");
             survolPlayer.stop(); // Arrêter la lecture en cours, s'il y en a une
             survolPlayer.play(); // Lire le son de survol
         });
 
         // Gérer la sortie du survol du bouton
         b.setOnMouseExited(e -> {
-            b.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;");
+            b.setStyle("-fx-text-fill: white;-fx-font-weight: bold; -fx-background-color: transparent; -fx-font-size: 25px; -fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;");
             survolPlayer.stop();
         });
 
         // Gérer clic souris
-        b.setOnMousePressed(e -> b.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;"));
-        b.setOnMouseReleased(e -> b.setStyle("-fx-background-color: black; -fx-text-fill: violet; -fx-font-size: 16px;"));
+        b.setOnMousePressed(e -> b.setStyle("-fx-text-fill: yellow;-fx-alignment: center;-fx-font-weight: bold; -fx-background-color: transparent; -fx-font-size: 25px; -fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;"));
+        b.setOnMouseReleased(e -> b.setStyle("-fx-text-fill: yellow;-fx-alignment: center;-fx-font-weight: bold; -fx-background-color: transparent; -fx-font-size: 25px; -fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;"));
     }
 
     public Scene getScene() {
         return scene;
     }
+
+    public int getWidth(){return width;}
+    public int getHeight(){return height;}
 }

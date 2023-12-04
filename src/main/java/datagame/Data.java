@@ -37,13 +37,21 @@ public class Data {
     public static double getScale(){return scale;}
     public static void setScale(double i){scale=scale+i;}
     
-    private static double height = 0;
-    public static double getHeight(){return height;}
-    public static void setHeight(double i){height=height+i;}
+    private static int height_accueil = 0;
+    public static int getHeight_accueil(){return height_accueil;}
+    public static void setHeight_accueil(int i){height_accueil=i;}
 
-    private static double width = 0;
-    public static double getWidth(){return width;}
-    public static void setWidth(double i){width=width+i;}
+    private static int width_accueil = 0;
+    public static int getWidth_accueil(){return width_accueil;}
+    public static void setWidth_accueil(int i){width_accueil=i;}
+
+    private static double height_game = 0;
+    public static double getHeight(){return height_game;}
+    public static void setHeight(double i){height_game=i;}
+
+    private static double width_game = 0;
+    public static double getWidth(){return width_game;}
+    public static void setWidth(double i){width_game=i;}
 
     /*
     private static

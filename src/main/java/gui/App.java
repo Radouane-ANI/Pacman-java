@@ -9,7 +9,9 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         Data.setprimaryStage(primaryStage);
-        MainMenu mainMenu = new MainMenu(500,500);
+        Data.setWidth_accueil(1000);
+        Data.setHeight_accueil(673);
+        MainMenu mainMenu = new MainMenu();
         primaryStage.setTitle("Pac-Man");
         primaryStage.setScene(mainMenu.getScene());
         primaryStage.show();
