@@ -132,7 +132,7 @@ public enum Bonus {
             }
         }
 
-        if (System.currentTimeMillis() - time > 1 && autorise) {
+        if (System.currentTimeMillis() - time > 5000 && autorise) {
             time = System.currentTimeMillis();
             Bonus b = generateRandomBonus();
             if (b != null) {
