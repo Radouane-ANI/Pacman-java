@@ -403,7 +403,6 @@ public enum Ghost implements Critter {
 
                 }else{
                     Direction path = ghost.prochainePositionFuite();
-                    System.out.println(path+" "+ghost.pos.round());
                     ghost.newDirection = path;
                     ghost.anciennePos = ghost.pos.round();
                     ghost.changeDirection(path);
