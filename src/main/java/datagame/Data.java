@@ -1,5 +1,6 @@
 package datagame;
 
+import config.MazeConfig;
 import gui.*;
 import model.*;
 
@@ -27,6 +28,8 @@ public class Data {
     public static void resetLive(){live=3;}
     public static int getLive(){return live;}
     public static void setLive(int i){live=live+i;}
+
+    public static boolean getDifficulty(){return MazeConfig.makeExample1().IsHardMode();}
 
     private static int score = 0;
     public static void resetScore(){score=0;}

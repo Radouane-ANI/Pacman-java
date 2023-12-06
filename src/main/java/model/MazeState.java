@@ -94,6 +94,9 @@ public final class MazeState {
         } else {
             if (!PacMan.INSTANCE.isEnergized()) {
                 Ghost.BLINKY.iaBlinky();
+                Ghost.PINKY.iaPinky();
+                Ghost.INKY.iaInky();
+                Ghost.CLYDE.iaClyde();
             } else {
                 Ghost.fuite();
             }
@@ -309,10 +312,21 @@ public final class MazeState {
     }
 
     private void resetCritter(Critter critter) {
-        critter.setDirection(Direction.NONE);
-        critter.setPos(initialPos.get(critter));
-        if (critter instanceof PacMan)
-            ((PacMan) critter).setEnergized(false);
+        if(critter instanceof PacMan){
+            critter.setDirection(Direction.NONE);
+            critter.setPos(initialPos.get(critter));
+            ((PacMan)critter).setEnergized(false);
+        }
+        if (critter instanceof Ghost){
+            resetGhost((Ghost)critter);
+        }
+    }
+
+    private void resetGhost(Ghost ghost){
+        ghost.setDirection(Direction.NONE);
+        ghost.setPos(initialPos.get((Critter)ghost));
+        ghost.reset();
+
     }
 
     private void resetCritters() {
