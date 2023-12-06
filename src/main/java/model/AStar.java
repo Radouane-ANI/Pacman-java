@@ -68,13 +68,13 @@ public class AStar {
 
         switch (dir) {
             case 'n':
-                return !config.getCell(position).northWall();
+                return !config.getCell(position).isnorthWall();
             case 's':
-                return !config.getCell(position).southWall();
+                return !config.getCell(position).issouthWall();
             case 'e':
-                return !config.getCell(position).eastWall();
+                return !config.getCell(position).iseastWall();
             case 'w':
-                return !config.getCell(position).westWall();
+                return !config.getCell(position).iswestWall();
             default:
                 return false;
         }

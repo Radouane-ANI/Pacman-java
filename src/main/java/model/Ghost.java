@@ -188,20 +188,20 @@ public enum Ghost implements Critter {
         IntCoordinates p = new IntCoordinates(x, y);
         // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est
         // deja passer
-        if (y > 0 && !config.getCell(p).northWall() && passerBlinky[y - 1][x] == false) {
+        if (y > 0 && !config.getCell(p).isnorthWall() && passerBlinky[y - 1][x] == false) {
             // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est
             // deja passer
         }
-        if (y > 0 && !config.getCell(p).northWall() && passerBlinky[y - 1][x] == false) {
+        if (y > 0 && !config.getCell(p).isnorthWall() && passerBlinky[y - 1][x] == false) {
             possible.add('n');
         }
-        if (y < passerBlinky.length - 1 && !config.getCell(p).southWall() && passerBlinky[y + 1][x] == false) {
+        if (y < passerBlinky.length - 1 && !config.getCell(p).issouthWall() && passerBlinky[y + 1][x] == false) {
             possible.add('s');
         }
-        if (x < passerBlinky[0].length - 1 && !config.getCell(p).eastWall() && passerBlinky[y][x + 1] == false) {
+        if (x < passerBlinky[0].length - 1 && !config.getCell(p).iseastWall() && passerBlinky[y][x + 1] == false) {
             possible.add('e');
         }
-        if (x > 0 && !config.getCell(p).westWall() && passerBlinky[y][x - 1] == false) {
+        if (x > 0 && !config.getCell(p).iswestWall() && passerBlinky[y][x - 1] == false) {
             possible.add('w');
         }
         return possible; // renvoie la liste de toute les directions des intersection
