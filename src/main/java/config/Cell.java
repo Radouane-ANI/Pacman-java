@@ -1,16 +1,23 @@
 package config;
 // Définir un enregistrement (record) nommé Cell avec les attributs spécifiés
 
-public record Cell(boolean northWall, boolean eastWall, boolean southWall, boolean westWall, Cell.Content initialContent) {
+public record Cell(Specs northWall, Specs eastWall, Specs southWall, Specs westWall, Cell.Content initialContent) {
 
     // Enumeration des differents types de contenu possible presente au sein d'une case(cellule) : Rien , Point, Energizer.
     public enum Content {
         NOTHING, DOT, ENERGIZER
     }
+    public enum Specs { // Enumeration des differents types de murs possible :
+        WAY, WALL, WHITE
+    }
     /**
      * methode qui permet de mettre a jour le type de contenu d'une case(cellule)
      * @param c type de contenu a mettre a jour
      */
+    public Cell updateNextItemType(Content c){
+        return new Cell(northWall, eastWall, southWall, westWall, c);
+    }
+
     public boolean isDot(){
         return (initialContent == Content.DOT);
     }
@@ -18,11 +25,45 @@ public record Cell(boolean northWall, boolean eastWall, boolean southWall, boole
         return (initialContent == Content.ENERGIZER);
     }
     
-    public Cell updateNextItemType(Content c){
-        return new Cell(northWall, eastWall, southWall, westWall, c);
+    public boolean isnorthWall(){
+        return (northWall == Specs.WALL);
     }
+    public boolean iseastWall(){
+        return (eastWall == Specs.WALL);
+    }
+    public boolean issouthWall(){
+        return (southWall == Specs.WALL);
+    }
+    public boolean iswestWall(){
+        return (westWall == Specs.WALL);
+    }
+    public boolean isnorthWhite(){
+        return (northWall == Specs.WHITE);
+    }
+    public boolean iseastWhite(){
+        return (eastWall == Specs.WHITE);
+    }
+    public boolean issouthWhite(){
+        return (southWall == Specs.WHITE);
+    }
+    public boolean iswestWhite(){
+        return (westWall == Specs.WHITE);
+    }
+    public boolean isnorthWay(){
+        return (northWall == Specs.WAY);
+    }
+    public boolean iseastWay(){
+        return (eastWall == Specs.WAY);
+    }
+    public boolean issouthWay(){
+        return (southWall == Specs.WAY);
+    }
+    public boolean iswestWay(){
+        return (westWall == Specs.WAY);
+    }
+    
 
-   
+
 }
 
 

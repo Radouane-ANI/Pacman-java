@@ -33,7 +33,7 @@ public class CellGraphicsFactory {
         dot.setCenterX(scale/2);
         dot.setCenterY(scale/2);
         dot.setFill(Color.YELLOW);
-        if (cell.northWall()) {
+        if (cell.isnorthWall()) {
             var nWall = new Rectangle();
             nWall.setHeight(scale/50);
             nWall.setWidth(scale);
@@ -42,7 +42,7 @@ public class CellGraphicsFactory {
             nWall.setFill(Color.BLUE); //Couleur des murs
             group.getChildren().add(nWall);
         }
-        if (cell.eastWall()) {
+        if (cell.iseastWall()) {
             var nWall = new Rectangle();
             nWall.setHeight(scale);
             nWall.setWidth(scale/50);
@@ -51,7 +51,7 @@ public class CellGraphicsFactory {
             nWall.setFill(Color.BLUE); //Couleur des murs
             group.getChildren().add(nWall);
         }
-        if (cell.southWall()) {
+        if (cell.issouthWall()) {
             var nWall = new Rectangle();
             nWall.setHeight(scale/50);
             nWall.setWidth(scale);
@@ -60,7 +60,7 @@ public class CellGraphicsFactory {
             nWall.setFill(Color.BLUE); //Couleur des murs
             group.getChildren().add(nWall);
         }
-        if (cell.westWall()) {
+        if (cell.iswestWall()) {
             var nWall = new Rectangle();
             nWall.setHeight(scale);
             nWall.setWidth(scale/50);
@@ -69,6 +69,43 @@ public class CellGraphicsFactory {
             nWall.setFill(Color.BLUE); //Couleur des murs
             group.getChildren().add(nWall);
         }
+	    if (cell.isnorthWhite()) { // si le mur est blanc
+            var nWall = new Rectangle();
+            nWall.setHeight(scale/30);
+            nWall.setWidth(scale);
+            nWall.setY(0);
+            nWall.setX(0);
+            nWall.setFill(Color.WHITE); //Couleur des murs
+            group.getChildren().add(nWall);
+        }
+        if (cell.iseastWhite()) { // si le mur est blanc
+            var nWall = new Rectangle();
+            nWall.setHeight(scale);
+            nWall.setWidth(scale/30);
+            nWall.setY(0);
+            nWall.setX(9*scale/10); 
+            nWall.setFill(Color.WHITE); //Couleur des murs
+            group.getChildren().add(nWall);
+        }
+        // if (cell.issouthWhite()) {
+        //     var nWall = new Rectangle();
+        //     nWall.setHeight(scale/30);
+        //     nWall.setWidth(scale);
+        //     nWall.setY(9*scale/10);
+        //     nWall.setX(0);
+        //     nWall.setFill(Color.WHITE); //Couleur des murs
+        //     group.getChildren().add(nWall);
+        // }
+        if (cell.iswestWhite()) { // si le mur est blanc
+            var nWall = new Rectangle();
+            nWall.setHeight(scale);
+            nWall.setWidth(scale/30);
+            nWall.setY(0);
+            nWall.setX(0);
+            nWall.setFill(Color.WHITE); //Couleur des murs
+            group.getChildren().add(nWall);
+        }
+
         return new GraphicsUpdater() {
             @Override
             public void update() {
