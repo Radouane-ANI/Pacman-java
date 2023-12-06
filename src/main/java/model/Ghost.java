@@ -53,13 +53,13 @@ public enum Ghost implements Critter {
     static void recCaseVisitable(IntCoordinates currentCase){
         if (!caseVisitable[currentCase.y()][currentCase.x()]){
             caseVisitable[currentCase.y()][currentCase.x()] = true;
-            if (!config.getCell(currentCase).eastWall() && currentCase.x() < config.getWidth()-1){
+            if (!config.getCell(currentCase).iseastWall() && currentCase.x() < config.getWidth()-1){
                 recCaseVisitable(currentCase.plus(IntCoordinates.EAST_UNIT));
-            }else if (!config.getCell(currentCase).westWall() && currentCase.x() >= 0){
+            }else if (!config.getCell(currentCase).iswestWall() && currentCase.x() >= 0){
                 recCaseVisitable(currentCase.plus(IntCoordinates.WEST_UNIT));
-            }else if (!config.getCell(currentCase).northWall() && currentCase.y() >= 0){
+            }else if (!config.getCell(currentCase).isnorthWall() && currentCase.y() >= 0){
                 recCaseVisitable(currentCase.plus(IntCoordinates.NORTH_UNIT));
-            }else if (!config.getCell(currentCase).southWall() && currentCase.y() < config.getHeight()-1){
+            }else if (!config.getCell(currentCase).issouthWall() && currentCase.y() < config.getHeight()-1){
                 recCaseVisitable(currentCase.plus(IntCoordinates.SOUTH_UNIT));
             }
         }
@@ -293,16 +293,16 @@ public enum Ghost implements Critter {
         List<Character> possible = new ArrayList<Character>();
         IntCoordinates p = new IntCoordinates(x, y);
         // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est deja passer
-        if (y > 0 && !config.getCell(p).northWall() && visiter[y-1][x] == false) {
+        if (y > 0 && !config.getCell(p).isnorthWall() && visiter[y-1][x] == false) {
             possible.add('n');
         }
-        if (y < visiter.length - 1 && !config.getCell(p).southWall() && visiter[y+1][x] == false) {
+        if (y < visiter.length - 1 && !config.getCell(p).issouthWall() && visiter[y+1][x] == false) {
             possible.add('s');
         }
-        if (x < visiter[0].length - 1 && !config.getCell(p).eastWall() && visiter[y][x+1] == false) {
+        if (x < visiter[0].length - 1 && !config.getCell(p).iseastWall() && visiter[y][x+1] == false) {
             possible.add('e');
         }
-        if (x > 0 && !config.getCell(p).westWall() && visiter[y][x-1] == false) {
+        if (x > 0 && !config.getCell(p).iswestWall() && visiter[y][x-1] == false) {
             possible.add('w');
         }
         return possible; // renvoie la liste de toute les directions des intersection
@@ -446,22 +446,22 @@ public enum Ghost implements Critter {
             return currentGuess;
         }else{
             if (direction == Direction.EAST){
-                while (!c.isIntersection() && !c.eastWall() && currentGuess.x() >= config.getWidth()-1){
+                while (!c.isIntersection() && !c.iseastWall() && currentGuess.x() >= config.getWidth()-1){
                     currentGuess.plus(IntCoordinates.EAST_UNIT);
                     c = config.getCell(currentGuess);
                 }
             }else if (direction == Direction.WEST){
-                while (!c.isIntersection() && !c.westWall() && currentGuess.x() <= 0){
+                while (!c.isIntersection() && !c.iswestWall() && currentGuess.x() <= 0){
                     currentGuess.plus(IntCoordinates.WEST_UNIT);
                     c = config.getCell(currentGuess);
                 }
             }else if (direction == Direction.NORTH){
-                while (!c.isIntersection() && !c.northWall() && currentGuess.y() <= 0){
+                while (!c.isIntersection() && !c.isnorthWall() && currentGuess.y() <= 0){
                     currentGuess.plus(IntCoordinates.NORTH_UNIT);
                     c = config.getCell(currentGuess);
                 }
             }else if (direction == Direction.SOUTH){
-                while (!c.isIntersection() && !c.southWall() && currentGuess.y() >= config.getHeight()-1){
+                while (!c.isIntersection() && !c.issouthWall() && currentGuess.y() >= config.getHeight()-1){
                     currentGuess.plus(IntCoordinates.SOUTH_UNIT);
                     c = config.getCell(currentGuess);
                 }

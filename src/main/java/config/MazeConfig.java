@@ -59,7 +59,7 @@ public class MazeConfig {
     private final Cell[][] grid;
     private final IntCoordinates pacManPos, blinkyPos, pinkyPos, inkyPos, clydePos;
     private static Map<Character, Cell.Content> itemDictionary = new HashMap<>();
-    private static Map<Character, Boolean> wallDictionary = new HashMap<>();
+    private static Map<Character, Specs> wallDictionary = new HashMap<>();
 
     /**
      * Initialise les dictionnaires itemDictionary et wallDictionary
@@ -83,10 +83,11 @@ public class MazeConfig {
     private static void wallDictionary() {
         if (wallDictionary.size() != 0)
             return;
-        wallDictionary.put('|', true);
-        wallDictionary.put('-', true);
-        wallDictionary.put(' ', false);
-        wallDictionary.put('+', false);
+        wallDictionary.put('|', Specs.WALL);
+        wallDictionary.put('-', Specs.WALL);
+        wallDictionary.put(' ', Specs.WAY);
+        wallDictionary.put('+', Specs.WAY);
+        wallDictionary.put('X', Specs.WHITE);
 
     }
     public boolean IsHardMode(){
@@ -154,10 +155,7 @@ public class MazeConfig {
     private static void detector(int width, int y, String l1, String l2, String l3, Cell[][] grid,
             IntCoordinates[] pos) {
         Cell.Content CONTENT = NOTHING;
-        boolean north;
-        boolean east;
-        boolean south;
-        boolean west;
+        Specs north, east, south, west;
         Cell[] gridx = new Cell[width];
         int j = 0;
         for (int i = 1; i < width * 2; i += 2) {

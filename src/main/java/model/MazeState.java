@@ -111,36 +111,60 @@ public final class MazeState {
                                                                   // it?
                     switch (critter.getDirection()) {
                         case NORTH -> {
-                            for (var n : curNeighbours)
-                                if (config.getCell(n).northWall()) {
+                            for (var n : curNeighbours){
+                                if(critter instanceof PacMan && config.getCell(n).isnorthWhite()) { //si pacman est en face d'une case blanche il ne peut passer
                                     nextPos = curPos.floorY();
                                     critter.setDirection(Direction.NONE);
                                     break;
                                 }
+                                if (config.getCell(n).isnorthWall()) { //
+                                    nextPos = curPos.floorY();
+                                    critter.setDirection(Direction.NONE);
+                                    break;
+                                }
+                            }
                         }
                         case EAST -> {
-                            for (var n : curNeighbours)
-                                if (config.getCell(n).eastWall()) {
+                            for (var n : curNeighbours){
+                                if(critter instanceof PacMan && config.getCell(n).iseastWhite()) {
                                     nextPos = curPos.ceilX();
                                     critter.setDirection(Direction.NONE);
                                     break;
                                 }
+                                if (config.getCell(n).iseastWall()) {
+                                    nextPos = curPos.ceilX();
+                                    critter.setDirection(Direction.NONE);
+                                    break;
+                                }
+                            }
                         }
                         case SOUTH -> {
-                            for (var n : curNeighbours)
-                                if (config.getCell(n).southWall()) {
+                            for (var n : curNeighbours){
+                                if(critter instanceof PacMan && config.getCell(n).issouthWhite()) {
                                     nextPos = curPos.ceilY();
                                     critter.setDirection(Direction.NONE);
                                     break;
                                 }
+                                if (config.getCell(n).issouthWall()) {
+                                    nextPos = curPos.ceilY();
+                                    critter.setDirection(Direction.NONE);
+                                    break;
+                                }
+                            }
                         }
                         case WEST -> {
-                            for (var n : curNeighbours)
-                                if (config.getCell(n).westWall()) {
+                            for (var n : curNeighbours){
+                                if(critter instanceof PacMan && config.getCell(n).iswestWhite()) {
                                     nextPos = curPos.floorX();
                                     critter.setDirection(Direction.NONE);
                                     break;
                                 }
+                                if (config.getCell(n).iswestWall()) {
+                                    nextPos = curPos.floorX();
+                                    critter.setDirection(Direction.NONE);
+                                    break;
+                                }
+                            }
                         }
                     }
 

@@ -71,16 +71,16 @@ public final class PacMan implements Critter {
         switch(direction){
             case NORTH:
                 
-                return !config.getCell(pacPos).northWall();
+                return !config.getCell(pacPos).isnorthWall() && !config.getCell(pacPos).isnorthWhite();
             case SOUTH:
                 
-                return !config.getCell(pacPos).southWall();
+                return !config.getCell(pacPos).issouthWall() && !config.getCell(pacPos).issouthWhite();
             case EAST:
                 
-                return !config.getCell(pacPos).eastWall();
+                return !config.getCell(pacPos).iseastWall() && !config.getCell(pacPos).iseastWhite();
             case WEST:
                
-                return !config.getCell(pacPos).westWall();
+                return !config.getCell(pacPos).iswestWall() && !config.getCell(pacPos).iswestWhite();
             default: return false;
         }
     }
