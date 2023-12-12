@@ -117,6 +117,12 @@ public final class MazeState {
                                     critter.setDirection(Direction.NONE);
                                     break;
                                 }
+                                if (critter instanceof Ghost && !((Ghost)critter).estPossible(Direction.NORTH)) { //
+                                    nextPos = curPos.floorY();
+                                    critter.setDirection(Direction.NONE);
+                                    break;
+                                }
+
                                 if (config.getCell(n).isnorthWall()) { //
                                     nextPos = curPos.floorY();
                                     critter.setDirection(Direction.NONE);
@@ -131,6 +137,7 @@ public final class MazeState {
                                     critter.setDirection(Direction.NONE);
                                     break;
                                 }
+
                                 if (config.getCell(n).iseastWall()) {
                                     nextPos = curPos.ceilX();
                                     critter.setDirection(Direction.NONE);
@@ -141,6 +148,11 @@ public final class MazeState {
                         case SOUTH -> {
                             for (var n : curNeighbours){
                                 if(critter instanceof PacMan && config.getCell(n).issouthWhite()) {
+                                    nextPos = curPos.ceilY();
+                                    critter.setDirection(Direction.NONE);
+                                    break;
+                                }
+                                if (critter instanceof Ghost && !((Ghost)critter).estPossible(Direction.SOUTH)) {
                                     nextPos = curPos.ceilY();
                                     critter.setDirection(Direction.NONE);
                                     break;

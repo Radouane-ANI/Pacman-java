@@ -107,7 +107,7 @@ public enum Ghost implements Critter {
     /**
      * Obtient l'étàt actuelle du fantôme manger ou non.
      *
-     * @return Les coordonnées réelles du fantôme.
+     * @return True si le fantôme est en mode "manger", sinon False.
      */
     public boolean getManger() {
         return manger;
@@ -237,8 +237,7 @@ public enum Ghost implements Critter {
         int directionOppose = directionActuelle + (directionActuelle < 2 ? 2 : -2);
         int solution = -1;
         for (int i = 0 ; i < directions.length ; i++){
-            if ((i != directionOppose || c.isUCell()) &&
-                !config.getCell(depart).murEnFaceDirection(intToDirection(i))){
+            if ((i != directionOppose || c.isUCell()) && estPossible(intToDirection(i))){
                 if (solution == -1){
                     solution = i;
                 }else{
@@ -251,7 +250,11 @@ public enum Ghost implements Critter {
         }
         return intToDirection(solution);
     }
-
+/**
+ * 
+ * @param n
+ * @return
+ */
     public static Direction intToDirection(int n){
         switch (n) {
             case 0 : return Direction.NORTH;
@@ -261,7 +264,11 @@ public enum Ghost implements Critter {
             default : return Direction.NONE;
         }
     }
-
+/**
+ * 
+ * @param d
+ * @return
+ */
     public static int directionToInt(Direction d){
         switch (d) {
             case NORTH : return 0;
@@ -282,36 +289,6 @@ public enum Ghost implements Critter {
         }
 
     }
-
-    /**
-     * Détermine toutes les directions possibles a prendre a partir d'un point x,y
-     * @param x : position x sur dans le labyrinthe (ordonnée)
-     * @param y : position y sur dans le labyrinthe (abcisse)
-     * @return la liste des initiales des directions possibles ('n', 's', 'w' ou 'e')
-     */
-    public List<Character> possible(int x, int y) {
-        List<Character> possible = new ArrayList<Character>();
-        IntCoordinates p = new IntCoordinates(x, y);
-        // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est deja passer
-        if (y > 0 && !config.getCell(p).isnorthWall() && visiter[y-1][x] == false) {
-            possible.add('n');
-        }
-        if (y < visiter.length - 1 && !config.getCell(p).issouthWall() && visiter[y+1][x] == false) {
-            possible.add('s');
-        }
-        if (x < visiter[0].length - 1 && !config.getCell(p).iseastWall() && visiter[y][x+1] == false) {
-            possible.add('e');
-        }
-        if (x > 0 && !config.getCell(p).iswestWall() && visiter[y][x-1] == false) {
-            possible.add('w');
-        }
-        return possible; // renvoie la liste de toute les directions des intersection
-    }
-
-    public boolean possible(IntCoordinates a){
-        return config.getCell(a).isClosed();
-    }
-
     /**
     /**
      * Determine le chemin le plus court entre Blinky et PacMan
@@ -419,11 +396,11 @@ public enum Ghost implements Critter {
         int directionOppose = directionActuelle + (directionActuelle < 2 ? 2 : -2);
         Cell c = config.getCell(pos.round());
         for (int i = 0 ; i < 4 ; i++){
-            if ((i != directionOppose || (i == directionOppose && c.isUCell())) && !c.murEnFaceDirection(intToDirection(i))){
+            if ((i != directionOppose || (i == directionOppose && c.isUCell())) && estPossible(intToDirection(i))){
                 mouvement.add(intToDirection(i));
             }
         }
-        System.out.println(mouvement.toString());
+        
         if (mouvement.size() == 0){
             return Direction.NONE;
         }else{
@@ -581,7 +558,36 @@ public enum Ghost implements Critter {
     public static int calculDistance(IntCoordinates a, IntCoordinates b){
         return (a.x() - b.x())*(a.x() - b.x()) + (a.y() - b.y())*(a.y() - b.y());
     }
+    public boolean estDansSpawn(MazeConfig Lab){
+        IntCoordinates p1 = Lab.getBlinkyPos();
+        IntCoordinates p2 = Lab.getClydePos();
+        IntCoordinates p3 = Lab.getInkyPos();
+        IntCoordinates p4 = Lab.getPinkyPos();
+        int xMin = Math.min(Math.min(p1.x(), p2.x()), Math.min(p3.x(), p4.x()));
+        int yMin = Math.min(Math.min(p1.y(), p2.y()), Math.min(p3.y(), p4.y()));
+        int xMax = Math.max(Math.max(p1.x(), p2.x()), Math.max(p3.x(), p4.x()));
+        int yMax = Math.max(Math.max(p1.y(), p2.y()), Math.max(p3.y(), p4.y()));
+        
+        return pos.round().x() >= xMin && pos.round().x() <= xMax && pos.round().y() >= yMin && pos.round().y() <= yMax;
+    }
 
-    
+    public boolean estPossible(Direction direction){
+        var Gpos = this.pos.round();
+        switch(direction){
+            case NORTH:
+                
+                return !config.getCell(Gpos).isnorthWall() || (config.getCell(Gpos).isnorthWhite() && (manger || estDansSpawn(config))) ;
+            case SOUTH:
+                
+                return !config.getCell(Gpos).issouthWall() || (config.getCell(Gpos).issouthWhite() && (manger || estDansSpawn(config))) ;
+            case EAST:
+                
+                return !config.getCell(Gpos).iseastWall() || (config.getCell(Gpos).iseastWhite() && (manger || estDansSpawn(config))) ;
+            case WEST:
+               
+                return !config.getCell(Gpos).iswestWall() || (config.getCell(Gpos).iswestWhite() && (manger || estDansSpawn(config))) ;
+            default: return false;
+        }
+    }
 
 }
