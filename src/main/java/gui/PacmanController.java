@@ -39,7 +39,18 @@ public class PacmanController {
                 case DOWN -> Direction.NONE;
                 default -> PacMan.INSTANCE.getDirection(); // do nothing
             };
-        } else {
+        } else if (Bonus.PERDU.isPerdu() && PacMan.INSTANCE.SiPacmanMort()) {
+            DirectionFaire = switch (event.getCode()) {
+                case LEFT -> Direction.NONE;
+                case RIGHT -> Direction.NONE;
+                case UP -> Direction.NONE;
+                case DOWN -> Direction.NONE;
+                default -> PacMan.INSTANCE.getDirection(); // do nothing
+            };
+
+        }
+
+        else {
             DirectionFaire = switch (event.getCode()) {
                 case LEFT -> Direction.WEST;
                 case RIGHT -> Direction.EAST;
