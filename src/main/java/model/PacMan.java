@@ -8,12 +8,15 @@ import config.MazeConfig;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
 import model.MazeState;
+
 /**
+ * Implements Pac-Man character using singleton pattern. FIXME: check whether
+ * singleton is really a good idea.
  * Implements Pac-Man character using singleton pattern. FIXME: check whether
  * singleton is really a good idea.
  */
 public final class PacMan implements Critter {
-    
+
     private Direction direction = Direction.NONE;
     private RealCoordinates pos;
     private boolean energized;
@@ -30,6 +33,8 @@ public final class PacMan implements Critter {
     }
 
     private RealCoordinates prevpos;
+    public boolean PacmanMort;
+
     private PacMan() {
     }
 
@@ -61,29 +66,33 @@ public final class PacMan implements Critter {
         this.prevpos = this.pos;
         this.pos = pos;
     }
+
     /**
      * Fonction qui renvoie un bool si il y'a un mur en face de l'instance du PACMAN
+     * 
      * @param direction direction du pacman
      * @return un bool si il y'a un mur en face de l'instance du PACMAN
      */
-    public boolean  estPossible(Direction direction){
+    public boolean estPossible(Direction direction) {
         var pacPos = PacMan.INSTANCE.getPos().round();
-        switch(direction){
+        switch (direction) {
             case NORTH:
-                
+
                 return !config.getCell(pacPos).isnorthWall() && !config.getCell(pacPos).isnorthWhite();
             case SOUTH:
-                
+
                 return !config.getCell(pacPos).issouthWall() && !config.getCell(pacPos).issouthWhite();
             case EAST:
-                
+
                 return !config.getCell(pacPos).iseastWall() && !config.getCell(pacPos).iseastWhite();
             case WEST:
-               
+
                 return !config.getCell(pacPos).iswestWall() && !config.getCell(pacPos).iswestWhite();
-            default: return false;
+            default:
+                return false;
         }
     }
+
     /**
      * @param gridState
      * @return retourne s'il y a un dot a l'endroit ou pacman se trouve
@@ -147,4 +156,24 @@ public final class PacMan implements Critter {
         return skin;
     }
 
+    /**
+     *
+     * Set direction None
+     */
+    public void freeze() {
+        this.PacmanMort = true;
+        this.direction = Direction.NONE;
+    }
+
+    public void unfreeze() {
+        this.PacmanMort = false;
+    }
+
+    public boolean SiPacmanMort() {
+        return PacmanMort;
+    }
+
+    public void SetPacmanMort(boolean PacmanMort) {
+        this.PacmanMort = PacmanMort;
+    }
 }

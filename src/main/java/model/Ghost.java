@@ -14,8 +14,6 @@ import datagame.*;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.effect.Blend;
 
-
-
 public enum Ghost implements Critter {
 
     // TODO: implement a different AI for each ghost, according to the description
@@ -28,6 +26,7 @@ public enum Ghost implements Critter {
     private Direction newDirection = Direction.NONE;
     private IntCoordinates anciennePos;
     private double speed = 2;
+    private boolean isVisible = true;
     // tableau passerBlinky de la taille de la carte qui dit si blinky est deja
     // passer par la
     // (utile pour le bactracking) :
@@ -46,25 +45,25 @@ public enum Ghost implements Critter {
 
     static IntCoordinates cibleRandomClyde = null;
 
-    //définit toutes les cases visitables par pacman depuis son point de départ dans un tableau de tableau de boolean
+    // définit toutes les cases visitables par pacman depuis son point de départ
+    // dans un tableau de tableau de boolean
     static boolean[][] caseVisitable = new boolean[config.getHeight()][config.getWidth()];
     static boolean caseVisitableFill = false;
 
-    static void recCaseVisitable(IntCoordinates currentCase){
-        if (!caseVisitable[currentCase.y()][currentCase.x()]){
+    static void recCaseVisitable(IntCoordinates currentCase) {
+        if (!caseVisitable[currentCase.y()][currentCase.x()]) {
             caseVisitable[currentCase.y()][currentCase.x()] = true;
-            if (!config.getCell(currentCase).iseastWall() && currentCase.x() < config.getWidth()-1){
+            if (!config.getCell(currentCase).iseastWall() && currentCase.x() < config.getWidth() - 1) {
                 recCaseVisitable(currentCase.plus(IntCoordinates.EAST_UNIT));
-            }else if (!config.getCell(currentCase).iswestWall() && currentCase.x() >= 0){
+            } else if (!config.getCell(currentCase).iswestWall() && currentCase.x() >= 0) {
                 recCaseVisitable(currentCase.plus(IntCoordinates.WEST_UNIT));
-            }else if (!config.getCell(currentCase).isnorthWall() && currentCase.y() >= 0){
+            } else if (!config.getCell(currentCase).isnorthWall() && currentCase.y() >= 0) {
                 recCaseVisitable(currentCase.plus(IntCoordinates.NORTH_UNIT));
-            }else if (!config.getCell(currentCase).issouthWall() && currentCase.y() < config.getHeight()-1){
+            } else if (!config.getCell(currentCase).issouthWall() && currentCase.y() < config.getHeight() - 1) {
                 recCaseVisitable(currentCase.plus(IntCoordinates.SOUTH_UNIT));
             }
         }
     }
-
 
     @Override
     public RealCoordinates getPos() {
@@ -81,7 +80,7 @@ public enum Ghost implements Critter {
         this.direction = direction;
     }
 
-    public void reset(){
+    public void reset() {
         this.newDirection = Direction.NONE;
     }
 
@@ -113,7 +112,7 @@ public enum Ghost implements Critter {
         return manger;
     }
 
-    public void setSpeed(double s){
+    public void setSpeed(double s) {
         speed = s;
     }
 
@@ -134,97 +133,141 @@ public enum Ghost implements Critter {
         return 2; // ne rien faire
     }
 
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
+
+    }
+
+    /**
+     * Make all ghosts invisible
+     * 
+     */
+    public static void makeGhostsInvisible() {
+        for (Ghost ghost : Ghost.values()) {
+            ghost.setVisible(false);
+
+        }
+    }
+
+    /**
+     * Make all ghosts visible
+     * 
+     */
+    public static void makeGhostVisibleAgain() {
+        for (Ghost ghost : Ghost.values()) {
+            ghost.setVisible(true);
+
+        }
+    }
+
     /**
      * Actualise la prochaine direction des fantomes selon leur IA
      */
-    public void iaBlinky() {    //déplacements de blinky
+    public void iaBlinky() { // déplacements de blinky
+        // if ghost.isVisible())
         setSpeed(
-            (pos.round().x() == PacMan.INSTANCE.getPos().round().x() || 
-            pos.round().y() == PacMan.INSTANCE.getPos().round().y() &&
-            Data.getDifficulty())?
-            4 : 2.5);
-        if (anciennePos == null){
+                (pos.round().x() == PacMan.INSTANCE.getPos().round().x() ||
+                        pos.round().y() == PacMan.INSTANCE.getPos().round().y() &&
+                                Data.getDifficulty()) ? 4 : 2.5);
+        if (anciennePos == null) {
             anciennePos = pos.round();
         }
-        if (anciennePos.equals(pos.round()) && newDirection != Direction.NONE && newDirection != null){
-            changeDirection(newDirection);
-        }else{ 
-            Direction path = prochainePositionBlinky();
-            newDirection = path;
-            anciennePos = pos.round();
-            changeDirection(path);
+        if (anciennePos.equals(pos.round()) && newDirection != Direction.NONE && newDirection != null) {
+            if (BLINKY.isVisible()) {
+                changeDirection(newDirection);
+
+            }
+        } else {
+            if (BLINKY.isVisible()) {
+                Direction path = prochainePositionBlinky();
+                newDirection = path;
+                anciennePos = pos.round();
+                changeDirection(path);
+            }
         }
     }
 
     public void iaPinky() { // déplacements de pinky
         setSpeed(2);
-        if (anciennePos == null){
+        if (anciennePos == null) {
             anciennePos = pos.round();
         }
-        if (anciennePos.equals(pos.round()) && newDirection != Direction.NONE && newDirection != null){
-            changeDirection(newDirection);
-        }else{ 
-            Direction path = prochainePositionPinky();
-            newDirection = path;
-            anciennePos = pos.round();
-            changeDirection(path);
+        if (anciennePos.equals(pos.round()) && newDirection != Direction.NONE && newDirection != null) {
+            if (PINKY.isVisible()) {
+                changeDirection(newDirection);
+            }
+        } else {
+            if (PINKY.isVisible()) {
+                Direction path = prochainePositionPinky();
+                newDirection = path;
+                anciennePos = pos.round();
+                changeDirection(path);
+            }
         }
     }
-    
 
     public void iaInky() { // déplacements de inky
         setSpeed(2);
         compteurFrameInky++;
         compteurFrameInky = (compteurFrameInky == nbFrame ? 0 : compteurFrameInky);
-        suitPacInky = (
-            compteurFrameInky == 0 && (suitPacInky ? new Random().nextInt(2) == 0 : true) ?
-            !suitPacInky : suitPacInky
-        );
-        if (anciennePos == null){
+        suitPacInky = (compteurFrameInky == 0 && (suitPacInky ? new Random().nextInt(2) == 0 : true) ? !suitPacInky
+                : suitPacInky);
+        if (anciennePos == null) {
             anciennePos = pos.round();
         }
-        if (anciennePos.equals(pos.round()) && newDirection != Direction.NONE && newDirection != null){
-            changeDirection(newDirection);
-        }else{ 
-            Direction path = prochainePositionInky();
-            newDirection = path;
-            anciennePos = pos.round();
-            changeDirection(path);
+        if (anciennePos.equals(pos.round()) && newDirection != Direction.NONE && newDirection != null) {
+            if (INKY.isVisible()) {
+                changeDirection(newDirection);
+            }
+        } else {
+            if (INKY.isVisible()) {
+                Direction path = prochainePositionInky();
+                newDirection = path;
+                anciennePos = pos.round();
+                changeDirection(path);
+            }
         }
     }
-    
 
-    public void iaClyde(){
+    public void iaClyde() {
         setSpeed(2);
-        if (!caseVisitableFill){
+        if (!caseVisitableFill) {
             recCaseVisitable(pos.round());
             caseVisitableFill = true;
         }
         compteurFrameClyde++;
         compteurFrameClyde = (compteurFrameClyde == nbFrame ? 0 : compteurFrameClyde);
-        if ((!suitPacClyde && CLYDE.getPos().round() == cibleRandomClyde) || cibleRandomClyde == null){
+        if ((!suitPacClyde && CLYDE.getPos().round() == cibleRandomClyde) || cibleRandomClyde == null) {
             cibleRandomClyde = trouverPointAleatoire();
         }
-        if (compteurFrameClyde == 0){
+        if (compteurFrameClyde == 0) {
             suitPacClyde = (new Random().nextInt(2) == 0 ? !suitPacClyde : suitPacClyde);
-            if (!suitPacClyde){
+            if (!suitPacClyde) {
                 cibleRandomClyde = trouverPointAleatoire();
             }
         }
-        if (anciennePos == null){
+        if (anciennePos == null) {
             anciennePos = pos.round();
         }
-        if (anciennePos.equals(pos.round()) && newDirection != Direction.NONE && newDirection != null){
-            changeDirection(newDirection);
-        }else{ 
-            Direction path = prochainePositionClyde();
-            newDirection = path;
-            anciennePos = pos.round();
-            changeDirection(path);
+        if (anciennePos.equals(pos.round()) && newDirection != Direction.NONE && newDirection != null) {
+            if (CLYDE.isVisible()) {
+                changeDirection(newDirection);
+            }
+        } else {
+            if (CLYDE.isVisible()) {
+                Direction path = prochainePositionClyde();
+                newDirection = path;
+                anciennePos = pos.round();
+                changeDirection(path);
+            }
         }
     }
 
-    public Direction cheminVersCible(IntCoordinates cible){
+    public Direction cheminVersCible(IntCoordinates cible) {
         IntCoordinates depart = this.pos.round();
         Cell c = config.getCell(pos.round());
         int[] directions = {
@@ -232,18 +275,18 @@ public enum Ghost implements Critter {
                 calculDistance(depart.plus(IntCoordinates.WEST_UNIT), cible),
                 calculDistance(depart.plus(IntCoordinates.SOUTH_UNIT), cible),
                 calculDistance(depart.plus(IntCoordinates.EAST_UNIT), cible)
-            };
+        };
         int directionActuelle = directionToInt(this.direction);
         int directionOppose = directionActuelle + (directionActuelle < 2 ? 2 : -2);
         int solution = -1;
-        for (int i = 0 ; i < directions.length ; i++){
+        for (int i = 0; i < directions.length; i++) {
             if ((i != directionOppose || c.isUCell()) &&
-                !config.getCell(depart).murEnFaceDirection(intToDirection(i))){
-                if (solution == -1){
+                    !config.getCell(depart).murEnFaceDirection(intToDirection(i))) {
+                if (solution == -1) {
                     solution = i;
-                }else{
-                    if (directions[i] < directions[solution] || 
-                    (directions[i] == directions[solution] && i == directionActuelle)){
+                } else {
+                    if (directions[i] < directions[solution] ||
+                            (directions[i] == directions[solution] && i == directionActuelle)) {
                         solution = i;
                     }
                 }
@@ -252,69 +295,88 @@ public enum Ghost implements Critter {
         return intToDirection(solution);
     }
 
-    public static Direction intToDirection(int n){
+    public static Direction intToDirection(int n) {
         switch (n) {
-            case 0 : return Direction.NORTH;
-            case 1 : return Direction.WEST;
-            case 2 : return Direction.SOUTH;
-            case 3 : return Direction.EAST;
-            default : return Direction.NONE;
+            case 0:
+                return Direction.NORTH;
+            case 1:
+                return Direction.WEST;
+            case 2:
+                return Direction.SOUTH;
+            case 3:
+                return Direction.EAST;
+            default:
+                return Direction.NONE;
         }
     }
 
-    public static int directionToInt(Direction d){
+    public static int directionToInt(Direction d) {
         switch (d) {
-            case NORTH : return 0;
-            case WEST : return 1;
-            case SOUTH : return 2;
-            case EAST : return 3;
-            default : return -1;
+            case NORTH:
+                return 0;
+            case WEST:
+                return 1;
+            case SOUTH:
+                return 2;
+            case EAST:
+                return 3;
+            default:
+                return -1;
         }
     }
 
-    public static IntCoordinates intToMoveCoordinates(int i){
+    public static IntCoordinates intToMoveCoordinates(int i) {
         switch (i) {
-            case 0 : return IntCoordinates.NORTH_UNIT;
-            case 1 : return IntCoordinates.WEST_UNIT;
-            case 2 : return IntCoordinates.SOUTH_UNIT;
-            case 3 : return IntCoordinates.EAST_UNIT;
-            default : return new IntCoordinates(0,0);
+            case 0:
+                return IntCoordinates.NORTH_UNIT;
+            case 1:
+                return IntCoordinates.WEST_UNIT;
+            case 2:
+                return IntCoordinates.SOUTH_UNIT;
+            case 3:
+                return IntCoordinates.EAST_UNIT;
+            default:
+                return new IntCoordinates(0, 0);
         }
 
     }
 
     /**
      * Détermine toutes les directions possibles a prendre a partir d'un point x,y
+     * 
      * @param x : position x sur dans le labyrinthe (ordonnée)
      * @param y : position y sur dans le labyrinthe (abcisse)
-     * @return la liste des initiales des directions possibles ('n', 's', 'w' ou 'e')
+     * @return la liste des initiales des directions possibles ('n', 's', 'w' ou
+     *         'e')
      */
     public List<Character> possible(int x, int y) {
         List<Character> possible = new ArrayList<Character>();
         IntCoordinates p = new IntCoordinates(x, y);
-        // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est deja passer
-        if (y > 0 && !config.getCell(p).isnorthWall() && visiter[y-1][x] == false) {
+        // verifie que l'on ne depasse pas du tableau, l'absence de mur et si on est
+        // deja passer
+        if (y > 0 && !config.getCell(p).isnorthWall() && visiter[y - 1][x] == false) {
             possible.add('n');
         }
-        if (y < visiter.length - 1 && !config.getCell(p).issouthWall() && visiter[y+1][x] == false) {
+        if (y < visiter.length - 1 && !config.getCell(p).issouthWall() && visiter[y + 1][x] == false) {
             possible.add('s');
         }
-        if (x < visiter[0].length - 1 && !config.getCell(p).iseastWall() && visiter[y][x+1] == false) {
+        if (x < visiter[0].length - 1 && !config.getCell(p).iseastWall() && visiter[y][x + 1] == false) {
             possible.add('e');
         }
-        if (x > 0 && !config.getCell(p).iswestWall() && visiter[y][x-1] == false) {
+        if (x > 0 && !config.getCell(p).iswestWall() && visiter[y][x - 1] == false) {
             possible.add('w');
         }
         return possible; // renvoie la liste de toute les directions des intersection
     }
 
-    public boolean possible(IntCoordinates a){
+    public boolean possible(IntCoordinates a) {
         return config.getCell(a).isClosed();
     }
 
     /**
-    /**
+     * /**
      * Determine le chemin le plus court entre Blinky et PacMan
+     * 
      * @return la prochaine direction a suivre selon cheminCourt
      */
     public Direction prochainePositionBlinky() {
@@ -323,18 +385,23 @@ public enum Ghost implements Critter {
     }
 
     /**
-     * Determine le chemin le plus court entre Pinky et la premiere intersection/mur que pointe la direction de PacMan
+     * Determine le chemin le plus court entre Pinky et la premiere intersection/mur
+     * que pointe la direction de PacMan
+     * 
      * @return la prochaine direction a suivre selon cheminCourt
      */
     public Direction prochainePositionPinky() {
         cheminCourt.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
         IntCoordinates posP = PacMan.INSTANCE.getPos().round();
-        IntCoordinates cible = (calculDistance(PINKY.getPos().round(), posP) <= 10 ? posP : predictionNextMove(PacMan.INSTANCE));
+        IntCoordinates cible = (calculDistance(PINKY.getPos().round(), posP) <= 10 ? posP
+                : predictionNextMove(PacMan.INSTANCE));
         return PINKY.cheminVersCible(cible);
     }
 
     /**
-     * Determine le chemin le plus court entre Inky et PacMan ou le point le plus eloigne de ce dernier
+     * Determine le chemin le plus court entre Inky et PacMan ou le point le plus
+     * eloigne de ce dernier
+     * 
      * @return la prochaine direction a suivre selon cheminCourt
      */
     public Direction prochainePositionInky() {
@@ -346,7 +413,9 @@ public enum Ghost implements Critter {
     }
 
     /**
-     * Determine le chemin le plus court entre Clyde et PacMan ou un point aléatoire dans le labyrinthe
+     * Determine le chemin le plus court entre Clyde et PacMan ou un point aléatoire
+     * dans le labyrinthe
+     * 
      * @return la prochaine direction a suivre selon cheminCourt
      */
     public Direction prochainePositionClyde() {
@@ -355,7 +424,7 @@ public enum Ghost implements Critter {
         return CLYDE.cheminVersCible(cible);
     }
 
-    /** 
+    /**
      * Change la direction du fantôme, s'alignant avec les tunnels si le fantôme est
      * à un angle.
      *
@@ -363,11 +432,13 @@ public enum Ghost implements Critter {
      * @param ghost Le fantôme dont la direction est modifiée.
      */
     public void changeDirection(Direction dir) {
-        double vitesse = 0.03*2; //0.016 est la distance parcourue entre chaque frame par les fantomes a vitesse 1
+        double vitesse = 0.03 * 2; // 0.016 est la distance parcourue entre chaque frame par les fantomes a vitesse
+                                   // 1
         if (direction != dir) {
             if ((direction == Direction.WEST || direction == Direction.EAST)
                     && (dir != Direction.WEST && dir != Direction.EAST)) {
-                if (Math.abs(pos.x() - (int) pos.x()) < vitesse*getSpeed()) {  // attend le dernier moment pour teleporter le fantomer des les angles
+                if (Math.abs(pos.x() - (int) pos.x()) < vitesse * getSpeed()) { // attend le dernier moment pour
+                                                                                // teleporter le fantomer des les angles
                     pos = pos.floorX(); // arrondie la coordonnee en x pour etre face au trou
                 } else {
                     dir = direction;
@@ -375,7 +446,8 @@ public enum Ghost implements Critter {
             }
             if ((direction == Direction.NORTH || direction == Direction.SOUTH)
                     && (dir != Direction.NORTH && dir != Direction.SOUTH)) {
-                if (Math.abs(pos.y() - (int) pos.y()) < vitesse*getSpeed()) { // attend le dernier moment pour teleporter le fantomer des les angles
+                if (Math.abs(pos.y() - (int) pos.y()) < vitesse * getSpeed()) { // attend le dernier moment pour
+                                                                                // teleporter le fantomer des les angles
                     pos = pos.floorY(); // arrondie la coordonnee en y pour etre face au trou
                 } else {
                     dir = direction;
@@ -385,82 +457,84 @@ public enum Ghost implements Critter {
         }
     }
 
-    public static void fuite(){
-        for (Ghost ghost : Ghost.values()){
-            if (ghost.manger){
+    public static void fuite() {
+        for (Ghost ghost : Ghost.values()) {
+            if (ghost.manger) {
                 ghost.changeDirection(Direction.fromChar(ghost.retour()));
-            }else{
+            } else {
                 ghost.setSpeed(3);
-                if (ghost.anciennePos == null){
+                if (ghost.anciennePos == null) {
                     ghost.anciennePos = ghost.pos.round();
                 }
-                if(
-                    ghost.anciennePos.equals(ghost.pos.round()) && 
-                    ghost.newDirection != Direction.NONE && 
-                    ghost.newDirection != null
-                ){
+                if (ghost.anciennePos.equals(ghost.pos.round()) &&
+                        ghost.newDirection != Direction.NONE &&
+                        ghost.newDirection != null) {
                     ghost.changeDirection(ghost.newDirection);
 
-                }else{
+                } else {
                     Direction path = ghost.prochainePositionFuite();
                     ghost.newDirection = path;
                     ghost.anciennePos = ghost.pos.round();
                     ghost.changeDirection(path);
                 }
             }
-            
+
         }
     }
 
-    public Direction prochainePositionFuite(){
+    public Direction prochainePositionFuite() {
         Random rd = new Random();
         ArrayList<Direction> mouvement = new ArrayList<>();
         int directionActuelle = directionToInt(direction);
         int directionOppose = directionActuelle + (directionActuelle < 2 ? 2 : -2);
         Cell c = config.getCell(pos.round());
-        for (int i = 0 ; i < 4 ; i++){
-            if ((i != directionOppose || (i == directionOppose && c.isUCell())) && !c.murEnFaceDirection(intToDirection(i))){
+        for (int i = 0; i < 4; i++) {
+            if ((i != directionOppose || (i == directionOppose && c.isUCell()))
+                    && !c.murEnFaceDirection(intToDirection(i))) {
                 mouvement.add(intToDirection(i));
             }
         }
         System.out.println(mouvement.toString());
-        if (mouvement.size() == 0){
+        if (mouvement.size() == 0) {
             return Direction.NONE;
-        }else{
+        } else {
             return mouvement.get(rd.nextInt(mouvement.size()));
         }
-        
+
     }
 
     /**
-     * Détermine la prochaine position de PacMan en en regardant ou pointe sa direction
+     * Détermine la prochaine position de PacMan en en regardant ou pointe sa
+     * direction
+     * 
      * @param p : PacMan
-     * @return les coordonnées de la première intersection/mur que rencontrerai PacMan si il continuait dans sa directions actuelles
+     * @return les coordonnées de la première intersection/mur que rencontrerai
+     *         PacMan si il continuait dans sa directions actuelles
      */
-    public static IntCoordinates predictionNextMove(PacMan p){//prédit la prochaine position de pacman 
+    public static IntCoordinates predictionNextMove(PacMan p) {// prédit la prochaine position de pacman
         Direction direction = (p.getDirection());
         IntCoordinates currentGuess = p.getPos().round();
         Cell c = config.getCell(currentGuess);
-        if (c.isIntersection() || direction == Direction.NONE){
+        if (c.isIntersection() || direction == Direction.NONE) {
             return currentGuess;
-        }else{
-            if (direction == Direction.EAST){
-                while (!c.isIntersection() && !c.iseastWall() && currentGuess.x() >= config.getWidth()-1){
+        } else {
+            if (direction == Direction.EAST) {
+                while (!c.isIntersection() && !c.iseastWall() && currentGuess.x() >= config.getWidth() - 1) {
                     currentGuess.plus(IntCoordinates.EAST_UNIT);
                     c = config.getCell(currentGuess);
                 }
-            }else if (direction == Direction.WEST){
-                while (!c.isIntersection() && !c.iswestWall() && currentGuess.x() <= 0){
+            } else if (direction == Direction.WEST) {
+                while (!c.isIntersection() && !c.iswestWall() && currentGuess.x() <= 0) {
                     currentGuess.plus(IntCoordinates.WEST_UNIT);
                     c = config.getCell(currentGuess);
                 }
-            }else if (direction == Direction.NORTH){
-                while (!c.isIntersection() && !c.isnorthWall() && currentGuess.y() <= 0){
+            } else if (direction == Direction.NORTH) {
+                while (!c.isIntersection() && !c.isnorthWall() && currentGuess.y() <= 0) {
                     currentGuess.plus(IntCoordinates.NORTH_UNIT);
                     c = config.getCell(currentGuess);
                 }
-            }else if (direction == Direction.SOUTH){
-                while (!c.isIntersection() && !c.issouthWall() && currentGuess.y() >= config.getHeight()-1){
+            } else if (direction == Direction.SOUTH) {
+                while (!c.isIntersection() && !c.issouthWall() && currentGuess.y() >= config.getHeight() - 1) {
                     currentGuess.plus(IntCoordinates.SOUTH_UNIT);
                     c = config.getCell(currentGuess);
                 }
@@ -520,8 +594,9 @@ public enum Ghost implements Critter {
         this.speed = speed;
     }
 
-    /** 
-     * Détermine le point le plus éloigné du point x,y 
+    /**
+     * Détermine le point le plus éloigné du point x,y
+     * 
      * @param x : position x sur dans le labyrinthe (ordonnée)
      * @param y : position y sur dans le labyrinthe (abcisse)
      * @return les coordonnées du point le plus éloigné du point x,y
@@ -548,20 +623,23 @@ public enum Ghost implements Critter {
     }
 
     /**
-     * Détermine un point aléatoirement assez éloigné du point x,y 
+     * Détermine un point aléatoirement assez éloigné du point x,y
+     * 
      * @param x : position x sur dans le labyrinthe (ordonnée)
      * @param y : position y sur dans le labyrinthe (abcisse)
-     * @return les coordonnées d'un point aléatoirement mais assez éloigné du point x,y
+     * @return les coordonnées d'un point aléatoirement mais assez éloigné du point
+     *         x,y
      */
     public static IntCoordinates trouverPointAleatoire() {
         ArrayList<IntCoordinates> coordonneesTrue = new ArrayList<>();
         int n = caseVisitable.length;
         int m = caseVisitable[0].length;
-        // Parcours le tableau et ajoute les coordonnées (x, y) des cases 'true' avec une distance minimale
+        // Parcours le tableau et ajoute les coordonnées (x, y) des cases 'true' avec
+        // une distance minimale
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if (caseVisitable[i][j]) {
-                    coordonneesTrue.add(new IntCoordinates(i,j));
+                    coordonneesTrue.add(new IntCoordinates(i, j));
                 }
             }
         }
@@ -573,15 +651,14 @@ public enum Ghost implements Critter {
     }
 
     /**
-     * Calcul la distance euclidienne entre deux points a et b 
+     * Calcul la distance euclidienne entre deux points a et b
+     * 
      * @param a : point a sur le labyrinthe
      * @param b : point b sur le labyrinthe
-     * @return la distance euclidienne entre les points a et b 
+     * @return la distance euclidienne entre les points a et b
      */
-    public static int calculDistance(IntCoordinates a, IntCoordinates b){
-        return (a.x() - b.x())*(a.x() - b.x()) + (a.y() - b.y())*(a.y() - b.y());
+    public static int calculDistance(IntCoordinates a, IntCoordinates b) {
+        return (a.x() - b.x()) * (a.x() - b.x()) + (a.y() - b.y()) * (a.y() - b.y());
     }
-
-    
 
 }

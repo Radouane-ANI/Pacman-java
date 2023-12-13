@@ -27,6 +27,7 @@ import gui.PacmanController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static model.Ghost.*;
 
@@ -34,8 +35,10 @@ public final class MazeState {
     private MazeConfig config;
     private final int height;
     private final int width;
+
     private boolean isGameRunning = true;
-    private boolean boulbirespawn;
+    private boolean AudioPlayed;
+    private boolean PacmanMort;
     int index_sc;
 
     private final boolean[][] gridState;
@@ -87,6 +90,14 @@ public final class MazeState {
         return height;
     }
 
+    public boolean SetAudioPlayed(boolean AudioPlayed) {
+        return this.AudioPlayed = AudioPlayed;
+    }
+
+    public boolean GetAudioPlayed() {
+        return AudioPlayed;
+    }
+
     public void update(long deltaTns) {
         if (!isGameRunning) {
             return; // Arrêtez d'exécuter la mise à jour du jeu si le jeu n'est pas en cours
@@ -111,8 +122,11 @@ public final class MazeState {
                                                                   // it?
                     switch (critter.getDirection()) {
                         case NORTH -> {
-                            for (var n : curNeighbours){
-                                if(critter instanceof PacMan && config.getCell(n).isnorthWhite()) { //si pacman est en face d'une case blanche il ne peut passer
+                            for (var n : curNeighbours) {
+                                if (critter instanceof PacMan && config.getCell(n).isnorthWhite()) { // si pacman est en
+                                                                                                     // face d'une case
+                                                                                                     // blanche il ne
+                                                                                                     // peut passer
                                     nextPos = curPos.floorY();
                                     critter.setDirection(Direction.NONE);
                                     break;
@@ -125,8 +139,8 @@ public final class MazeState {
                             }
                         }
                         case EAST -> {
-                            for (var n : curNeighbours){
-                                if(critter instanceof PacMan && config.getCell(n).iseastWhite()) {
+                            for (var n : curNeighbours) {
+                                if (critter instanceof PacMan && config.getCell(n).iseastWhite()) {
                                     nextPos = curPos.ceilX();
                                     critter.setDirection(Direction.NONE);
                                     break;
@@ -139,8 +153,8 @@ public final class MazeState {
                             }
                         }
                         case SOUTH -> {
-                            for (var n : curNeighbours){
-                                if(critter instanceof PacMan && config.getCell(n).issouthWhite()) {
+                            for (var n : curNeighbours) {
+                                if (critter instanceof PacMan && config.getCell(n).issouthWhite()) {
                                     nextPos = curPos.ceilY();
                                     critter.setDirection(Direction.NONE);
                                     break;
@@ -153,8 +167,8 @@ public final class MazeState {
                             }
                         }
                         case WEST -> {
-                            for (var n : curNeighbours){
-                                if(critter instanceof PacMan && config.getCell(n).iswestWhite()) {
+                            for (var n : curNeighbours) {
+                                if (critter instanceof PacMan && config.getCell(n).iswestWhite()) {
                                     nextPos = curPos.floorX();
                                     critter.setDirection(Direction.NONE);
                                     break;
@@ -214,7 +228,11 @@ public final class MazeState {
                         }
                         ((Ghost) critter).setManger(true);
                     } else {
-                        playerLost();
+
+                        makeGhostsInvisible();
+                        SetPacmanMort(true);
+
+                        // playerLost();
                         return;
                     }
                 }
@@ -226,7 +244,9 @@ public final class MazeState {
                     displayScore();
                 }
             }
-            playerWin(); // si tous les points sont recuperé le win screen sera affiché
+
+            playerWin();
+            // si tous les points sont recuperé le win screen sera affiché
         }
     }
 
@@ -272,18 +292,21 @@ public final class MazeState {
         index_sc = gameRoot.getChildren().size() - 1;
     }
 
-    public boolean GetBoulbi() {
-        return boulbirespawn;
+    public boolean GetPacmanMort() {
+        return PacmanMort;
     }
 
-    /**
-     * Si le Pacman s'est fait mangé par un ghost et que l'utilisateur n'avait plus
-     * de vie on affiche l'ecran GAME OVER.
-     */
-    private void playerLost() {
-        boulbirespawn = true;
+    public void SetPacmanMort(boolean PacmanMort) {
+        this.PacmanMort = PacmanMort;
+
+    }
+
+    public void playerLost() {
+        // FIXME: this should be displayed in the JavaFX view, not in the console. A
+        // game over screen would be nice too.
         Data.setLive(-1);
-        boulbirespawn = false;
+        displayScore();
+
         if (Data.getLive() == 0) {
             isGameRunning = false;
 
@@ -294,8 +317,9 @@ public final class MazeState {
             FinalScreen fs = new FinalScreen(resetAction, false);
             gameRoot.getChildren().add(fs.getFinalScreenLayout());
         } else {
-            displayScore();
+            makeGhostVisibleAgain();
             resetCritters();
+
         }
     }
 
@@ -336,24 +360,25 @@ public final class MazeState {
     }
 
     private void resetCritter(Critter critter) {
-        if(critter instanceof PacMan){
+        if (critter instanceof PacMan) {
             critter.setDirection(Direction.NONE);
             critter.setPos(initialPos.get(critter));
-            ((PacMan)critter).setEnergized(false);
+            ((PacMan) critter).setEnergized(false);
         }
-        if (critter instanceof Ghost){
-            resetGhost((Ghost)critter);
+        if (critter instanceof Ghost) {
+            resetGhost((Ghost) critter);
         }
     }
 
-    private void resetGhost(Ghost ghost){
+    private void resetGhost(Ghost ghost) {
         ghost.setDirection(Direction.NONE);
-        ghost.setPos(initialPos.get((Critter)ghost));
+        ghost.setPos(initialPos.get((Critter) ghost));
         ghost.reset();
 
     }
 
     private void resetCritters() {
+        SetAudioPlayed(false);
         for (var critter : critters)
             resetCritter(critter);
     }
@@ -362,6 +387,7 @@ public final class MazeState {
      * Permet de réeinitialiser Gridstate le nombre de vies et le nombre de points.
      */
     private void resetGame() {
+        makeGhostVisibleAgain();
         resetCritters();
         for (boolean[] k : gridState)
             for (int i = 0; i < k.length - 1; i++) {

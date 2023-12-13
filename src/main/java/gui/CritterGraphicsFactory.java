@@ -1,6 +1,26 @@
 package gui;
 
 import javafx.animation.FadeTransition;
+import static model.Ghost.BLINKY;
+import static model.Ghost.CLYDE;
+import static model.Ghost.INKY;
+import static model.Ghost.PINKY;
+import static model.Ghost.makeGhostVisibleAgain;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import javafx.util.Duration;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -66,6 +86,98 @@ public final class CritterGraphicsFactory {
         };
         var image = new ImageView(new Image(url, scale * size, scale * size, true, true));
 
+        Image anim1 = new Image("pacmansuper1.png", scale * size, scale * size, true,
+                true);
+        Image anim2 = new Image("pacmansuper2bis.png", scale * size, scale * size,
+                true, true);
+        Image anim3 = new Image("pacmansuper3bis.png", scale * size, scale * size,
+                true, true);
+        Image anim4 = new Image("pacmansuper4.png", scale * size, scale * size, true,
+                true);
+        Image anim5 = new Image("pacmansuper5.png", scale * size, scale * size, true,
+                true);
+        Image animoriginal = new Image("pacman.png", scale * size, scale * size, true,
+                true);
+        Image anim6 = new Image("pacmansuper5.png", scale * size, scale * size, true,
+                true);
+
+        Image anim1B = new Image("src_main_resources_pacmanbluesuper1.png", scale * size, scale * size, true,
+                true);
+        Image anim2B = new Image("src_main_resources_pacmanbluesuper2.png", scale * size, scale * size, true,
+                true);
+        Image anim3B = new Image("src_main_resources_pacmanbluesuper3.png", scale * size, scale * size, true,
+                true);
+        Image anim4B = new Image("src_main_resources_pacmanbluesuper4.png", scale * size, scale * size, true,
+                true);
+        Image anim5B = new Image("src_main_resources_pacmanbluesuper5.png", scale * size, scale * size, true,
+                true);
+        Image animoriginalB = new Image("pacmanblue.png", scale * size, scale * size, true,
+                true);
+        Image anim6B = new Image("src_main_resources_pacmanbluesuper5.png", scale * size, scale * size, true,
+                true);
+
+        Image anim1G = new Image("src_main_resources_pacmangreensuper1.png", scale * size, scale * size, true, true);
+        Image anim2G = new Image("src_main_resources_pacmangreensuper2.png", scale * size, scale * size, true, true);
+        Image anim3G = new Image("src_main_resources_pacmangreensuper3.png", scale * size, scale * size, true, true);
+        Image anim4G = new Image("src_main_resources_pacmangreensuper4.png", scale * size, scale * size, true, true);
+        Image anim5G = new Image("src_main_resources_pacmangreensuper5.png", scale * size, scale * size, true, true);
+        Image animoriginalG = new Image("pacmangreen.png", scale * size, scale * size, true, true);
+        Image anim6G = new Image("src_main_resources_pacmangreensuper5.png", scale * size, scale * size, true, true);
+
+        Image[] framesNORMAL = { anim1, anim2, anim3, anim4, anim5, anim6, animoriginal };
+        Image[] framesBLUE = { anim1B, anim2B, anim3B, anim4B, anim5B, anim6B, animoriginalB };
+        Image[] framesGREEN = { anim1G, anim2G, anim3G, anim4G, anim5G, anim6G, animoriginalG };
+
+        int[] index = { 0 };
+        // **Fonction qui crée une nouvelle instance de timeline qui execute un certain
+        // bloc de code tout les 200ms*/
+        Image[] framestest = switch (Data.getskin()) {// switch qui sert a choisir l'image correspond a la
+                                                      // créature et
+            // a son skin
+            case 1 -> framesNORMAL;
+            case 2 -> framesBLUE;
+            case 3 -> framesGREEN;
+            default -> framesNORMAL;
+        };
+        Timeline timelineN = new Timeline(new KeyFrame(Duration.millis(200), e -> {
+
+            image.setImage(framesNORMAL[index[0]]);
+
+            index[0] = (index[0] + 1) % framesNORMAL.length;
+
+            if (index[0] == 6) {
+                image.setVisible(false);
+
+            }
+
+        }));
+
+        Timeline timelineB = new Timeline(new KeyFrame(Duration.millis(200), e -> {
+
+            image.setImage(framesBLUE[index[0]]);
+
+            index[0] = (index[0] + 1) % framesBLUE.length;
+
+            if (index[0] == 6) {
+                image.setVisible(false);
+
+            }
+
+        }));
+
+        Timeline timelineG = new Timeline(new KeyFrame(Duration.millis(200), e -> {
+
+            image.setImage(framesGREEN[index[0]]);
+
+            index[0] = (index[0] + 1) % framesGREEN.length;
+
+            if (index[0] == 6) {
+                image.setVisible(false);
+
+            }
+
+        }));
+
         return new GraphicsUpdater() {
             @Override
             public void update() {
@@ -108,9 +220,11 @@ public final class CritterGraphicsFactory {
                     image.setImage(new Image("yeux.png", scale * size, scale * size, true, true));
                 }
                 // Met à jour la position de l'image selon la position de la créature
+                // System.out.println(state.GetPacmanMort());
                 image.setTranslateX((critter.getPos().x() + (1 - size) / 2) * scale);
                 image.setTranslateY((critter.getPos().y() + (1 - size) / 2) * scale);
                 if (critter instanceof PacMan) {
+
                     var url12 = switch (Data.getskin()) {// switch qui sert a choisir l'image correspond a la créature
                                                          // et
                                                          // a son skin
@@ -127,19 +241,82 @@ public final class CritterGraphicsFactory {
                         default -> "pacmanfermer2.png";
                     };
 
-                    if (critter.getDirection() == Direction.NONE) {
-                        // Afficher l'image de la bouche ouverte
-                        image.setImage(new Image(url12, scale * size, scale * size, true, true));
-                    } else if (System.currentTimeMillis() - lastImageChangeTime > IMAGE_CHANGE_INTERVAL) {
-                        mouthOpen = !mouthOpen; // Inverse l'état de la bouche
-                        var imageUrl = mouthOpen ? url12 : url2;
-                        image.setImage(new Image(imageUrl, scale * size, scale * size, true, true));
-                        lastImageChangeTime = System.currentTimeMillis();
+                    if (!state.GetPacmanMort()) {
+                        if (critter.getDirection() == Direction.NONE) {
+                            // Afficher l'image de la bouche ouverte
+                            image.setImage(new Image(url12, scale * size, scale * size, true, true));
+                        } else if (System.currentTimeMillis() - lastImageChangeTime > IMAGE_CHANGE_INTERVAL) {
+                            mouthOpen = !mouthOpen; // Inverse l'état de la bouche
+                            var imageUrl = mouthOpen ? url12 : url2;
+                            image.setImage(new Image(imageUrl, scale * size, scale * size, true, true));
+                            lastImageChangeTime = System.currentTimeMillis();
+                        }
                     }
-
-                    if (state.GetBoulbi()) {
-                        image.setRotate(0);
+                    if (state.GetPacmanMort()) {
+                        image.setRotate(270);
                         image.setScaleX(1);
+                        if (!state.GetAudioPlayed()) {
+                            try { // Lorsque le pacman mange un dot il emet un son.
+                                File soundFile = new File("src/main/resources/PacmanDie.wav");
+                                AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+                                Clip clip = AudioSystem.getClip();
+                                clip.open(audioIn);
+                                clip.start();
+                                state.SetAudioPlayed(true);
+                            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        PacMan.INSTANCE.freeze();
+                        if (Data.getskin() == 1) {
+                            timelineN.setCycleCount(framesNORMAL.length);
+                            timelineN.play();
+                            timelineN.setOnFinished(e -> {
+                                image.setVisible(true);
+                                state.SetPacmanMort(false);
+                                state.playerLost();
+                                image.setRotate(0);
+                                image.setScaleX(1);
+                                PacMan.INSTANCE.unfreeze();
+
+                            });
+                        } else if (Data.getskin() == 2) {
+                            timelineB.setCycleCount(framesBLUE.length);
+                            timelineB.play();
+                            timelineB.setOnFinished(e -> {
+                                image.setVisible(true);
+                                state.SetPacmanMort(false);
+                                state.playerLost();
+                                image.setRotate(0);
+                                image.setScaleX(1);
+                                PacMan.INSTANCE.unfreeze();
+
+                            });
+                        } else if (Data.getskin() == 3) {
+                            timelineG.setCycleCount(framesGREEN.length);
+                            timelineG.play();
+                            timelineG.setOnFinished(e -> {
+                                image.setVisible(true);
+                                state.SetPacmanMort(false);
+                                state.playerLost();
+                                image.setRotate(0);
+                                image.setScaleX(1);
+                                PacMan.INSTANCE.unfreeze();
+
+                            });
+                        } else {
+                            timelineN.setCycleCount(framesNORMAL.length);
+                            timelineN.play();
+                            timelineN.setOnFinished(e -> {
+                                image.setVisible(true);
+                                state.SetPacmanMort(false);
+                                state.playerLost();
+                                image.setRotate(0);
+                                image.setScaleX(1);
+                                PacMan.INSTANCE.unfreeze();
+
+                            });
+                        }
                     } else {
                         switch (critter.getDirection()) {
                             case SOUTH:
@@ -169,6 +346,11 @@ public final class CritterGraphicsFactory {
                         image.setImage(new Image(CritterImage + ".png", scale * size, scale * size, true, true));
                     } // sprite 1
                 }
+                if (critter instanceof Ghost) {
+                    Ghost ghost = (Ghost) critter;
+                    image.setVisible(ghost.isVisible());
+                }
+
             }
 
             @Override
