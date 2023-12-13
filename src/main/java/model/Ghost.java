@@ -168,7 +168,6 @@ public enum Ghost implements Critter {
      * Actualise la prochaine direction des fantomes selon leur IA
      */
     public void iaBlinky() { // déplacements de blinky
-        // if ghost.isVisible())
         setSpeed(
                 (pos.round().x() == PacMan.INSTANCE.getPos().round().x() ||
                         pos.round().y() == PacMan.INSTANCE.getPos().round().y() &&
@@ -367,8 +366,8 @@ public enum Ghost implements Critter {
     public Direction prochainePositionPinky() {
         cheminCourt.clear(); // vide le tableau pour ne pas laisser le chemin d'un position enteriere
         IntCoordinates posP = PacMan.INSTANCE.getPos().round();
-        IntCoordinates cible = (calculDistance(PINKY.getPos().round(), posP) <= 10 ? posP
-                : predictionNextMove(PacMan.INSTANCE));
+        IntCoordinates predict = predictionNextMove(PacMan.INSTANCE);
+        IntCoordinates cible = (calculDistance(PINKY.getPos().round(), posP) <= 10 ? posP : predict);
         return PINKY.cheminVersCible(cible);
     }
 
@@ -379,7 +378,7 @@ public enum Ghost implements Critter {
      * @return la prochaine direction a suivre selon cheminCourt
      */
     public Direction prochainePositionInky() {
-        recCaseVisitable(PacMan.INSTANCE.getPos().round());
+        recCaseVisitable(this.getPos().round());
         int x = PacMan.INSTANCE.getPos().round().x();
         int y = PacMan.INSTANCE.getPos().round().y();
         IntCoordinates cible = (suitPacInky ? PacMan.INSTANCE.getPos().round() : trouverCasePlusEloignee(x, y));
@@ -393,7 +392,7 @@ public enum Ghost implements Critter {
      * @return la prochaine direction a suivre selon cheminCourt
      */
     public Direction prochainePositionClyde() {
-        recCaseVisitable(PacMan.INSTANCE.getPos().round());
+        recCaseVisitable(this.getPos().round());
         IntCoordinates cible = (suitPacClyde ? PacMan.INSTANCE.getPos().round() : cibleRandomClyde);
         return CLYDE.cheminVersCible(cible);
     }
@@ -492,23 +491,23 @@ public enum Ghost implements Critter {
             return currentGuess;
         } else {
             if (direction == Direction.EAST) {
-                while (!c.isIntersection() && !c.iseastWall() && currentGuess.x() >= config.getWidth() - 1) {
-                    currentGuess.plus(IntCoordinates.EAST_UNIT);
+                while (!c.isIntersection() && !c.iseastWall() && currentGuess.x() < config.getWidth() - 1) {
+                    currentGuess = currentGuess.plus(IntCoordinates.EAST_UNIT);
                     c = config.getCell(currentGuess);
                 }
             } else if (direction == Direction.WEST) {
-                while (!c.isIntersection() && !c.iswestWall() && currentGuess.x() <= 0) {
-                    currentGuess.plus(IntCoordinates.WEST_UNIT);
+                while (!c.isIntersection() && !c.iswestWall() && currentGuess.x() > 0) {
+                    currentGuess = currentGuess.plus(IntCoordinates.WEST_UNIT);
                     c = config.getCell(currentGuess);
                 }
             } else if (direction == Direction.NORTH) {
-                while (!c.isIntersection() && !c.isnorthWall() && currentGuess.y() <= 0) {
-                    currentGuess.plus(IntCoordinates.NORTH_UNIT);
+                while (!c.isIntersection() && !c.isnorthWall() && currentGuess.y() > 0) {
+                    currentGuess = currentGuess.plus(IntCoordinates.NORTH_UNIT);
                     c = config.getCell(currentGuess);
                 }
             } else if (direction == Direction.SOUTH) {
-                while (!c.isIntersection() && !c.issouthWall() && currentGuess.y() >= config.getHeight() - 1) {
-                    currentGuess.plus(IntCoordinates.SOUTH_UNIT);
+                while (!c.isIntersection() && !c.issouthWall() && currentGuess.y() < config.getHeight() - 1) {
+                    currentGuess = currentGuess.plus(IntCoordinates.SOUTH_UNIT);
                     c = config.getCell(currentGuess);
                 }
             }
