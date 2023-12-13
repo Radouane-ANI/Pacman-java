@@ -181,8 +181,9 @@ public final class MazeState {
                     }
 
                 }
-
+                
                 critter.setPos(nextPos.warp(width, height));
+                
             }
             var pacPos = PacMan.INSTANCE.getPos().round();
             if (PacMan.INSTANCE.PacManDot(gridState)) {

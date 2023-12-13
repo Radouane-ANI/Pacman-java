@@ -60,6 +60,7 @@ public record RealCoordinates(double x, double y) {
     }
 
     public RealCoordinates warp(int width, int height) {
+
         var rx = x;
         var ry = y;
         while (Math.round(rx) < 0)
@@ -70,6 +71,7 @@ public record RealCoordinates(double x, double y) {
             rx -= width;
         while (Math.round(ry) >= height)
             ry -= height;
+        
         return new RealCoordinates(rx, ry);
     }  
     public double distance(RealCoordinates other) {
