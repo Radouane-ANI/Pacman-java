@@ -20,8 +20,9 @@ import java.io.IOException; // Ajout de la classe IOException pour gérer l'exce
 
 public class MazeConfig {
     private boolean hardMode;
+
     public MazeConfig(Cell[][] grid, IntCoordinates pacManPos, IntCoordinates blinkyPos, IntCoordinates pinkyPos,
-            IntCoordinates inkyPos, IntCoordinates clydePos,boolean hardMode) {
+            IntCoordinates inkyPos, IntCoordinates clydePos, boolean hardMode) {
         this.grid = new Cell[grid.length][grid[0].length];
 
         for (int i = 0; i < getHeight(); i++) {
@@ -44,8 +45,8 @@ public class MazeConfig {
      * 
      * @param filepath chemin du fichier
      */
-    public MazeConfig(String filepath,boolean hardMode) {
-        MazeConfig maze = makeLabyrinthe(filepath,hardMode);
+    public MazeConfig(String filepath, boolean hardMode) {
+        MazeConfig maze = makeLabyrinthe(filepath, hardMode);
         this.grid = maze.grid;
         this.pacManPos = maze.pacManPos;
         this.blinkyPos = maze.blinkyPos;
@@ -90,7 +91,8 @@ public class MazeConfig {
         wallDictionary.put('X', Specs.WHITE);
 
     }
-    public boolean IsHardMode(){
+
+    public boolean IsHardMode() {
         return this.hardMode;
     }
 
@@ -125,6 +127,7 @@ public class MazeConfig {
     public Cell getCell(IntCoordinates pos) {
         return grid[Math.floorMod(pos.y(), getHeight())][Math.floorMod(pos.x(), getWidth())];
     }
+
     public int getHeightFile(String filePath) {
         BufferedReader reader = null;
         try {
@@ -138,6 +141,7 @@ public class MazeConfig {
             return 0;
         }
     }
+
     public int getWidthFile(String filePath) {
         BufferedReader reader = null;
         try {
@@ -285,7 +289,7 @@ public class MazeConfig {
      * @param filePath chemin du fichier
      * @return MazeConfig
      */
-    public MazeConfig makeLabyrinthe(String filePath,boolean hardMode) {
+    public MazeConfig makeLabyrinthe(String filePath, boolean hardMode) {
 
         BufferedReader reader = null;
         itemDictionary();
