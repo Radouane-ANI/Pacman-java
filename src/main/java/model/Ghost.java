@@ -116,6 +116,9 @@ public enum Ghost implements Critter {
         speed = s;
     }
 
+    public int getSkinVulnerable() {
+        return skinVulnerable;
+    }
     /**
      * Change le skin du fantôme en fonction de l'état énergisé de Pac-Man.
      *
