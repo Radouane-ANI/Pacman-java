@@ -52,7 +52,7 @@ public final class CritterGraphicsFactory {
     private boolean mouthOpen = true;
     private long lastImageChangeTime = 0;
     private static final long IMAGE_CHANGE_INTERVAL = 180; // Temps en millisecondes entre les changements d'image
-
+    private  int starttick;
     /**
      * Constructeur de la classe CritterGraphicsFactory.
      * 
@@ -205,13 +205,37 @@ public final class CritterGraphicsFactory {
                     // Jouez l'animation
                     fadeTransition.play();
                     image.setImage(new Image(url, scale * size, scale * size, true, true));
-                } else if (!(critter instanceof PacMan) && skin == 1) {
+                
+                
+                
+                }
+                if (!(critter instanceof PacMan) && ((Ghost)critter).getSkinVulnerable()==1) {
+                    //  System.out.println("VULNERABLE"); 
+                    // System.out.println(starttick/300);
+                    // System.out.println(tick/300);
+                    //System.out.println(tick/300 - starttick/300 > 10);
+                     if (tick/300 - starttick/300 > 10){
+                        //System.out.println("clignottement");
+                        if(tick/30%2==0){
+                            image.setImage(new Image("vulnerable_ghost1.png", scale * size, scale * size, true, true));}
+                        else{
+                            image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
+                        }
+                    }
+                }
+                
+                if (!(critter instanceof PacMan) && skin == 1) {
+                    if(starttick==0)
+                    starttick = tick;
+                    //System.out.print(critter+" TEST :");
+                    
                     image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
+                    //System.out.println(" BON");
                 } else if ((critter instanceof PacMan) && PacMan.INSTANCE.changeSkin() != Data.getskin()) {
                     var url1 = switch (Data.getskin()) {// switch qui sert a choisir l'image correspond a la créature et
                                                         // a son skin
                         case 1 -> "pacman.png";
-                        case 2 -> "pacmanblue.png";
+                        case 2 -> "pacmanblue.png";                                                                 
                         case 3 -> "pacmangreen.png";
                         default -> "pacman.png";
                     };
