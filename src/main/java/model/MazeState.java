@@ -225,8 +225,6 @@ public final class MazeState {
                 // Activez energized sur Pac-Man
                 PacMan.INSTANCE.setEnergized(true);
                 addScore(5);
-
-<<<<<<< HEAD
                 //Remet tout les fantomes dans l'état de fuite
                 for (Ghost ghost : Ghost.values()){
                     if (!Data.ghostFuite.contains(ghost)){
@@ -234,22 +232,10 @@ public final class MazeState {
                     }
                     Data.ghostFuiteSet = true;
                 }
-                try { // Lorsque le pacman mange un dot il emet un son.
-                    File soundFile = new File("src/main/resources/power_dot.wav");
-                    AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
-                    Clip clip = AudioSystem.getClip();
-                    clip.open(audioIn);
-                    clip.start();
-                } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                    e.printStackTrace();
-                }
-=======
                 String soundFile = "src/main/resources/power_dot.wav";
                 Media sound = new Media(new File(soundFile).toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(sound);
                 mediaPlayer.play();
->>>>>>> develop
-
             }
 
             for (var critter : critters) {
