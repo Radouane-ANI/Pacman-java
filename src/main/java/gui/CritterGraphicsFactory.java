@@ -35,6 +35,8 @@ import model.PacMan;
 import datagame.Data;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * La classe CritterGraphicsFactory est utilisée pour créer et
@@ -74,6 +76,7 @@ public final class CritterGraphicsFactory {
      */
     public GraphicsUpdater makeGraphics(Critter critter) {
         var size = 0.82;
+        Data.setSize(size);
         var url = (critter instanceof PacMan) ? switch (Data.getskin()) {// switch qui sert a choisir l'image correspond
                                                                          // a la créature et a son skin
             case 1 -> "pacman.png";
@@ -87,7 +90,7 @@ public final class CritterGraphicsFactory {
             case PINKY -> "PinkyD.png";
         };
         var image = new ImageView(new Image(url, scale * size, scale * size, true, true));
-
+        Data.setImageView(image);
         Image anim1 = new Image("pacmansuper1.png", scale * size, scale * size, true,
                 true);
         Image anim2 = new Image("pacmansuper2bis.png", scale * size, scale * size,
@@ -144,7 +147,7 @@ public final class CritterGraphicsFactory {
         Timeline timelineN = new Timeline(new KeyFrame(Duration.millis(200), e -> {
 
             image.setImage(framesNORMAL[index[0]]);
-
+            
             index[0] = (index[0] + 1) % framesNORMAL.length;
 
             if (index[0] == 6) {
@@ -209,27 +212,33 @@ public final class CritterGraphicsFactory {
                 
                 
                 }
-                if (!(critter instanceof PacMan) && ((Ghost)critter).getSkinVulnerable()==1) {
-                    //  System.out.println("VULNERABLE"); 
-                    // System.out.println(starttick/300);
-                    // System.out.println(tick/300);
-                    //System.out.println(tick/300 - starttick/300 > 10);
-                     if (tick/300 - starttick/300 > 10){
-                        //System.out.println("clignottement");
-                        if(tick/30%2==0){
-                            image.setImage(new Image("vulnerable_ghost1.png", scale * size, scale * size, true, true));}
-                        else{
-                            image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
-                        }
-                    }
-                }
+                // if (!(critter instanceof PacMan) && ((Ghost)critter).getSkinVulnerable()==1) {
+                //     System.out.println("VULNERABLE"); 
+                //     System.out.println(starttick/300);
+                //     System.out.println(tick/300);
+                //     System.out.println(tick/300 - starttick/300 > 10);
+                //     System.out.print("Test :");
+                //     ((Ghost)critter).startBlinking();
+                //     // image.setImage(((Ghost)critter).getCurrentSprite());
+                //     System.out.println(" BON");
+                //     //  if (tick/300 - starttick/300 > 20){
+                //     //     System.out.println("clignottement");
+                //     //     if(tick/30%2==0){
+                //     //         image.setImage(new Image("vulnerable_ghost1.png", scale * size, scale * size, true, true));}
+                //     //     else{
+                //     //         image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
+                //     //     }
+                //     // }
+                // }
+                
                 
                 if (!(critter instanceof PacMan) && skin == 1) {
-                    if(starttick==0)
-                    starttick = tick;
-                    //System.out.print(critter+" TEST :");
                     
+                    starttick = tick;
+                    System.out.print("energizeur manger");
                     image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
+                    ((Ghost)critter).startBlinking(image);
+                    //image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
                     //System.out.println(" BON");
                 } else if ((critter instanceof PacMan) && PacMan.INSTANCE.changeSkin() != Data.getskin()) {
                     var url1 = switch (Data.getskin()) {// switch qui sert a choisir l'image correspond a la créature et
@@ -360,7 +369,24 @@ public final class CritterGraphicsFactory {
                         }
                     }
                 } else if (!PacMan.INSTANCE.isEnergized()) {
+                    ((Ghost) critter).stopBlinking(image);
                     String CritterImage = setCritterImage(critter, size);
+                    // String current = GhostAnimationDictionary.get(critter.toString());
+                    // Timer timer = new Timer();
+                    // timer.schedule(new TimerTask() {
+                    //     @Override
+                    //     public void run() {
+                    //     if (current.equals(CritterImage+"1.png")) { // si pacman a deja pris un energiseur ne desactive pas l'energiseur
+                    //         image.setImage(new Image(CritterImage + ".png", scale * size, scale * size, true, true));
+                    //         current = CritterImage+"1.png";
+                    //         }
+                    //         else{
+                    //             image.setImage(new Image(CritterImage + "1.png", scale * size, scale * size, true, true));
+                    //             current = CritterImage+".png";
+                    //         }
+                    //     }
+                    // }, 10000);
+                      
                     if (tick / 30 % 2 == 0) { // on change le sprite du fantome en fonction du tick
                         image.setImage(new Image(CritterImage + "1.png", scale * size, scale * size, true, true));
                     } // sprite 2
