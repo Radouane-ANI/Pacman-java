@@ -41,11 +41,11 @@ public enum Ghost implements Critter {
     static boolean suitPacClyde = false;
 
     private int skinVulnerable;
-    private boolean manger;
+    private boolean manger = false;
 
     static IntCoordinates cibleRandomClyde = null;
 
-    // définit toutes les cases visitables par pacman depuis son point de départ
+    // définit toutes les cases visitables depuis le point curretnCase
     // dans un tableau de tableau de boolean
     static boolean[][] caseVisitable = new boolean[config.getHeight()][config.getWidth()];
     static boolean caseVisitableFill = false;
@@ -117,16 +117,23 @@ public enum Ghost implements Critter {
     }
 
     /**
+     * Détermine si le fantome est en état de fuite
+     * 
+     * @return : true si en état de fuite, false sinon
+     */
+    public boolean enFuite(){return Data.ghostFuite.contains(this);}
+
+    /**
      * Change le skin du fantôme en fonction de l'état énergisé de Pac-Man.
      *
      * @return Un entier indiquant le changement de skin : 0 pour un skin normal, 1
      *         pour un skin vulnérable, 2 pour aucun changement.
      */
     public int changeSkin() {
-        if (PacMan.INSTANCE.isEnergized() && skinVulnerable != 1) {
+        if (PacMan.INSTANCE.isEnergized() && skinVulnerable != 1 && enFuite()) {
             skinVulnerable = 1; // Changement de skin requis
             return 1;
-        } else if (!PacMan.INSTANCE.isEnergized() && skinVulnerable != 0) {
+        } else if ((!PacMan.INSTANCE.isEnergized() && skinVulnerable != 0) || (PacMan.INSTANCE.isEnergized() && !enFuite() && !manger && skinVulnerable != 0)) {
             skinVulnerable = 0; // Changement de skin requis
             return 0;
         }
@@ -168,13 +175,18 @@ public enum Ghost implements Critter {
      * Actualise la prochaine direction des fantomes selon leur IA
      */
     public void iaBlinky() { // déplacements de blinky
-        setSpeed(
-                (pos.round().x() == PacMan.INSTANCE.getPos().round().x() ||
+        if (manger){
+            changeDirection(Direction.fromChar(retour()));
+            return;
+        }
+        setSpeed(enFuite() ? 3 : (
+            (pos.round().x() == PacMan.INSTANCE.getPos().round().x() ||
                         pos.round().y() == PacMan.INSTANCE.getPos().round().y() &&
-                                Data.getDifficulty()) ? 4 : 2.5);
+                                Data.getDifficulty()) ? 4 : 2.5));
         if (anciennePos == null) {
             anciennePos = pos.round();
         }
+        
         if (anciennePos.equals(pos.round()) && newDirection != Direction.NONE && newDirection != null) {
             if (BLINKY.isVisible()) {
                 changeDirection(newDirection);
@@ -182,7 +194,7 @@ public enum Ghost implements Critter {
             }
         } else {
             if (BLINKY.isVisible()) {
-                Direction path = prochainePositionBlinky();
+                Direction path = (enFuite()? prochainePositionFuite() : prochainePositionBlinky()); 
                 newDirection = path;
                 anciennePos = pos.round();
                 changeDirection(path);
@@ -191,7 +203,11 @@ public enum Ghost implements Critter {
     }
 
     public void iaPinky() { // déplacements de pinky
-        setSpeed(2);
+        if (manger){
+            changeDirection(Direction.fromChar(retour()));
+            return;
+        }
+        setSpeed(enFuite() ? 3 : 2);
         if (anciennePos == null) {
             anciennePos = pos.round();
         }
@@ -201,7 +217,7 @@ public enum Ghost implements Critter {
             }
         } else {
             if (PINKY.isVisible()) {
-                Direction path = prochainePositionPinky();
+                Direction path = (enFuite()? prochainePositionFuite() : prochainePositionPinky()); 
                 newDirection = path;
                 anciennePos = pos.round();
                 changeDirection(path);
@@ -209,8 +225,12 @@ public enum Ghost implements Critter {
         }
     }
 
-    public void iaInky() { // déplacements de inky
-        setSpeed(2);
+    public void iaInky() { // déplacements de Inky
+        if (manger){
+            changeDirection(Direction.fromChar(retour()));
+            return;
+        }
+        setSpeed(enFuite() ? 3 : 2);
         compteurFrameInky++;
         compteurFrameInky = (compteurFrameInky == nbFrame ? 0 : compteurFrameInky);
         suitPacInky = (compteurFrameInky == 0 && (suitPacInky ? new Random().nextInt(2) == 0 : true) ? !suitPacInky
@@ -224,7 +244,7 @@ public enum Ghost implements Critter {
             }
         } else {
             if (INKY.isVisible()) {
-                Direction path = prochainePositionInky();
+                Direction path = (enFuite()? prochainePositionFuite() : prochainePositionInky()); 
                 newDirection = path;
                 anciennePos = pos.round();
                 changeDirection(path);
@@ -232,8 +252,12 @@ public enum Ghost implements Critter {
         }
     }
 
-    public void iaClyde() {
-        setSpeed(2);
+    public void iaClyde() { // déplacements de Clyde
+        if (manger){
+            changeDirection(Direction.fromChar(retour()));
+            return;
+        }
+        setSpeed(enFuite() ? 3 : 2);
         if (!caseVisitableFill) {
             recCaseVisitable(pos.round());
             caseVisitableFill = true;
@@ -258,7 +282,7 @@ public enum Ghost implements Critter {
             }
         } else {
             if (CLYDE.isVisible()) {
-                Direction path = prochainePositionClyde();
+                Direction path = (enFuite()? prochainePositionFuite() : prochainePositionClyde()); 
                 newDirection = path;
                 anciennePos = pos.round();
                 changeDirection(path);
@@ -266,6 +290,11 @@ public enum Ghost implements Critter {
         }
     }
 
+    /**
+     * Détermine la prochaine direction la plus pratique a prendre selon les possibilités depuis la position du fantomes
+     * @param cible : case que le fantome a pour cible
+     * @return : la prochaie Direction a prendre
+     */
     public Direction cheminVersCible(IntCoordinates cible) {
         IntCoordinates depart = this.pos.round();
         Cell c = config.getCell(pos.round());
@@ -292,11 +321,12 @@ public enum Ghost implements Critter {
         }
         return intToDirection(solution);
     }
-/**
- * 
- * @param n
- * @return
- */
+
+    /**
+     * Affecte un int, de 0 a 3 a une direction
+     * @param n : int
+     * @return : direction selon n (0 -> North, 1 -> West, 2 -> South, 3 -> East, le reste -> None)
+     */
     public static Direction intToDirection(int n) {
         switch (n) {
             case 0:
@@ -311,11 +341,12 @@ public enum Ghost implements Critter {
                 return Direction.NONE;
         }
     }
-/**
- * 
- * @param d
- * @return
- */
+
+    /**
+     * Affecte une Direction a un int
+     * @param d : Direction
+     * @return : int selon la direction d (North -> 0, West -> 1, South -> 2, East -> 3)
+     */
     public static int directionToInt(Direction d) {
         switch (d) {
             case NORTH:
@@ -331,6 +362,11 @@ public enum Ghost implements Critter {
         }
     }
 
+    /**
+     * Affecte un int, de 0 a 3 a une direction en Coordonnées
+     * @param n : int
+     * @return : coordonnées selon n (0 -> NORTH_UNIT, 1 -> WEST_UNIT, 2 -> SOUTH_UNIT, 3 -> EAST_UNIT, le reste -> IntCoordinates(0, 0))
+     */
     public static IntCoordinates intToMoveCoordinates(int i) {
         switch (i) {
             case 0:
@@ -401,8 +437,7 @@ public enum Ghost implements Critter {
      * Change la direction du fantôme, s'alignant avec les tunnels si le fantôme est
      * à un angle.
      *
-     * @param dir   La nouvelle direction pour le fantôme.
-     * @param ghost Le fantôme dont la direction est modifiée.
+     * @param dir   : La nouvelle direction pour le fantôme.
      */
     public void changeDirection(Direction dir) {
         double vitesse = 0.03 * 2; // 0.016 est la distance parcourue entre chaque frame par les fantomes a vitesse
@@ -430,31 +465,10 @@ public enum Ghost implements Critter {
         }
     }
 
-    public static void fuite() {
-        for (Ghost ghost : Ghost.values()) {
-            if (ghost.manger) {
-                ghost.changeDirection(Direction.fromChar(ghost.retour()));
-            } else {
-                ghost.setSpeed(3);
-                if (ghost.anciennePos == null) {
-                    ghost.anciennePos = ghost.pos.round();
-                }
-                if (ghost.anciennePos.equals(ghost.pos.round()) &&
-                        ghost.newDirection != Direction.NONE &&
-                        ghost.newDirection != null) {
-                    ghost.changeDirection(ghost.newDirection);
-
-                } else {
-                    Direction path = ghost.prochainePositionFuite();
-                    ghost.newDirection = path;
-                    ghost.anciennePos = ghost.pos.round();
-                    ghost.changeDirection(path);
-                }
-            }
-
-        }
-    }
-
+    /**
+     * Retourne la prochaine direction du fantome aléatoirement selon ses possibilités
+     * @return : prochaine direction a suivre
+     */
     public Direction prochainePositionFuite() {
         Random rd = new Random();
         ArrayList<Direction> mouvement = new ArrayList<>();

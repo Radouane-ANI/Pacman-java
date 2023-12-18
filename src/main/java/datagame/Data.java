@@ -1,5 +1,7 @@
 package datagame;
 
+import java.util.ArrayList;
+
 import config.MazeConfig;
 import gui.*;
 import model.*;
@@ -30,6 +32,9 @@ public class Data {
     public static void setLive(int i){live=live+i;}
 
     public static boolean getDifficulty(){return MazeConfig.makeExample1().IsHardMode();}
+
+    public static ArrayList<Ghost> ghostFuite = new ArrayList<>();
+    public static boolean ghostFuiteSet = false;
 
     private static int score = 0;
     public static void resetScore(){score=0;}
