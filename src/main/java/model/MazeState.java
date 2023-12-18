@@ -22,6 +22,8 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import gui.PacmanController;
 
@@ -138,7 +140,7 @@ public final class MazeState {
                                     critter.setDirection(Direction.NONE);
                                     break;
                                 }
-                                if (critter instanceof Ghost && !((Ghost)critter).estPossible(Direction.NORTH)) { //
+                                if (critter instanceof Ghost && !((Ghost) critter).estPossible(Direction.NORTH)) { //
                                     nextPos = curPos.floorY();
                                     critter.setDirection(Direction.NONE);
                                     break;
@@ -173,7 +175,7 @@ public final class MazeState {
                                     critter.setDirection(Direction.NONE);
                                     break;
                                 }
-                                if (critter instanceof Ghost && !((Ghost)critter).estPossible(Direction.SOUTH)) {
+                                if (critter instanceof Ghost && !((Ghost) critter).estPossible(Direction.SOUTH)) {
                                     nextPos = curPos.ceilY();
                                     critter.setDirection(Direction.NONE);
                                     break;
@@ -202,22 +204,17 @@ public final class MazeState {
                     }
 
                 }
-                
+
                 critter.setPos(nextPos.warp(width, height));
-                
+
             }
             var pacPos = PacMan.INSTANCE.getPos().round();
             if (PacMan.INSTANCE.PacManDot(gridState)) {
                 addScore(1);
-                try { // Lorsque le pacman mange un dot il emet un son.
-                    File soundFile = new File("src/main/resources/waka.wav");
-                    AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
-                    Clip clip = AudioSystem.getClip();
-                    clip.open(audioIn);
-                    clip.start();
-                } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                    e.printStackTrace();
-                }
+                String soundFile = "src/main/resources/waka.wav";
+                Media sound = new Media(new File(soundFile).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                mediaPlayer.play();
             }
 
             // Vérifie si la cellule où se trouve Pac-Man contient un Energizer
@@ -229,6 +226,7 @@ public final class MazeState {
                 PacMan.INSTANCE.setEnergized(true);
                 addScore(5);
 
+<<<<<<< HEAD
                 //Remet tout les fantomes dans l'état de fuite
                 for (Ghost ghost : Ghost.values()){
                     if (!Data.ghostFuite.contains(ghost)){
@@ -245,6 +243,12 @@ public final class MazeState {
                 } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
                     e.printStackTrace();
                 }
+=======
+                String soundFile = "src/main/resources/power_dot.wav";
+                Media sound = new Media(new File(soundFile).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                mediaPlayer.play();
+>>>>>>> develop
 
             }
 

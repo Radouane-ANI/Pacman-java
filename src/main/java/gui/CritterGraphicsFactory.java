@@ -24,6 +24,8 @@ import javafx.animation.Timeline;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import model.Critter;
 import model.Direction;
@@ -232,16 +234,12 @@ public final class CritterGraphicsFactory {
                         image.setRotate(270);
                         image.setScaleX(1);
                         if (!state.GetAudioPlayed()) {
-                            try { // Lorsque le pacman mange un dot il emet un son.
-                                File soundFile = new File("src/main/resources/PacmanDie.wav");
-                                AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
-                                Clip clip = AudioSystem.getClip();
-                                clip.open(audioIn);
-                                clip.start();
-                                state.SetAudioPlayed(true);
-                            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                                e.printStackTrace();
-                            }
+                            String soundFile = "src/main/resources/PacmanDie.wav";
+                            Media sound = new Media(new File(soundFile).toURI().toString());
+                            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                            mediaPlayer.play();
+                            state.SetAudioPlayed(true);
+
                         }
                         PacMan.INSTANCE.freeze();
                         if (Data.getskin() == 1) {
