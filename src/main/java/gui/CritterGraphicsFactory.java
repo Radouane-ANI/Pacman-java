@@ -186,47 +186,23 @@ public final class CritterGraphicsFactory {
                 tick++;
                 // Change le skin des fantomes en fonction de l'etat energized de pacman
                 int skin = critter.changeSkin();
-                if (!(critter instanceof PacMan) && skin == 0) {
-                    var url = switch ((Ghost) critter) {
-                        case BLINKY -> "BlinkyB.png";
-                        case CLYDE -> "ClydeH.png";
-                        case INKY -> "InkyG.png";
-                        case PINKY -> "PinkyD.png";
-                    };
-                    // Créez une instance de FadeTransition
-                    FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), image);
+                if (critter instanceof PacMan){
+                    if (PacMan.INSTANCE.changeSkin() != Data.getskin()){
+                        var url1 = switch (Data.getskin()) {// switch qui sert a choisir l'image correspond a la créature et
+                                                            // a son skin
+                            case 1 -> "pacman.png";
+                            case 2 -> "pacmanblue.png";
+                            case 3 -> "pacmangreen.png";
+                            default -> "pacman.png";
+                        };
 
-                    // Définissez la valeur de départ de l'opacité
-                    fadeTransition.setFromValue(0.2);
-
-                    // Définissez la valeur d'arrivée de l'opacité
-                    fadeTransition.setToValue(1.0);
-
-                    // Jouez l'animation
-                    fadeTransition.play();
-                    image.setImage(new Image(url, scale * size, scale * size, true, true));
-                } else if (!(critter instanceof PacMan) && skin == 1) {
-                    image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
-                } else if ((critter instanceof PacMan) && PacMan.INSTANCE.changeSkin() != Data.getskin()) {
-                    var url1 = switch (Data.getskin()) {// switch qui sert a choisir l'image correspond a la créature et
-                                                        // a son skin
-                        case 1 -> "pacman.png";
-                        case 2 -> "pacmanblue.png";
-                        case 3 -> "pacmangreen.png";
-                        default -> "pacman.png";
-                    };
-
-                    PacMan.INSTANCE.setSkin(Data.getskin());
-                    image.setImage(new Image(url1, scale * size, scale * size, true, true));
-                } else if (critter instanceof Ghost && ((Ghost) critter).getManger()) {
-                    image.setImage(new Image("yeux.png", scale * size, scale * size, true, true));
-                }
-                // Met à jour la position de l'image selon la position de la créature
-                // System.out.println(state.GetPacmanMort());
-                image.setTranslateX((critter.getPos().x() + (1 - size) / 2) * scale);
-                image.setTranslateY((critter.getPos().y() + (1 - size) / 2) * scale);
-                if (critter instanceof PacMan) {
-
+                        PacMan.INSTANCE.setSkin(Data.getskin());
+                        image.setImage(new Image(url1, scale * size, scale * size, true, true));
+                    }
+                    // Met à jour la position de l'image selon la position de la créature
+                    // System.out.println(state.GetPacmanMort());
+                    image.setTranslateX((critter.getPos().x() + (1 - size) / 2) * scale);
+                    image.setTranslateY((critter.getPos().y() + (1 - size) / 2) * scale);
                     var url12 = switch (Data.getskin()) {// switch qui sert a choisir l'image correspond a la créature
                                                          // et
                                                          // a son skin
@@ -335,20 +311,49 @@ public final class CritterGraphicsFactory {
                                 break;
                         }
                     }
-                } else if (!PacMan.INSTANCE.isEnergized()) {
-                    String CritterImage = setCritterImage(critter, size);
-                    if (tick / 30 % 2 == 0) { // on change le sprite du fantome en fonction du tick
-                        image.setImage(new Image(CritterImage + "1.png", scale * size, scale * size, true, true));
-                    } // sprite 2
-                    else {
-                        image.setImage(new Image(CritterImage + ".png", scale * size, scale * size, true, true));
-                    } // sprite 1
-                }
-                if (critter instanceof Ghost) {
+
+                }else{
+                    if (critter instanceof Ghost && ((Ghost) critter).getManger()) {
+                        image.setImage(new Image("yeux.png", scale * size, scale * size, true, true));
+                    }else if(skin == 1){
+                        image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
+                    }else if(skin == 0){
+                        var url = switch ((Ghost) critter) {
+                            case BLINKY -> "BlinkyB.png";
+                            case CLYDE -> "ClydeH.png";
+                            case INKY -> "InkyG.png";
+                            case PINKY -> "PinkyD.png";
+                        };
+                        // Créez une instance de FadeTransition
+                        FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), image);
+
+                        // Définissez la valeur de départ de l'opacité
+                        fadeTransition.setFromValue(0.2);
+
+                        // Définissez la valeur d'arrivée de l'opacité
+                        fadeTransition.setToValue(1.0);
+
+                        // Jouez l'animation
+                        fadeTransition.play();
+                        image.setImage(new Image(url, scale * size, scale * size, true, true));
+                    }
+                    // Met à jour la position de l'image selon la position de la créature
+                    // System.out.println(state.GetPacmanMort());
+                    image.setTranslateX((critter.getPos().x() + (1 - size) / 2) * scale);
+                    image.setTranslateY((critter.getPos().y() + (1 - size) / 2) * scale);
+                    if (!((Ghost) critter).enFuite() && !((Ghost) critter).getManger()) {
+                        String CritterImage = setCritterImage(critter, size);
+                        if (tick / 30 % 2 == 0) { // on change le sprite du fantome en fonction du tick
+                            image.setImage(new Image(CritterImage + "1.png", scale * size, scale * size, true, true));
+                        } // sprite 2
+                        else {
+                            image.setImage(new Image(CritterImage + ".png", scale * size, scale * size, true, true));
+                        } // sprite 1
+                    }
                     Ghost ghost = (Ghost) critter;
                     image.setVisible(ghost.isVisible());
-                }
 
+                }
             }
 
             @Override

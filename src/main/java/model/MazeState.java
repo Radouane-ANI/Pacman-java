@@ -105,14 +105,21 @@ public final class MazeState {
             return; // Arrêtez d'exécuter la mise à jour du jeu si le jeu n'est pas en cours
                     // d'exécution
         } else {
-            if (!PacMan.INSTANCE.isEnergized()) {
-                Ghost.BLINKY.iaBlinky();
-                Ghost.PINKY.iaPinky();
-                Ghost.INKY.iaInky();
-                Ghost.CLYDE.iaClyde();
-            } else {
-                Ghost.fuite();
+            if (!PacMan.INSTANCE.isEnergized() && Data.ghostFuiteSet) {
+                Data.ghostFuite.clear();
+                Data.ghostFuiteSet = false;
+            }  
+            if(PacMan.INSTANCE.isEnergized() && !Data.ghostFuiteSet){
+                Data.ghostFuite.add(Ghost.PINKY);
+                Data.ghostFuite.add(Ghost.BLINKY);
+                Data.ghostFuite.add(Ghost.INKY);
+                Data.ghostFuite.add(Ghost.CLYDE);
+                Data.ghostFuiteSet = true;
             }
+            Ghost.BLINKY.iaBlinky();
+            Ghost.PINKY.iaPinky();
+            Ghost.INKY.iaInky();
+            Ghost.CLYDE.iaClyde();
             // FIXME: too many things in this method. Maybe some responsibilities can be
             // delegated to other methods or classes?
             for (var critter : critters) {
@@ -218,21 +225,33 @@ public final class MazeState {
                 // Activez energized sur Pac-Man
                 PacMan.INSTANCE.setEnergized(true);
                 addScore(5);
-
+                //Remet tout les fantomes dans l'état de fuite
+                for (Ghost ghost : Ghost.values()){
+                    if (!Data.ghostFuite.contains(ghost)){
+                        Data.ghostFuite.add(ghost);
+                    }
+                    Data.ghostFuiteSet = true;
+                }
                 String soundFile = "src/main/resources/power_dot.wav";
                 Media sound = new Media(new File(soundFile).toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(sound);
                 mediaPlayer.play();
-
             }
 
             for (var critter : critters) {
                 if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
                     if (PacMan.INSTANCE.isEnergized()) {
                         if (!((Ghost) critter).getManger()) {
-                            addScore(10);
+                            if (!Data.ghostFuite.contains((Ghost)critter)){
+                                makeGhostsInvisible();
+                                SetPacmanMort(true);
+                                return;
+                            }else{
+                                addScore(10);
+                            }
                         }
                         ((Ghost) critter).setManger(true);
+                        Data.ghostFuite.remove((Ghost) critter);
                     } else {
 
                         makeGhostsInvisible();
