@@ -13,6 +13,11 @@ import gui.PacmanController;
 import datagame.*;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.effect.Blend;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public enum Ghost implements Critter {
 
@@ -43,6 +48,57 @@ public enum Ghost implements Critter {
     private boolean manger = false;
 
     static IntCoordinates cibleRandomClyde = null;
+    
+    // image des fantomes vulnerables
+    private final Image spritev1 = new Image("vulnerable_ghost.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true, true); // bleu
+    private final Image spritev2 = new Image("vulnerable_ghost1.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true, true); // blanc
+    private Image currentSpritev = spritev1;
+    // timer pour qu'il puisse clignoter
+    private Timer blinkTimer;
+    // fonction qui gere le clignottement des fantomes
+    /**
+     * fonction qui gere le clignottement des fantomes
+     * @param image : image du fantome
+     */
+    public  void startBlinking(ImageView image) {
+        if (blinkTimer != null) {
+            blinkTimer.cancel();
+        }
+        blinkTimer = new Timer();
+        blinkTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                
+                if (currentSpritev == spritev1) {
+                    currentSpritev = spritev2;
+                    image.setImage(currentSpritev);
+                } else {
+                    currentSpritev = spritev1;
+                    image.setImage(currentSpritev);
+                }
+            }
+        }, 6000, 200); // Change sprite every 500 milliseconds
+    }
+    /**
+     * fonction qui arrete le clignottement des fantomes
+     * @param image : image du fantome
+     */
+    public void stopBlinking(ImageView image) {
+        if (blinkTimer != null) {
+            blinkTimer.cancel();
+            blinkTimer = null;
+        }
+        currentSpritev = spritev1; // Reset to default sprite
+        if(image != null)
+        image.setImage(spritev1);
+    }
+
+
+    public Image getCurrentSprite() {
+        return currentSpritev;
+    }
+
+    
 
     // définit toutes les cases visitables depuis le point curretnCase
     // dans un tableau de tableau de boolean
@@ -115,6 +171,9 @@ public enum Ghost implements Critter {
         speed = s;
     }
 
+    public int getSkinVulnerable() {
+        return skinVulnerable;
+    }
     /**
      * Détermine si le fantome est en état de fuite
      * 
