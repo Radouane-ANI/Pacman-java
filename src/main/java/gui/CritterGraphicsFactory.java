@@ -35,6 +35,8 @@ import model.PacMan;
 import datagame.Data;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * La classe CritterGraphicsFactory est utilisée pour créer et
@@ -52,7 +54,7 @@ public final class CritterGraphicsFactory {
     private boolean mouthOpen = true;
     private long lastImageChangeTime = 0;
     private static final long IMAGE_CHANGE_INTERVAL = 180; // Temps en millisecondes entre les changements d'image
-
+    private  int starttick;
     /**
      * Constructeur de la classe CritterGraphicsFactory.
      * 
@@ -74,6 +76,7 @@ public final class CritterGraphicsFactory {
      */
     public GraphicsUpdater makeGraphics(Critter critter) {
         var size = 0.82;
+        Data.setSize(size);
         var url = (critter instanceof PacMan) ? switch (Data.getskin()) {// switch qui sert a choisir l'image correspond
                                                                          // a la créature et a son skin
             case 1 -> "pacman.png";
@@ -87,7 +90,7 @@ public final class CritterGraphicsFactory {
             case PINKY -> "PinkyD.png";
         };
         var image = new ImageView(new Image(url, scale * size, scale * size, true, true));
-
+        Data.setImageView(image);
         Image anim1 = new Image("pacmansuper1.png", scale * size, scale * size, true,
                 true);
         Image anim2 = new Image("pacmansuper2bis.png", scale * size, scale * size,
@@ -144,7 +147,7 @@ public final class CritterGraphicsFactory {
         Timeline timelineN = new Timeline(new KeyFrame(Duration.millis(200), e -> {
 
             image.setImage(framesNORMAL[index[0]]);
-
+            
             index[0] = (index[0] + 1) % framesNORMAL.length;
 
             if (index[0] == 6) {

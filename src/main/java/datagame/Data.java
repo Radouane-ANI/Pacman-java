@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import config.MazeConfig;
 import gui.*;
 import model.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import javafx.stage.Stage;
 
@@ -61,6 +63,13 @@ public class Data {
     public static double getWidth(){return width_game;}
     public static void setWidth(double i){width_game=i;}
 
+    private static double size = 0;
+    public static double getSize(){return size;}
+    public static void setSize(double i){size=i;}
+
+    private static ImageView image;
+    public static ImageView getImageView(){return image;}
+    public static void setImageView(ImageView i){image=i;}
     /*
     private static
     public static get
