@@ -134,6 +134,12 @@ public final class PacMan implements Critter {
                 }
             }
 
+            for (var ghost : Ghost.values()) {
+                if (!Data.ghostFuite.contains(ghost)){
+                    Data.ghostFuite.add(ghost);
+                }
+            }
+
             // Programme une tâche pour désactiver l'état énergisé après 5 secondes
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
