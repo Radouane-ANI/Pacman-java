@@ -126,6 +126,16 @@ public final class PacMan implements Critter {
         if (energized) {
             if (this.energized) { // verifie si pacman a deja pris un energiseur
                 this.reEnergized = true;
+                System.out.println("Pacman est deja energisé");
+                for (var ghost : Ghost.values()) {
+                    System.out.println(ghost);
+                }
+            }
+
+            for (var ghost : Ghost.values()) {
+                if (!Data.ghostFuite.contains(ghost)){
+                    Data.ghostFuite.add(ghost);
+                }
             }
 
             for (Ghost ghost : Ghost.values()){

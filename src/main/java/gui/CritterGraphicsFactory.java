@@ -35,6 +35,8 @@ import model.PacMan;
 import datagame.Data;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * La classe CritterGraphicsFactory est utilisée pour créer et

@@ -13,6 +13,11 @@ import gui.PacmanController;
 import datagame.*;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.effect.Blend;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public enum Ghost implements Critter {
 
