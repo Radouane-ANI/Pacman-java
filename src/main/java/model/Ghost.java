@@ -20,7 +20,7 @@ public enum Ghost implements Critter {
     // in Wikipedia's page
     BLINKY, INKY, PINKY, CLYDE;
 
-    static MazeConfig config = MazeConfig.makeExample1();
+    public static MazeConfig config = MazeConfig.makeExample1();
     private RealCoordinates pos;
     private Direction direction = Direction.NONE;
     private Direction newDirection = Direction.NONE;
@@ -43,7 +43,7 @@ public enum Ghost implements Critter {
     private boolean manger = false;
 
     static IntCoordinates cibleRandomClyde = null;
-
+    
     // définit toutes les cases visitables depuis le point curretnCase
     // dans un tableau de tableau de boolean
     static boolean[][] caseVisitable = new boolean[config.getHeight()][config.getWidth()];
@@ -93,6 +93,8 @@ public enum Ghost implements Critter {
         return speed;
     }
 
+    public IntCoordinates getAnciennepos(){return anciennePos;}
+
     /**
      * Définit si le fantôme est en mode "manger" ou non.
      *
@@ -115,6 +117,9 @@ public enum Ghost implements Critter {
         speed = s;
     }
 
+    public int getSkinVulnerable() {
+        return skinVulnerable;
+    }
     /**
      * Détermine si le fantome est en état de fuite
      * 
@@ -178,10 +183,11 @@ public enum Ghost implements Critter {
             changeDirection(Direction.fromChar(retour()));
             return;
         }
-        setSpeed(enFuite() ? 3 : (
-            (pos.round().x() == PacMan.INSTANCE.getPos().round().x() ||
-                        pos.round().y() == PacMan.INSTANCE.getPos().round().y() &&
-                                Data.getDifficulty()) ? 4 : 2.5));
+        setSpeed(enFuite() ? 3 : (((
+            pos.round().x() == PacMan.INSTANCE.getPos().round().x() ||
+            pos.round().y() == PacMan.INSTANCE.getPos().round().y()) &&
+            Data.getDifficulty()) ? 4 : 2.5
+            ));
         if (anciennePos == null) {anciennePos = pos.round();}
         if (isVisible){
             if (anciennePos.equals(pos.round()) && newDirection != Direction.NONE && newDirection != null) {
@@ -355,19 +361,14 @@ public enum Ghost implements Critter {
      */
     public static IntCoordinates intToMoveCoordinates(int i) {
         switch (i) {
-            case 0:
-                return IntCoordinates.NORTH_UNIT;
-            case 1:
-                return IntCoordinates.WEST_UNIT;
-            case 2:
-                return IntCoordinates.SOUTH_UNIT;
-            case 3:
-                return IntCoordinates.EAST_UNIT;
-            default:
-                return new IntCoordinates(0, 0);
+            case 0:return IntCoordinates.NORTH_UNIT;
+            case 1:return IntCoordinates.WEST_UNIT;
+            case 2:return IntCoordinates.SOUTH_UNIT;
+            case 3:return IntCoordinates.EAST_UNIT;
+            default:return new IntCoordinates(0, 0);
         }
-
     }
+
 
     /**
      * Determine le chemin le plus court entre Pinky et la premiere intersection/mur
@@ -625,6 +626,7 @@ public enum Ghost implements Critter {
     public static int calculDistance(IntCoordinates a, IntCoordinates b) {
         return (a.x() - b.x()) * (a.x() - b.x()) + (a.y() - b.y()) * (a.y() - b.y());
     }
+
     public boolean estDansSpawn(MazeConfig Lab){
         IntCoordinates p1 = Lab.getBlinkyPos();
         IntCoordinates p2 = Lab.getClydePos();
@@ -653,7 +655,7 @@ public enum Ghost implements Critter {
             case WEST:
                
                 return !config.getCell(Gpos).iswestWall() || (config.getCell(Gpos).iswestWhite() && (manger || estDansSpawn(config))) ;
-            default: return false;
+            default: return true;
         }
     }
 

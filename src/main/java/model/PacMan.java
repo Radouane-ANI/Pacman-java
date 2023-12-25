@@ -142,6 +142,7 @@ public final class PacMan implements Critter {
                 public void run() {
                     if (!reEnergized) { // si pacman a deja pris un energiseur ne desactive pas l'energiseur
                         PacMan.INSTANCE.setEnergized(false);
+                        System.out.println("Pacman n'est plus energisé");
                         timer.cancel();
                         for (var ghost : Ghost.values()) {
                             ghost.setSpeed(2);
@@ -151,7 +152,9 @@ public final class PacMan implements Critter {
                     reEnergized = false;
                 }
             }, 10000); // 10 000 millisecondes = 10 secondes
+        
         }
+        
         this.energized = energized;
     }
 
