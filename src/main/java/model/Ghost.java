@@ -425,15 +425,6 @@ public enum Ghost implements Critter {
         }
     }
 
-    public static int directionOpp(int i){
-        switch (i) {
-            case 2:return 0;
-            case 3:return 1;
-            case 0:return 2;
-            case 1:return 3;
-            default:return -1;
-        }
-    }
 
     /**
      * Determine le chemin le plus court entre Pinky et la premiere intersection/mur
