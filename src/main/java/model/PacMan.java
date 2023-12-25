@@ -5,6 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import static model.Ghost.config;
 import config.MazeConfig;
+import datagame.Data;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
 import model.MazeState;
@@ -127,6 +128,12 @@ public final class PacMan implements Critter {
                 this.reEnergized = true;
             }
 
+            for (var ghost : Ghost.values()) {
+                if (!Data.ghostFuite.contains(ghost)){
+                    Data.ghostFuite.add(ghost);
+                }
+            }
+
             // Programme une tâche pour désactiver l'état énergisé après 5 secondes
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -144,6 +151,7 @@ public final class PacMan implements Critter {
                 }
             }, 10000); // 10 000 millisecondes = 10 secondes
         }
+        
         this.energized = energized;
     }
 

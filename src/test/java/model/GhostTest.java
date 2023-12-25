@@ -3,6 +3,7 @@ package model;
 import org.junit.jupiter.api.Test;
 
 import config.MazeConfig;
+import geometry.IntCoordinates;
 import geometry.RealCoordinates;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,90 +36,91 @@ public class GhostTest {
         assertEquals(Direction.NONE, ghost.getDirection());
     }
 
-    // @Test
-    // public void testPossible() { 
-    //     MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt");
-    //     Ghost.config = Labyrinthetest; // initialise un labyrinthe pour les test
-
-    //     // Test lorsque la position du fantôme est entourée de passages sans murs
-    //     int x = 2;
-    //     int y = 2;
-    //     Object[] listAttendue = { 'n', 's', 'e', 'w' };
-    //     Object[] listobtenue = Ghost.INKY.possible(x, y).toArray();
-
-    //     assertEquals(4, listobtenue.length);
-    //     assertArrayEquals(listAttendue, listobtenue);
-    //     // Le fantôme peut se déplacer dans toutes les directions (Nord, Sud, Est,
-    //     // Ouest)
-
-    //     // Test lorsque le fantôme a des passages possibles avec et sans murs
-    //     x = 5;
-    //     y = 1;
-    //     Object[] listAttendue2 = { 'n', 's' };
-    //     Object[] listobtenue2 = Ghost.INKY.possible(x, y).toArray();
-
-    //     assertEquals(2, listAttendue2.length);
-    //     assertArrayEquals(listAttendue2, listobtenue2);
-    //     // Le fantôme peut se déplacer vers le Nord et le Sud
-
-    //     // Test lorsque le fantôme a des passages possibles avec et sans murs
-    //     x = 3;
-    //     y = 1;
-    //     Object[] listAttendue3 = { 's', 'e', 'w' };
-    //     Object[] listobtenue3 = Ghost.INKY.possible(x, y).toArray();
-
-    //     assertEquals(3, listAttendue3.length);
-    //     assertArrayEquals(listAttendue3, listobtenue3);
-    //     // Le fantôme peut se déplacer vers l'Est, l'Ouest et le sud
-    // }
-
     @Test
-    public void testIaBlinky() { 
+    public void testCheminVersCible() { 
         MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt",false);
         Ghost.config = Labyrinthetest; // initialise un labyrinthe pour les test
 
         Ghost ghost = Ghost.BLINKY; // Initialise un fantôme pour les tests
         PacMan pacMan = PacMan.INSTANCE; // Initialise Pacman pour les tests
+        Direction testDirection;
         pacMan.setPos(new RealCoordinates(3, 0));
 
         // Test quand pacman est à l'Ouest de Blinky
         ghost.setDirection(Direction.NONE);
         ghost.setPos(new RealCoordinates(5, 0));
-        ghost.iaBlinky();
-        assertEquals(Direction.WEST, ghost.getDirection());
+        testDirection = ghost.cheminVersCible(pacMan.getPos().round());
+        assertEquals(Direction.WEST, testDirection);
 
-        // Test quand pacman est à l'Est de Blinky
+        //Test quand pacman est à l'Est de Blinky
         ghost.setDirection(Direction.NONE);
         ghost.setPos(new RealCoordinates(0, 0));
-        ghost.iaBlinky();
-        assertEquals(Direction.EAST, ghost.getDirection());
-
-        // Test quand pacman est inaccesible
-        ghost.setDirection(Direction.NONE);
-        ghost.setPos(new RealCoordinates(3, 3));
-        ghost.iaBlinky();
-        ghost.setDirection(Direction.NONE);
-        assertEquals(Direction.NONE, ghost.getDirection());
+        testDirection = ghost.cheminVersCible(pacMan.getPos().round());
+        assertEquals(Direction.EAST, testDirection);
 
         // Test quand pacman est au Sud de Blinky
         ghost.setDirection(Direction.NONE);
         ghost.setPos(new RealCoordinates(0, 5));
         pacMan.setPos(new RealCoordinates(0, 3));
-        ghost.iaBlinky();
-        assertEquals(Direction.NORTH, ghost.getDirection());
+        testDirection = ghost.cheminVersCible(pacMan.getPos().round());
+        assertEquals(Direction.NORTH, testDirection);
 
         // Test quand pacman est au Nord de Blinky
         ghost.setDirection(Direction.NONE);
-        ghost.setPos(new RealCoordinates(0, 2));
-        ghost.iaBlinky();
-        assertEquals(Direction.SOUTH, ghost.getDirection());
+        ghost.setPos(new RealCoordinates(0, 0));
+        testDirection = ghost.cheminVersCible(pacMan.getPos().round());
+        assertEquals(Direction.SOUTH, testDirection);
 
-        // Test quand Blinky doit contourner des murs
-        ghost.setDirection(Direction.NONE);
+        // Test pour verifier que le fantome ne fasse pas de demi tour
+        ghost.setDirection(Direction.NORTH);
         ghost.setPos(new RealCoordinates(0, 5));
-        pacMan.setPos(new RealCoordinates(5, 1));
-        ghost.iaBlinky();
-        assertEquals(Direction.EAST, ghost.getDirection());
+        pacMan.setPos(new RealCoordinates(0, 3));
+        testDirection = ghost.cheminVersCible(pacMan.getPos().round());
+        assertNotEquals(Direction.SOUTH, testDirection);
+
+    }
+
+    @Test
+    public void testProchainePosistionOppose() { 
+        MazeConfig Labyrinthetest = new MazeConfig("src/main/resources/testmaze.txt",false);
+        Ghost.config = Labyrinthetest; // initialise un labyrinthe pour les test
+
+        Ghost ghost = Ghost.BLINKY; // Initialise un fantôme pour les tests
+        PacMan pacMan = PacMan.INSTANCE; // Initialise Pacman pour les tests
+        Direction testDirection;
+        ghost.setPos(new RealCoordinates(3, 0));
+
+        // Test quand pacman est à l'Est de Blinky
+        ghost.setDirection(Direction.NONE);
+        pacMan.setPos(new RealCoordinates(5, 0));
+        testDirection = ghost.prochainePositionOppose(pacMan.getPos().round());
+        assertEquals(Direction.WEST, testDirection);
+
+        //Test quand pacman est à l'Ouest de Blinky
+        ghost.setDirection(Direction.NONE);
+        pacMan.setPos(new RealCoordinates(0, 0));
+        testDirection = ghost.prochainePositionOppose(pacMan.getPos().round());
+        assertEquals(Direction.EAST, testDirection);
+
+        // Test quand pacman est au Sud de Blinky
+        ghost.setDirection(Direction.NONE);
+        pacMan.setPos(new RealCoordinates(0, 5));
+        ghost.setPos(new RealCoordinates(0, 3));
+        testDirection = ghost.prochainePositionOppose(pacMan.getPos().round());
+        assertEquals(Direction.NORTH, testDirection);
+
+        // Test quand pacman est au Nord de Blinky
+        ghost.setDirection(Direction.NONE);
+        pacMan.setPos(new RealCoordinates(0, 0));
+        testDirection = ghost.prochainePositionOppose(pacMan.getPos().round());
+        assertEquals(Direction.SOUTH, testDirection);
+
+        // Test pour verifier que le fantome ne fasse pas de demi tour
+        ghost.setDirection(Direction.SOUTH);
+        ghost.setPos(new RealCoordinates(0, 5));
+        pacMan.setPos(new RealCoordinates(0, 3));
+        testDirection = ghost.prochainePositionOppose(pacMan.getPos().round());
+        assertNotEquals(Direction.NORTH, testDirection);
 
     }
 
@@ -141,33 +143,6 @@ public class GhostTest {
         int resultNoChange = ghost.changeSkin();
         assertEquals(0, resultNoChange);
     }
-
-    /*@Test
-    public void testFuite() {
-        // Initialisation des positions des fantômes
-        Ghost.BLINKY.setPos(new RealCoordinates(3, 3));
-        Ghost.INKY.setPos(new RealCoordinates(2, 4));
-        Ghost.PINKY.setPos(new RealCoordinates(4, 4));
-        Ghost.CLYDE.setPos(new RealCoordinates(3, 5));
-
-        PacMan pacMan = PacMan.INSTANCE; // Initialise Pacman pour les tests
-        pacMan.setPos(new RealCoordinates(3, 4));
-        
-        Ghost.fuite();
-
-        // Test de fuite lorsque Pac-Man est au Sud de Blinky
-        assertNotEquals(Direction.SOUTH, Ghost.BLINKY.getDirection());
-
-        // Test de fuite lorsque Pac-Man est à l'Est de Inky
-        assertNotEquals(Direction.EAST, Ghost.INKY.getDirection());
-
-        // Test de fuite lorsque Pac-Man est à l'Ouest de Pinky
-        assertNotEquals(Direction.WEST, Ghost.PINKY.getDirection());
-
-        // Test de fuite lorsque Pac-Man est au Nord de Clyde
-        assertNotEquals(Direction.NORTH, Ghost.CLYDE.getDirection());
-    }
-    */
 
     @Test
     void testRetour() {
