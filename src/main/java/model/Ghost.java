@@ -353,7 +353,7 @@ public enum Ghost implements Critter {
                 calculDistance(depart.plus(IntCoordinates.EAST_UNIT), cible)
         };
         int directionActuelle = directionToInt(this.direction);
-        int directionOppose = directionActuelle == -1 ? -1 : directionOpp(directionActuelle);
+        int directionOppose = directionOpp(directionActuelle);
         int solution = -1;
         for (int i = 0 ; i < directions.length ; i++){
             if ((i != directionOppose || c.isUCell()) && estPossible(intToDirection(i))){
@@ -377,16 +377,11 @@ public enum Ghost implements Critter {
      */
     public static Direction intToDirection(int n) {
         switch (n) {
-            case 0:
-                return Direction.NORTH;
-            case 1:
-                return Direction.WEST;
-            case 2:
-                return Direction.SOUTH;
-            case 3:
-                return Direction.EAST;
-            default:
-                return Direction.NONE;
+            case 0: return Direction.NORTH;
+            case 1: return Direction.WEST;
+            case 2: return Direction.SOUTH;
+            case 3: return Direction.EAST;
+            default: return Direction.NONE;
         }
     }
 
@@ -397,11 +392,21 @@ public enum Ghost implements Critter {
      */
     public static int directionToInt(Direction d) {
         switch (d) {
-            case NORTH:return 0;
-            case WEST:return 1;
-            case SOUTH:return 2;
-            case EAST:return 3;
-            default:return -1;
+            case NORTH: return 0;
+            case WEST: return 1;
+            case SOUTH: return 2;
+            case EAST: return 3;
+            default: return -1;
+        }
+    }
+
+    public static int directionOpp(int i){
+        switch(i){
+            case 0 : return 2;
+            case 1 : return 3;
+            case 2 : return 0;
+            case 3 : return 1;
+            default : return -1;
         }
     }
 
@@ -482,7 +487,7 @@ public enum Ghost implements Critter {
         Random rd = new Random();
         ArrayList<Direction> mouvement = new ArrayList<>();
         int directionActuelle = directionToInt(direction);
-        int directionOppose = directionActuelle == -1 ? -1 : directionOpp(directionActuelle);
+        int directionOppose = directionOpp(directionActuelle);
         Cell c = config.getCell(pos.round());
         for (int i = 0 ; i < 4 ; i++){
             if ((i != directionOppose || (i == directionOppose && c.isUCell())) && estPossible(intToDirection(i))){
@@ -512,7 +517,7 @@ public enum Ghost implements Critter {
                 calculDistance(depart.plus(IntCoordinates.EAST_UNIT), cible)
         };
         int directionActuelle = directionToInt(this.direction);
-        int directionOppose = directionActuelle == -1 ? -1 : directionOpp(directionActuelle);
+        int directionOppose = directionOpp(directionActuelle);
         int solution = -1;
         for (int i = 0 ; i < directions.length ; i++){
             if ((i != directionOppose || c.isUCell()) && estPossible(intToDirection(i))){
