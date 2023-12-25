@@ -6,52 +6,42 @@ import config.Cell.Content;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
 import gui.FinalScreen;
-import gui.Game;
+import gui.PauseBouton;
+import gui.PauseMenu;
 import datagame.Data;
 import gui.ScoreLive;
-import javafx.scene.Node;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
+import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-import gui.PacmanController;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static model.Ghost.*;
 
 public final class MazeState {
     private MazeConfig config;
+
     private final int height;
     private final int width;
 
-    private boolean isGameRunning = true;
     private boolean AudioPlayed;
     private boolean PacmanMort;
-    int index_sc;
 
     private final boolean[][] gridState;
     private final Cell[][] grid;
 
+    private final PauseBouton pause;
     private final List<Critter> critters;
 
     private final Map<Critter, RealCoordinates> initialPos;
 
     Stage primaryStage;
     Pane gameRoot;
+    int index_sc;
 
     public MazeState(MazeConfig config, Pane gameRoot) {
         this.primaryStage = Data.getprimaryStage();
@@ -74,6 +64,16 @@ public final class MazeState {
         gridState_init(gridState, grid);
         Data.setWidth(grid.length * Data.getScale());
         Data.setHeight(grid[0].length * Data.getScale());
+
+        pause = new PauseBouton(() ->{
+            PauseMenu pauseMenu=new PauseMenu(() -> {
+                System.out.println("Reset game");
+                restartGame();
+            });
+            Data.setRunning(false);
+            gameRoot.getChildren().add(pauseMenu.getScreenLayout());
+        });
+        gameRoot.getChildren().add(pause.getFinalScreenLayout());
 
         ScoreLive sc = new ScoreLive();
         gameRoot.getChildren().add(sc.getLayout());
@@ -101,7 +101,7 @@ public final class MazeState {
     }
 
     public void update(long deltaTns) {
-        if (!isGameRunning) {
+        if (!Data.getRunning()) {
             return; // Arrêtez d'exécuter la mise à jour du jeu si le jeu n'est pas en cours
                     // d'exécution
         } else {
@@ -333,7 +333,7 @@ public final class MazeState {
         displayScore();
 
         if (Data.getLive() == 0) {
-            isGameRunning = false;
+            Data.setRunning(false);
 
             ButtonAction resetAction = () -> {
                 System.out.println("Reset game");
@@ -372,7 +372,7 @@ public final class MazeState {
      */
     private void playerWin() {
         if (areAllTrue(gridState)) {
-            isGameRunning = false;
+            Data.setRunning(false);
 
             ButtonAction resetAction = () -> {
                 System.out.println("Reset game");
@@ -437,7 +437,7 @@ public final class MazeState {
         resetGame();
         gameRoot.getChildren().remove(gameRoot.getChildren().size() - 1);
         displayScore();
-        isGameRunning = true;
+        Data.setRunning(true);
     }
 
     public MazeConfig getConfig() {

@@ -70,6 +70,11 @@ public class Data {
     private static ImageView image;
     public static ImageView getImageView(){return image;}
     public static void setImageView(ImageView i){image=i;}
+
+    private static boolean isGameRunning = true;
+    public static boolean getRunning(){return isGameRunning;}
+    public static void setRunning(boolean b){isGameRunning=b;}
+
     /*
     private static
     public static get
