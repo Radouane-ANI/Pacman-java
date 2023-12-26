@@ -42,7 +42,11 @@ public class Data {
     public static void resetScore(){score=0;}
     public static int getScore(){return score;}
     public static void setScore(int i){score=score+i;}
-    
+
+    private static int highScore = 0;
+    public static int getHighScore() {return highScore;}
+    public static void setHighScore(int highScore) {Data.highScore = highScore;}
+
     private static double scale = 0;
     public static double getScale(){return scale;}
     public static void setScale(double i){scale=scale+i;}
