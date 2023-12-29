@@ -186,6 +186,7 @@ public final class CritterGraphicsFactory {
         return new GraphicsUpdater() {
             @Override
             public void update() {
+                if(Data.getRunning()){
                 tick++;
                 // Change le skin des fantomes en fonction de l'etat energized de pacman
                 int skin = critter.changeSkin();
@@ -357,7 +358,7 @@ public final class CritterGraphicsFactory {
                     image.setVisible(ghost.isVisible());
 
                 }
-            }
+            }}
 
             @Override
             public Node getNode() {
