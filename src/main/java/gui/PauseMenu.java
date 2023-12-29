@@ -8,6 +8,8 @@ import java.io.File;
 import datagame.Data;
 
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.stage.Stage;
@@ -51,17 +53,25 @@ public class PauseMenu {
 
         setupButton(reprendreButton, action2);
 
+        Image pause_image = new Image("pause.png");
+        ImageView imageView1 = new ImageView(pause_image);
+        //imageView1.setFitHeight((pause_image.getHeight()/height)*0.1);
+        //imageView1.setFitWidth((pause_image.getWidth()/width)*0.1);
+
+        imageView1.setLayoutX(width*0.2);
+        imageView1.setLayoutY(height*0.2);
+
         // Positionnez les boutons et l'image à l'emplacement souhaité
         playAgainButton.setLayoutX(width*0.52);
         playAgainButton.setLayoutY(height*0.65);
-        exitButton.setLayoutX(width*0.64);
+        exitButton.setLayoutX(width*0.70);
         exitButton.setLayoutY(height*0.65);
-        homeButton.setLayoutX(width*0.40);
+        homeButton.setLayoutX(width*0.42);
         homeButton.setLayoutY(height*0.65);
         reprendreButton.setLayoutX(width*0.28);
         reprendreButton.setLayoutY(height*0.65);
         // Ajoutez les boutons et l'image au conteneur
-        ScreenLayout.getChildren().addAll(playAgainButton, exitButton, homeButton,reprendreButton);
+        ScreenLayout.getChildren().addAll(playAgainButton, exitButton, homeButton,reprendreButton,imageView1);
     }
 
     /**
