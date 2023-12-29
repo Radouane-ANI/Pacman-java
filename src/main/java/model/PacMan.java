@@ -132,9 +132,12 @@ public final class PacMan implements Critter {
             dernierEnergiseur = System.currentTimeMillis();
             if (this.energized) { // verifie si pacman a deja pris un energiseur
                 this.reEnergized = true;
-                System.out.println("Pacman est deja energisé");
+                
                 for (var ghost : Ghost.values()) {
-                    System.out.println(ghost);
+                    
+                    ghost.stopBlinking();
+                    ghost.startBlinking();
+                    
                 }
             }
 
@@ -157,10 +160,12 @@ public final class PacMan implements Critter {
                 @Override
                 public void run() {
                     if (!reEnergized) { // si pacman a deja pris un energiseur ne desactive pas l'energiseur
-                        PacMan.INSTANCE.setEnergized(false,0);
-                        System.out.println("Pacman n'est plus energisé");
+                        PacMan.INSTANCE.setEnergized(false);
+                        
                         timer.cancel();
                         for (var ghost : Ghost.values()) {
+                            ghost.stopBlinking();
+                            
                             ghost.setSpeed(2);
                             ghost.setManger(false);
                         }
