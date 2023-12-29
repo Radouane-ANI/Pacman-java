@@ -48,7 +48,14 @@ public enum Ghost implements Critter {
     private boolean manger = false;
 
     static IntCoordinates cibleRandomClyde = null;
+    private ImageView image ;
     
+    public void setImage(ImageView image) {
+        this.image = image;
+    }
+
+
+
     // image des fantomes vulnerables
     private final Image spritev1 = new Image("vulnerable_ghost.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true, true); // bleu
     private final Image spritev2 = new Image("vulnerable_ghost1.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true, true); // blanc
@@ -60,7 +67,7 @@ public enum Ghost implements Critter {
      * fonction qui gere le clignottement des fantomes
      * @param image : image du fantome
      */
-    public  void startBlinking(ImageView image) {
+    public  void startBlinking() {
         if (blinkTimer != null) {
             blinkTimer.cancel();
         }
@@ -77,7 +84,7 @@ public enum Ghost implements Critter {
                     image.setImage(currentSpritev);
                 }
             }
-        }, 6000, 200); // Change sprite every 500 milliseconds
+        }, 000, 200); // Change sprite every 500 milliseconds
     }
     /**
      * fonction qui arrete le clignottement des fantomes

@@ -54,7 +54,8 @@ public final class CritterGraphicsFactory {
     private boolean mouthOpen = true;
     private long lastImageChangeTime = 0;
     private static final long IMAGE_CHANGE_INTERVAL = 180; // Temps en millisecondes entre les changements d'image
-    private  int starttick;
+    private int starttick;
+
     /**
      * Constructeur de la classe CritterGraphicsFactory.
      * 
@@ -89,7 +90,11 @@ public final class CritterGraphicsFactory {
             case INKY -> "InkyG.png";
             case PINKY -> "PinkyD.png";
         };
+        System.out.println(critter);
         var image = new ImageView(new Image(url, scale * size, scale * size, true, true));
+        if (!(critter instanceof PacMan)) {
+            ((Ghost) critter).setImage(image);
+        }
         Data.setImageView(image);
         Image anim1 = new Image("pacmansuper1.png", scale * size, scale * size, true,
                 true);
@@ -147,7 +152,7 @@ public final class CritterGraphicsFactory {
         Timeline timelineN = new Timeline(new KeyFrame(Duration.millis(200), e -> {
 
             image.setImage(framesNORMAL[index[0]]);
-            
+
             index[0] = (index[0] + 1) % framesNORMAL.length;
 
             if (index[0] == 6) {
@@ -189,9 +194,10 @@ public final class CritterGraphicsFactory {
                 tick++;
                 // Change le skin des fantomes en fonction de l'etat energized de pacman
                 int skin = critter.changeSkin();
-                if (critter instanceof PacMan){
-                    if (PacMan.INSTANCE.changeSkin() != Data.getskin()){
-                        var url1 = switch (Data.getskin()) {// switch qui sert a choisir l'image correspond a la créature et
+                if (critter instanceof PacMan) {
+                    if (PacMan.INSTANCE.changeSkin() != Data.getskin()) {
+                        var url1 = switch (Data.getskin()) {// switch qui sert a choisir l'image correspond a la
+                                                            // créature et
                                                             // a son skin
                             case 1 -> "pacman.png";
                             case 2 -> "pacmanblue.png";
@@ -315,12 +321,12 @@ public final class CritterGraphicsFactory {
                         }
                     }
 
-                }else{
+                } else {
                     if (critter instanceof Ghost && ((Ghost) critter).getManger()) {
                         image.setImage(new Image("yeux.png", scale * size, scale * size, true, true));
-                    }else if(skin == 1){
+                    } else if (skin == 1) {
                         image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
-                    }else if(skin == 0){
+                    } else if (skin == 0) {
                         var url = switch ((Ghost) critter) {
                             case BLINKY -> "BlinkyB.png";
                             case CLYDE -> "ClydeH.png";

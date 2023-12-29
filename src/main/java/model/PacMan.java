@@ -124,28 +124,28 @@ public final class PacMan implements Critter {
      */
     public void setEnergized(boolean energized) {
         if (energized) {
-            if (this.energized) { // verifie si pacman a deja pris un energiseur
-                this.reEnergized = true;
-                System.out.println("Pacman est deja energisé");
-                for (var ghost : Ghost.values()) {
-                    System.out.println(ghost);
-                    ghost.stopBlinking(Data.getImageView());
-                    ghost.startBlinking(Data.getImageView());
-                }
-            }
+            // if (this.energized) { // verifie si pacman a deja pris un energiseur
+            // this.reEnergized = true;
+            // System.out.println("Pacman est deja energisé");
+            // for (var ghost : Ghost.values()) {
+            // System.out.println(ghost);
+            // ghost.stopBlinking(Data.getImageView());
+            // ghost.startBlinking(Data.getImageView());
+            // }
+            // }
 
-            for (var ghost : Ghost.values()) {
-                if (!Data.ghostFuite.contains(ghost)){
-                    Data.ghostFuite.add(ghost);
-                }
-            }
+            // for (var ghost : Ghost.values()) {
+            // if (!Data.ghostFuite.contains(ghost)){
+            // Data.ghostFuite.add(ghost);
+            // }
+            // }
 
-            for (Ghost ghost : Ghost.values()){
-                if (!Data.ghostFuite.contains(ghost)){
-                    Data.ghostFuite.add(ghost);
-                }
-                Data.ghostFuiteSet = true;
-            }
+            // for (Ghost ghost : Ghost.values()){
+            // if (!Data.ghostFuite.contains(ghost)){
+            // Data.ghostFuite.add(ghost);
+            // }
+            // Data.ghostFuiteSet = true;
+            // }
 
             // Programme une tâche pour désactiver l'état énergisé après 5 secondes
             Timer timer = new Timer();
@@ -165,9 +165,20 @@ public final class PacMan implements Critter {
                     reEnergized = false;
                 }
             }, 10000); // 10 000 millisecondes = 10 secondes
-        
+            Timer timer2 = new Timer();
+            timer2.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (!reEnergized) {
+                        for (var ghost : Ghost.values()) {
+                            ghost.startBlinking();
+                        }
+                    }
+                    timer2.cancel();
+                }
+            }, 7000);
         }
-        
+
         this.energized = energized;
     }
 
