@@ -88,6 +88,11 @@ public class Data {
     public static PauseBouton getpause(){return pause;}
     public static void setpause(PauseBouton p){pause=p;}
 
+    private static long heurePause;
+    public static long getHeurePause(){return heurePause;}
+    public static void setHeurePause(long heure){heurePause=heure;}
+
+
     /*
     private static
     public static get

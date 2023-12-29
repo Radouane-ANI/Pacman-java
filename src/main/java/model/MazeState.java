@@ -80,6 +80,7 @@ public final class MazeState {
 
         
         pause = new PauseBouton(()-> {
+            Data.setHeurePause(System.currentTimeMillis());
             PauseMenu pauseMenu = new PauseMenu();
             Data.setRunning(false);
             gameRoot.getChildren().add(pauseMenu.getScreenLayout());
@@ -232,7 +233,7 @@ public final class MazeState {
                 config.setCell(pacPos, config.getCell(pacPos).updateNextItemType(Content.NOTHING));
 
                 // Activez energized sur Pac-Man
-                PacMan.INSTANCE.setEnergized(true);
+                PacMan.INSTANCE.setEnergized(true, 10000);
                 addScore(5);
                 //Remet tout les fantomes dans l'état de fuite
                 for (Ghost ghost : Ghost.values()){
@@ -397,7 +398,7 @@ public final class MazeState {
         if (critter instanceof PacMan) {
             critter.setDirection(Direction.NONE);
             critter.setPos(initialPos.get(critter));
-            ((PacMan) critter).setEnergized(false);
+            ((PacMan) critter).setEnergized(false,0);
         }
         if (critter instanceof Ghost) {
             resetGhost((Ghost) critter);

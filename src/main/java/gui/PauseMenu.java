@@ -1,6 +1,7 @@
 package gui;
 import datagame.*;
 import model.ButtonAction;
+import model.PacMan;
 
 import java.io.File;
 
@@ -33,6 +34,10 @@ public class PauseMenu {
         ButtonAction action2 = ()-> {
             Data.getRoot().getChildren().remove(Data.getRoot().getChildren().size() - 1);
             Data.setRunning(true);
+            long tempsRestant = Data.getHeurePause() - PacMan.INSTANCE.getDernierEnergiseur();
+            if ( tempsRestant < 10000) {
+                PacMan.INSTANCE.setEnergized(true, (int) tempsRestant);
+            }
             Data.getpause().getFinalScreenLayout().setVisible(true);
         };
         setupButton(playAgainButton, action);//À chaque nouvelle partie une nouvelle instance de Game est crée ce qui permet un réeinitialisation complete du jeu
