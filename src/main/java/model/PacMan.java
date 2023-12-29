@@ -131,7 +131,6 @@ public final class PacMan implements Critter {
         if (energized) {
             dernierEnergiseur = System.currentTimeMillis();
             if (this.energized) { // verifie si pacman a deja pris un energiseur
-                dernierEnergiseur = System.currentTimeMillis();
                 this.reEnergized = true;
                 System.out.println("Pacman est deja energisé");
                 for (var ghost : Ghost.values()) {

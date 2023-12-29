@@ -36,7 +36,7 @@ public class PauseMenu {
             Data.setRunning(true);
             long tempsRestant = Data.getHeurePause() - PacMan.INSTANCE.getDernierEnergiseur();
             if ( tempsRestant < 10000) {
-                PacMan.INSTANCE.setEnergized(true, (int) tempsRestant);
+                PacMan.INSTANCE.setEnergized(true, 10000 - (int) tempsRestant);
             }
             Data.getpause().getFinalScreenLayout().setVisible(true);
         };
