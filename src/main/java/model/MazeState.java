@@ -6,42 +6,55 @@ import config.Cell.Content;
 import geometry.IntCoordinates;
 import geometry.RealCoordinates;
 import gui.FinalScreen;
-import gui.PauseBouton;
-import gui.PauseMenu;
+import gui.Game;
 import datagame.Data;
 import gui.ScoreLive;
+import javafx.scene.Node;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import javafx.scene.control.Label;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
-import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import gui.PacmanController;
+import gui.PauseBouton;
+import gui.PauseMenu;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static model.Ghost.*;
 
 public final class MazeState {
     private MazeConfig config;
-
     private final int height;
     private final int width;
 
     private boolean AudioPlayed;
     private boolean PacmanMort;
+    private int index_sc;
 
+    private ScoreLive sc;
+    private final PauseBouton pause;
     private final boolean[][] gridState;
     private final Cell[][] grid;
 
-    private final PauseBouton pause;
     private final List<Critter> critters;
 
     private final Map<Critter, RealCoordinates> initialPos;
 
     Stage primaryStage;
     Pane gameRoot;
-    int index_sc;
 
     public MazeState(MazeConfig config, Pane gameRoot) {
         this.primaryStage = Data.getprimaryStage();
@@ -65,17 +78,16 @@ public final class MazeState {
         Data.setWidth(grid.length * Data.getScale());
         Data.setHeight(grid[0].length * Data.getScale());
 
-        pause = new PauseBouton(() ->{
-            PauseMenu pauseMenu=new PauseMenu(() -> {
-                System.out.println("Reset game");
-                restartGame();
-            });
+        
+        pause = new PauseBouton(()-> {
+            PauseMenu pauseMenu = new PauseMenu();
             Data.setRunning(false);
             gameRoot.getChildren().add(pauseMenu.getScreenLayout());
         });
+        Data.setpause(pause);
         gameRoot.getChildren().add(pause.getFinalScreenLayout());
 
-        ScoreLive sc = new ScoreLive();
+        sc = new ScoreLive();
         gameRoot.getChildren().add(sc.getLayout());
         index_sc = gameRoot.getChildren().size() - 1;
     }
@@ -202,11 +214,8 @@ public final class MazeState {
                             }
                         }
                     }
-
                 }
-
                 critter.setPos(nextPos.warp(width, height));
-
             }
             var pacPos = PacMan.INSTANCE.getPos().round();
             if (PacMan.INSTANCE.PacManDot(gridState)) {
@@ -312,7 +321,7 @@ public final class MazeState {
 
     private void displayScore() {
         gameRoot.getChildren().remove(index_sc);
-        ScoreLive sc = new ScoreLive();
+        sc = new ScoreLive();
         gameRoot.getChildren().add(sc.getLayout());
         index_sc = gameRoot.getChildren().size() - 1;
     }
@@ -333,7 +342,7 @@ public final class MazeState {
         displayScore();
 
         if (Data.getLive() == 0) {
-            Data.setRunning(false);
+            Data.setRunning(false);;
 
             ButtonAction resetAction = () -> {
                 System.out.println("Reset game");
@@ -372,7 +381,7 @@ public final class MazeState {
      */
     private void playerWin() {
         if (areAllTrue(gridState)) {
-            Data.setRunning(false);
+            Data.setRunning(false);;
 
             ButtonAction resetAction = () -> {
                 System.out.println("Reset game");
@@ -437,7 +446,7 @@ public final class MazeState {
         resetGame();
         gameRoot.getChildren().remove(gameRoot.getChildren().size() - 1);
         displayScore();
-        Data.setRunning(true);
+        Data.setRunning(true);;
     }
 
     public MazeConfig getConfig() {

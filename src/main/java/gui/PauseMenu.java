@@ -1,5 +1,5 @@
 package gui;
-
+import datagame.*;
 import model.ButtonAction;
 
 import java.io.File;
@@ -23,9 +23,18 @@ public class PauseMenu {
     double width = Data.getWidth();
     double height = Data.getHeight();
 
-    public PauseMenu(ButtonAction action) {
+    public PauseMenu() {
+        Data.getpause().getFinalScreenLayout().setVisible(false);
         Stage primaryStage = Data.getprimaryStage();
-
+        ButtonAction action = () -> {
+            System.out.println("Reset game");
+            Data.getMaze().restartGame();
+        }; 
+        ButtonAction action2 = ()-> {
+            Data.getRoot().getChildren().remove(Data.getRoot().getChildren().size() - 1);
+            Data.setRunning(true);
+            Data.getpause().getFinalScreenLayout().setVisible(true);
+        };
         setupButton(playAgainButton, action);//À chaque nouvelle partie une nouvelle instance de Game est crée ce qui permet un réeinitialisation complete du jeu
 
         setupButton(exitButton, () -> {
@@ -34,17 +43,19 @@ public class PauseMenu {
             primaryStage.setScene(Data.getmainMenu().getScene());
         });
 
-        setupButton(reprendreButton, () -> {Data.setRunning(true);});
+        setupButton(reprendreButton, action2);
 
         // Positionnez les boutons et l'image à l'emplacement souhaité
         playAgainButton.setLayoutX(width*0.52);
         playAgainButton.setLayoutY(height*0.65);
         exitButton.setLayoutX(width*0.64);
         exitButton.setLayoutY(height*0.65);
-        homeButton.setLayoutX(width*0.42);
+        homeButton.setLayoutX(width*0.40);
         homeButton.setLayoutY(height*0.65);
+        reprendreButton.setLayoutX(width*0.28);
+        reprendreButton.setLayoutY(height*0.65);
         // Ajoutez les boutons et l'image au conteneur
-        ScreenLayout.getChildren().addAll(playAgainButton, exitButton, homeButton);
+        ScreenLayout.getChildren().addAll(playAgainButton, exitButton, homeButton,reprendreButton);
     }
 
     /**

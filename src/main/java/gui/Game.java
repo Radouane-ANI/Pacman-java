@@ -12,10 +12,10 @@ public class Game {
     //Lançage du jeu
     private Scene gameScene;
     private MazeState maze;
-
     public Game() {
         Stage primaryStage = Data.getprimaryStage();
         var root = new Pane();
+        Data.setRoot(root);
         gameScene = new Scene(root);
         var pacmanController = new PacmanController();
         gameScene.setOnKeyPressed(pacmanController::keyPressedHandler);
@@ -23,6 +23,7 @@ public class Game {
         int scale = 30;
         Data.setScale(scale);
         maze = new MazeState(MazeConfig.makeExample1(), root);
+        Data.setMaze(maze);
         var gameView = new GameView(maze, root, scale);
         primaryStage.setScene(gameScene);
         primaryStage.show();

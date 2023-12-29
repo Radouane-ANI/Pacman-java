@@ -7,6 +7,7 @@ import gui.*;
 import model.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 
 import javafx.stage.Stage;
 
@@ -74,6 +75,18 @@ public class Data {
     private static boolean isGameRunning = true;
     public static boolean getRunning(){return isGameRunning;}
     public static void setRunning(boolean b){isGameRunning=b;}
+
+    private static MazeState maze;
+    public static MazeState getMaze(){return maze;}
+    public static void setMaze(MazeState m){maze=m;}
+
+    private static Pane root;
+    public static Pane getRoot(){return root;}
+    public static void setRoot(Pane p){root=p;}
+    
+    private static PauseBouton pause;
+    public static PauseBouton getpause(){return pause;}
+    public static void setpause(PauseBouton p){pause=p;}
 
     /*
     private static
