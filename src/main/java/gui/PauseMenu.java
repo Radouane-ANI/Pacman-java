@@ -46,6 +46,7 @@ public class PauseMenu {
             System.exit(0);});
         setupButton(homeButton, () -> {
             primaryStage.setScene(Data.getmainMenu().getScene());
+            Data.getpause().getFinalScreenLayout().setVisible(true);
         });
 
         setupButton(reprendreButton, action2);
