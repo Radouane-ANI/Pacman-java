@@ -32,6 +32,7 @@ public class PauseMenu {
         ButtonAction action = () -> {
             System.out.println("Reset game");
             Data.getMaze().restartGame();
+            Data.getpause().getFinalScreenLayout().setVisible(true);
         }; 
         ButtonAction action2 = ()-> {
             Data.getRoot().getChildren().remove(Data.getRoot().getChildren().size() - 1);
