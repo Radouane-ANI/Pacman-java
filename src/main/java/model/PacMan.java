@@ -160,7 +160,7 @@ public final class PacMan implements Critter {
                 @Override
                 public void run() {
                     if (!reEnergized) { // si pacman a deja pris un energiseur ne desactive pas l'energiseur
-                        PacMan.INSTANCE.setEnergized(false);
+                        PacMan.INSTANCE.setEnergized(false,0);
                         
                         timer.cancel();
                         for (var ghost : Ghost.values()) {
