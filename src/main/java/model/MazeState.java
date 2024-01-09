@@ -10,6 +10,8 @@ import gui.Game;
 import datagame.Data;
 import gui.ScoreLive;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -20,10 +22,14 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.JButton;
+import javax.swing.JTextArea;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import gui.PacmanController;
 import gui.PauseBouton;
@@ -121,8 +127,8 @@ public final class MazeState {
             if (!PacMan.INSTANCE.isEnergized() && Data.ghostFuiteSet) {
                 Data.ghostFuite.clear();
                 Data.ghostFuiteSet = false;
-            }  
-            if(PacMan.INSTANCE.isEnergized() && !Data.ghostFuiteSet){
+            }
+            if (PacMan.INSTANCE.isEnergized() && !Data.ghostFuiteSet) {
                 Data.ghostFuite.add(Ghost.PINKY);
                 Data.ghostFuite.add(Ghost.BLINKY);
                 Data.ghostFuite.add(Ghost.INKY);
@@ -235,9 +241,9 @@ public final class MazeState {
                 // Activez energized sur Pac-Man
                 PacMan.INSTANCE.setEnergized(true, 10000);
                 addScore(5);
-                //Remet tout les fantomes dans l'état de fuite
-                for (Ghost ghost : Ghost.values()){
-                    if (!Data.ghostFuite.contains(ghost)){
+                // Remet tout les fantomes dans l'état de fuite
+                for (Ghost ghost : Ghost.values()) {
+                    if (!Data.ghostFuite.contains(ghost)) {
                         Data.ghostFuite.add(ghost);
                     }
                     Data.ghostFuiteSet = true;
@@ -252,11 +258,11 @@ public final class MazeState {
                 if (critter instanceof Ghost && critter.getPos().round().equals(pacPos)) {
                     if (PacMan.INSTANCE.isEnergized()) {
                         if (!((Ghost) critter).getManger()) {
-                            if (!Data.ghostFuite.contains((Ghost)critter)){
+                            if (!Data.ghostFuite.contains((Ghost) critter)) {
                                 makeGhostsInvisible();
                                 SetPacmanMort(true);
                                 return;
-                            }else{
+                            } else {
                                 addScore(10);
                             }
                         }
@@ -321,6 +327,9 @@ public final class MazeState {
     }
 
     private void displayScore() {
+        if (Data.getScore() >= Data.getHighScore()) {
+            Data.setHighScore(Data.getScore());
+        }
         gameRoot.getChildren().remove(index_sc);
         sc = new ScoreLive();
         gameRoot.getChildren().add(sc.getLayout());
