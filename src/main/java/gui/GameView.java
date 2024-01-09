@@ -6,6 +6,7 @@ import model.MazeState;
 import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Pane;
 import model.Bonus;
+import model.Ghost;
 import model.MazeState;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class GameView {
         var bonusFactory = new BonusGraphicsFactory(scale);
         var cellFactory = new CellGraphicsFactory(scale);
         graphicsUpdaters = new ArrayList<>();
+        Ghost.init();
         for (var critter : maze.getCritters())
             addGraphics(critterFactory.makeGraphics(critter));
         for (var bonus : Bonus.values())

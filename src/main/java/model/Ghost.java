@@ -55,10 +55,22 @@ public enum Ghost implements Critter {
     public void setImage(ImageView image) {
         this.image = image;
     }
+    
+    public static void init() {
+        for (Ghost g : Ghost.values()) {
+            if (g.spritev1 == null || g.spritev2 == null) {
+                g.spritev1 = new Image("vulnerable_ghost.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                        true); // bleu
+                g.spritev2 = new Image("vulnerable_ghost1.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                        true); // blanc
+                        g.currentSpritev = g.spritev1;
+            }
+        }
+    }
 
     // image des fantomes vulnerables
-    private final Image spritev1 = new Image("vulnerable_ghost.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true, true); // bleu
-    private final Image spritev2 = new Image("vulnerable_ghost1.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true, true); // blanc
+    private Image spritev1 = null;
+    private Image spritev2 = null;
     private Image currentSpritev = spritev1;
     // timer pour qu'il puisse clignoter
     private Timer blinkTimer;
