@@ -54,20 +54,15 @@ public enum Ghost implements Critter {
     
     public void setImage(ImageView image) {
         this.image = image;
-    }
-    
-    public static void init() {
-        for (Ghost g : Ghost.values()) {
-            if (g.spritev1 == null || g.spritev2 == null) {
-                g.spritev1 = new Image("vulnerable_ghost.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
-                        true); // bleu
-                g.spritev2 = new Image("vulnerable_ghost1.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
-                        true); // blanc
-                        g.currentSpritev = g.spritev1;
-            }
+        if (spritev1 == null || spritev2 == null) {
+            spritev1 = new Image("vulnerable_ghost.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                    true); // bleu
+            spritev2 = new Image("vulnerable_ghost1.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                    true); // blanc
+            currentSpritev = spritev1;
         }
     }
-
+    
     // image des fantomes vulnerables
     private Image spritev1 = null;
     private Image spritev2 = null;
@@ -79,9 +74,16 @@ public enum Ghost implements Critter {
     // fonction qui gere le clignottement des fantomes
     /**
      * fonction qui gere le clignottement des fantomes
-     * @param image : image du fantome
      */
-    public  void startBlinking() {
+    public void startBlinking() {
+        if (spritev1 == null || spritev2 == null) {
+            spritev1 = new Image("vulnerable_ghost.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                    true); // bleu
+            spritev2 = new Image("vulnerable_ghost1.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                    true); // blanc
+            currentSpritev = spritev1;
+        }
+
         if (blinkTimer != null) {
             blinkTimer.cancel();
         }
@@ -103,10 +105,16 @@ public enum Ghost implements Critter {
     }
     /**
      * fonction qui arrete le clignottement des fantomes
-     * @param image : image du fantome
      */
     public void stopBlinking() {
-        
+        if (spritev1 == null || spritev2 == null) {
+            spritev1 = new Image("vulnerable_ghost.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                    true); // bleu
+            spritev2 = new Image("vulnerable_ghost1.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                    true); // blanc
+            currentSpritev = spritev1;
+        }
+
         if (blinkTimer != null) {
             blinkTimer.cancel();
             blinkTimer = null;
