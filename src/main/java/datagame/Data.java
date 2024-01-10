@@ -78,7 +78,14 @@ public class Data {
 
     private static boolean isGameRunning = true;
     public static boolean getRunning(){return isGameRunning;}
-    public static void setRunning(boolean b){isGameRunning=b;}
+    public static void setRunning(boolean b){
+        isGameRunning=b;
+        if(b==false){
+            for(var ghost : Ghost.values()){
+                ghost.stopBlinking();
+            }
+        }
+    }
 
     private static MazeState maze;
     public static MazeState getMaze(){return maze;}

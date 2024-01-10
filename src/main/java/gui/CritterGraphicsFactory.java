@@ -93,7 +93,7 @@ public final class CritterGraphicsFactory {
         if (!(critter instanceof PacMan)) {
             ((Ghost) critter).setImage(image);
         }
-        Data.setImageView(image);
+        //Data.setImageView(image);
 
         Image anim1 = new Image("pacmansuper1.png", scale * size, scale * size, true,
                 true);
@@ -327,7 +327,7 @@ public final class CritterGraphicsFactory {
 
                     }else if(skin == 1){
                         image.setImage(((Ghost)critter).getCurrentSprite());
-                        ((Ghost)critter).startBlinking();
+                        ((Ghost)critter).startBlinking(8000);
                         
                             
                         

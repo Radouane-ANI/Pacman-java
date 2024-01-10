@@ -136,7 +136,7 @@ public final class PacMan implements Critter {
                 for (var ghost : Ghost.values()) {
                     
                     ghost.stopBlinking();
-                    ghost.startBlinking();
+                    ghost.startBlinking(8000);
                     
                 }
             }
@@ -175,6 +175,8 @@ public final class PacMan implements Critter {
             }, duree); 
         
         }
+        
+
         
         this.energized = energized;
     }

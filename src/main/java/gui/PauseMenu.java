@@ -1,6 +1,7 @@
 package gui;
 import datagame.*;
 import model.ButtonAction;
+import model.Ghost;
 import model.PacMan;
 
 import java.io.File;
@@ -40,6 +41,10 @@ public class PauseMenu {
             long tempsRestant = Data.getHeurePause() - PacMan.INSTANCE.getDernierEnergiseur();
             if ( tempsRestant < 10000) {
                 PacMan.INSTANCE.setEnergized(true, 10000 - (int) tempsRestant);
+                for (var ghost : Ghost.values()) {
+                    ghost.stopBlinking();
+                    ghost.startBlinking(8000 - (int) tempsRestant );
+                }
             }
             Data.getpause().getFinalScreenLayout().setVisible(true);
         };
