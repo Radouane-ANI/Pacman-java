@@ -24,6 +24,11 @@ public final class PacMan implements Critter {
     private boolean reEnergized;
     private int speed = 4;
     private int skin;
+    private long dernierEnergiseur;
+
+    public long getDernierEnergiseur() {
+        return dernierEnergiseur;
+    }
 
     public void setSkin(int skin) {
         this.skin = skin;
@@ -122,15 +127,17 @@ public final class PacMan implements Critter {
      *
      * @param energized Le nouvel état énergisé.
      */
-    public void setEnergized(boolean energized) {
+    public void setEnergized(boolean energized, int duree) {
         if (energized) {
+            dernierEnergiseur = System.currentTimeMillis();
             if (this.energized) { // verifie si pacman a deja pris un energiseur
                 this.reEnergized = true;
-                System.out.println("Pacman est deja energisé");
+                
                 for (var ghost : Ghost.values()) {
-                    System.out.println(ghost);
-                    ghost.stopBlinking(Data.getImageView());
-                    ghost.startBlinking(Data.getImageView());
+                    
+                    ghost.stopBlinking();
+                    ghost.startBlinking(8000);
+                    
                 }
             }
 
@@ -153,20 +160,23 @@ public final class PacMan implements Critter {
                 @Override
                 public void run() {
                     if (!reEnergized) { // si pacman a deja pris un energiseur ne desactive pas l'energiseur
-                        PacMan.INSTANCE.setEnergized(false);
-                        System.out.println("Pacman n'est plus energisé");
+                        PacMan.INSTANCE.setEnergized(false,0);
+                        
                         timer.cancel();
                         for (var ghost : Ghost.values()) {
-                            ghost.stopBlinking(Data.getImageView());
+                            ghost.stopBlinking();
+                            
                             ghost.setSpeed(2);
                             ghost.setManger(false);
                         }
                     }
                     reEnergized = false;
                 }
-            }, 10000); // 10 000 millisecondes = 10 secondes
+            }, duree); 
         
         }
+        
+
         
         this.energized = energized;
     }

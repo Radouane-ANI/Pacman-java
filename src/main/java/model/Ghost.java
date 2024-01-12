@@ -15,6 +15,8 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.effect.Blend;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,49 +50,82 @@ public enum Ghost implements Critter {
     private boolean manger = false;
 
     static IntCoordinates cibleRandomClyde = null;
+    private ImageView image ;
+    
+    public void setImage(ImageView image) {
+        this.image = image;
+        if (spritev1 == null || spritev2 == null) {
+            spritev1 = new Image("vulnerable_ghost.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                    true); // bleu
+            spritev2 = new Image("vulnerable_ghost1.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                    true); // blanc
+            currentSpritev = spritev1;
+        }
+    }
     
     // image des fantomes vulnerables
-    private final Image spritev1 = new Image("vulnerable_ghost.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true, true); // bleu
-    private final Image spritev2 = new Image("vulnerable_ghost1.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true, true); // blanc
+    private Image spritev1 = null;
+    private Image spritev2 = null;
     private Image currentSpritev = spritev1;
     // timer pour qu'il puisse clignoter
     private Timer blinkTimer;
+
+    
     // fonction qui gere le clignottement des fantomes
     /**
      * fonction qui gere le clignottement des fantomes
-     * @param image : image du fantome
      */
-    public  void startBlinking(ImageView image) {
+    public void startBlinking(int duree) {
+        if (spritev1 == null || spritev2 == null) {
+            spritev1 = new Image("vulnerable_ghost.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                    true); // bleu
+            spritev2 = new Image("vulnerable_ghost1.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                    true); // blanc
+            currentSpritev = spritev1;
+        }
+
         if (blinkTimer != null) {
             blinkTimer.cancel();
         }
         blinkTimer = new Timer();
         blinkTimer.schedule(new TimerTask() {
             @Override
-            public void run() {
-                
+            public void run() {             
                 if (currentSpritev == spritev1) {
                     currentSpritev = spritev2;
                     image.setImage(currentSpritev);
+                    
                 } else {
                     currentSpritev = spritev1;
                     image.setImage(currentSpritev);
+                    
                 }
             }
-        }, 6000, 200); // Change sprite every 500 milliseconds
+        }, duree, 200); // Change sprite every 200 milliseconds
     }
     /**
      * fonction qui arrete le clignottement des fantomes
-     * @param image : image du fantome
      */
-    public void stopBlinking(ImageView image) {
+    public void stopBlinking() {
+        if (spritev1 == null || spritev2 == null) {
+            spritev1 = new Image("vulnerable_ghost.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                    true); // bleu
+            spritev2 = new Image("vulnerable_ghost1.png", Data.getScale() * 0.82, Data.getScale() * 0.82, true,
+                    true); // blanc
+            currentSpritev = spritev1;
+        }
+
         if (blinkTimer != null) {
             blinkTimer.cancel();
             blinkTimer = null;
+            
         }
         currentSpritev = spritev1; // Reset to default sprite
-        if(image != null)
+        
+        
         image.setImage(spritev1);
+        
+     
     }
 
 

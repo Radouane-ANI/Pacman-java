@@ -90,7 +90,11 @@ public final class CritterGraphicsFactory {
             case PINKY -> "PinkyD.png";
         };
         var image = new ImageView(new Image(url, scale * size, scale * size, true, true));
-        Data.setImageView(image);
+        if (!(critter instanceof PacMan)) {
+            ((Ghost) critter).setImage(image);
+        }
+        //Data.setImageView(image);
+
         Image anim1 = new Image("pacmansuper1.png", scale * size, scale * size, true,
                 true);
         Image anim2 = new Image("pacmansuper2bis.png", scale * size, scale * size,
@@ -186,6 +190,7 @@ public final class CritterGraphicsFactory {
         return new GraphicsUpdater() {
             @Override
             public void update() {
+                if(Data.getRunning()){
                 tick++;
                 // Change le skin des fantomes en fonction de l'etat energized de pacman
                 int skin = critter.changeSkin();
@@ -317,10 +322,20 @@ public final class CritterGraphicsFactory {
 
                 }else{
                     if (critter instanceof Ghost && ((Ghost) critter).getManger()) {
+                        ((Ghost) critter).stopBlinking();
                         image.setImage(new Image("yeux.png", scale * size, scale * size, true, true));
+
                     }else if(skin == 1){
-                        image.setImage(new Image("vulnerable_ghost.png", scale * size, scale * size, true, true));
+                        image.setImage(((Ghost)critter).getCurrentSprite());
+                        ((Ghost)critter).startBlinking(8000);
+                        
+                            
+                        
+                    
+                    
+
                     }else if(skin == 0){
+                        
                         var url = switch ((Ghost) critter) {
                             case BLINKY -> "BlinkyB.png";
                             case CLYDE -> "ClydeH.png";
@@ -357,7 +372,7 @@ public final class CritterGraphicsFactory {
                     image.setVisible(ghost.isVisible());
 
                 }
-            }
+            }}
 
             @Override
             public Node getNode() {

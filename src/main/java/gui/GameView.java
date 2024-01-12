@@ -6,6 +6,7 @@ import model.MazeState;
 import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Pane;
 import model.Bonus;
+import model.Ghost;
 import model.MazeState;
 
 import java.util.ArrayList;

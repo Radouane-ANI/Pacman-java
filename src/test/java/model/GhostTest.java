@@ -129,17 +129,17 @@ public class GhostTest {
         Ghost ghost = Ghost.BLINKY; // Initialise un fantôme pour les tests
 
         // Test lorsque Pac-Man n'est pas énergisé
-        PacMan.INSTANCE.setEnergized(false);
+        PacMan.INSTANCE.setEnergized(false,0);
         int resultNormalSkin = ghost.changeSkin();
         assertEquals(2, resultNormalSkin);
 
         // Test lorsque Pac-Man est énergisé
-        PacMan.INSTANCE.setEnergized(true);
+        PacMan.INSTANCE.setEnergized(true,1000);
         int resultVulnerableSkin = ghost.changeSkin();
         assertEquals(1, resultVulnerableSkin);
 
         // Test lorsque Pac-Man n'est plus énergisé
-        PacMan.INSTANCE.setEnergized(false);
+        PacMan.INSTANCE.setEnergized(false,0);
         int resultNoChange = ghost.changeSkin();
         assertEquals(0, resultNoChange);
     }

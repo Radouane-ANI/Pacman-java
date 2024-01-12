@@ -7,6 +7,7 @@ import gui.*;
 import model.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 
 import javafx.stage.Stage;
 
@@ -42,7 +43,11 @@ public class Data {
     public static void resetScore(){score=0;}
     public static int getScore(){return score;}
     public static void setScore(int i){score=score+i;}
-    
+
+    private static int highScore = 0;
+    public static int getHighScore() {return highScore;}
+    public static void setHighScore(int highScore) {Data.highScore = highScore;}
+
     private static double scale = 0;
     public static double getScale(){return scale;}
     public static void setScale(double i){scale=scale+i;}
@@ -70,6 +75,35 @@ public class Data {
     private static ImageView image;
     public static ImageView getImageView(){return image;}
     public static void setImageView(ImageView i){image=i;}
+
+    private static boolean isGameRunning = true;
+    public static boolean getRunning(){return isGameRunning;}
+    public static void setRunning(boolean b){
+        isGameRunning=b;
+        if(b==false){
+            for(var ghost : Ghost.values()){
+                ghost.stopBlinking();
+            }
+        }
+    }
+
+    private static MazeState maze;
+    public static MazeState getMaze(){return maze;}
+    public static void setMaze(MazeState m){maze=m;}
+
+    private static Pane root;
+    public static Pane getRoot(){return root;}
+    public static void setRoot(Pane p){root=p;}
+    
+    private static PauseBouton pause;
+    public static PauseBouton getpause(){return pause;}
+    public static void setpause(PauseBouton p){pause=p;}
+
+    private static long heurePause;
+    public static long getHeurePause(){return heurePause;}
+    public static void setHeurePause(long heure){heurePause=heure;}
+
+
     /*
     private static
     public static get
