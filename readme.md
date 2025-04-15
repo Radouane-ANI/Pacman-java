@@ -1,3 +1,5 @@
+![Logo du projet](banniere.png)
+
 # Jeu de Pacman
 
 ## Présentation
@@ -14,46 +16,6 @@ Objectifs de développement :
 - rationaliser et documenter le code
 - implémenter tout ce qu'on trouve dans tout PacMan de base: le labyrinthe classique, les stratégies des fantômes, les bonus à ramasser, l'effet des super pac-gommes, ...)
 - aller plus loin : plusieurs niveaux, 3D, multijoueur, ... (ce ne sont que des suggestions)
-
-## Instructions
-
-Dans les instructions ci-dessous, il faut remplacer `myteam` par
-
-- soit le nom de votre équipe dans gaufre, si le dépôt a été forké au nom de votre équipe,
-- soit le login du membre de votre equipe qui a forké le dépôt pour tout le monde,
-- soit `cproj`, si vous voulez cloner directement le dépôt de l'équipe enseignante.
-
-Notez que dans le dernier cas, vous pourrez compiler et exécuter le projet, mais pas faire de `git push`.
-
-### Télécharger Pacman
-
-Le plus pratique pour télécharger Pacman afin de participer à son développement, c'est de cloner le dépôt. Depuis la console :
-
-```bash
-$ git clone https://gaufre.informatique.univ-paris-diderot.fr/myteam/pacman
-```
-
-Le projet actuellement développé n'a pas encore eu de release. Ainsi pour l'instant tout est dans la branche `develop`. Donc avant de faire le reste, tapez :
-```bash
-$ git checkout develop
-```
-
-#### Depuis une machine de TP de la Halle aux Farines
-
-Il semble que l'installation de git sur les machines de TP refuse de reconnaître le certificat de gaufre. Heureusement, on peut demander à git d'ignorer la vérification du certificat :
-
-
-```bash
-$ git clone -c http.sslVerify=false https://gaufre.informatique.univ-paris-diderot.fr/myteam/pacman
-```
-
-Ensuite, vous pouvez enregistrer de façon permanente votre choix d'ignorer la vérification pour ce dépôt :
-
-```bash
-$ cd pacman
-$ git config http.sslVerify false
-```
-(cela permettra de faire des `git push`, des `git pull` et des `git fetch` sans avoir à préciser à chaque fois `-c http.sslVerify=false`)
 
 ## Exécution, compilation
 
@@ -75,33 +37,6 @@ Pour exécuter, il suffit d'exécuter, depuis le répertoire `pacman` :
 Le projet en lui-même a besoin de Java 17 pour être compilé et exécuté.
 
 ### Cas particuliers
-
-#### Sur une machine de TP de la Halle aux Farines, depuis la console
-
-Si vous travaillez depuis une machine des salles de TP de la Halle aux Farines, vous devez d'abord passer certains paramètres à gradle via une variable d'environnement. Cela peut être fait en exécutant 
-
-```bash
-$ source SCRIPT/envsetup
-```
-
-avant de lancer toute commande gradle (notamment `build` et `run`.
-
-Pour être tranquille, vous pouvez insérer cette commande dans votre fichier `~/.bashrc`, cela vous évitera de devoir la taper à la main à chaque nouvelle session. Pensez à adapter la commande en donnant le chemin absolu vers `envsetup`.
-
-Pour information, les paramètres passés à gradle indiquent :
-
-- le fichier de certificats à utiliser pour télécharger les dépendances via HTTPS
-- les paramètres du proxy de la Halle aux Farines
-- le chemin vers Java 17
-
-#### Sur une machine de TP de la Halle aux Farines en utilisant Eclipse
-
-Eclipse installé sur les machines de TP contient une distribution de Java 17, et semble savoir passer la bonne configuration à Gradle. Pour travailler avec eclipse, il suffit donc de lancer Eclipse (commande `eclipse`), puis d'importer le projet :
-
-1. File > Import... > Gradle > Existing Gradle Project, Next >
-2. choisir le chemin de pacman et valider avec Finish
-
-Dans l'onglet "Gradle Tasks", vous trouverez notamment les tâches permettant de compiler et d'exécuter le projet.
 
 #### Sur une machine personnelle avec Java 11 à 16
 
